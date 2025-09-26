@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>جستجوی طرح‌های تسهیلاتی</title>
+  <link href="https://cdn.jsdelivr.net/npm/vazirmatn@33.003/index.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+  <style>
+    body {
+      font-family: "Vazirmatn", sans-serif;
+      background: #fafafa;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0;
+      padding: 2rem;
+      color: #222;
+    }
+    h1 {
+      margin-bottom: 1.5rem;
+      font-weight: 500;
+    }
+    #search-box {
+      width: 100%;
+      max-width: 500px;
+      padding: 12px 16px;
+      font-size: 1.1rem;
+      border: 1px solid #ccc;
+      border-radius: 2rem;
+      outline: none;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    #results {
+      margin-top: 1.5rem;
+      width: 100%;
+      max-width: 700px;
+    }
+    .result-item {
+      padding: 10px 15px;
+      cursor: pointer;
+      border-radius: 10px;
+      transition: background 0.2s;
+    }
+    .result-item:hover {
+      background: #f0f0f0;
+    }
+    #detail {
+      margin-top: 2rem;
+      width: 100%;
+      max-width: 700px;
+      padding: 20px;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      display: none;
+      line-height: 1.8;
+    }
+    .keywords {
+      margin-top: 5px;
+      font-size: 0.9rem;
+      color: #666;
+    }
+    .keywords span {
+      background: #eee;
+      padding: 3px 8px;
+      margin: 0 3px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>کتابخانه طرح‌های تسهیلاتی</h1>
+  <input id="search-box" type="text" placeholder="جستجو کنید..." />
+
+  <div id="results"></div>
+  <div id="detail"></div>
+
+  <script>
+    let data = [];
+    let fuse;
+
+    // بارگذاری ایندکس
+    fetch("data.json")
+      .then(res => res.json())
+      .then(json => {
+        data = json;
+        // جستجو روی title و keywords
+        fuse = new Fuse(data, { keys: ["title", "keywords"], threshold: 0.3 });
+      });
+
+    const searchBox = document.getElementById("search-box");
+    const resultsDiv = document.getElementById("results");
+    const detailDiv = document.getElementById("detail");
+
+    searchBox.addEventListener("input", () => {
+      const query = searchBox.value.trim();
+      resultsDiv.innerHTML = "";
+      detailDiv.style.display = "none";
+      if (query.length > 1 && fuse) {
+        const results = fuse.search(query);
+        results.forEach(r => {
+          const item = r.item;
+          const div = document.createElement("div");
+          div.className = "result-item";
+          div.innerHTML = `<strong>${item.title}</strong>`;
+
+          // نمایش کلیدواژه‌ها زیر عنوان
+          if (item.keywords && item.keywords.length > 0) {
+            const kw = item.keywords.map(k => `<span>${k}</span>`).join(" ");
+            div.innerHTML += `<div class="keywords">${kw}</div>`;
+          }
+
+          div.onclick = () => {
+            fetch(item.file)
+              .then(res => res.text())
+              .then(html => {
+                detailDiv.innerHTML = html;
+                detailDiv.style.display = "block";
+              });
+          };
+          resultsDiv.appendChild(div);
+        });
+      }
+    });
+  </script>
+</body>
+</html>
