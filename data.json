@@ -1,7 +1,7 @@
 [
   {
     "title": "افق",
-    "file": "https://raw.githubusercontent.com/rbank724/e-refah/refs/heads/main/tarh-html/%D8%A7%D9%81%D9%82.html",
+    "file": "https://rbank724.github.io/e-refah/tarh-html/افق.html",
     "keywords": [
       "حقوقی",
       "اشخاص",
@@ -22,7 +22,7 @@
   },
   {
     "title": "حرکت",
-    "file": "tarh-html/حرکت.html",
+    "file": "https://rbank724.github.io/e-refah/tarh-html/حرکت.html",
     "keywords": [
       "000",
       "حقیقی",
@@ -43,4 +43,5 @@
   }
 
 ]
+
 
