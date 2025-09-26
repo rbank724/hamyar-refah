@@ -1,7 +1,7 @@
 [
   {
     "title": "افق",
-    "file": "A:/Refah-Tarh/tarh-html/افق.html",
+    "file": "tarh-html/افق.html",
     "keywords": [
       "حقوقی",
       "اشخاص",
@@ -22,7 +22,7 @@
   },
   {
     "title": "حرکت",
-    "file": "A:/Refah-Tarh/tarh-html/حرکت.html",
+    "file": "tarh-html/حرکت.html",
     "keywords": [
       "000",
       "حقیقی",
@@ -41,4 +41,5 @@
       "حرکت"
     ]
   }
+
 ]
