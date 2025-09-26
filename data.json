@@ -1,7 +1,7 @@
 [
   {
     "title": "harkat",
-    "file": "A:\\Refah-Tarh\\tarh-md/tarh1.md",
+    "file": "tarh-md/tarh1.md",
     "keywords": [
       "حرکت",
       "اشخاص",
@@ -45,7 +45,7 @@
   },
   {
     "title": "ofogh",
-    "file": "A:\\Refah-Tarh\\tarh-md/tarh2.md",
+    "file": "tarh-md/tarh2.md",
     "keywords": [
       "افق",
       "جامعه",
@@ -88,4 +88,5 @@
       "000"
     ]
   }
+
 ]
