@@ -19,7 +19,6 @@
     h1 {
       margin-bottom: 1.5rem;
       font-weight: 500;
-      text-align: center;
     }
     #search-box {
       width: 100%;
@@ -30,11 +29,6 @@
       border-radius: 2rem;
       outline: none;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    #search-box:focus {
-      border-color: #0366d6;
-      box-shadow: 0 2px 8px rgba(3,102,214,0.3);
     }
     #results {
       margin-top: 1.5rem;
@@ -45,84 +39,21 @@
       padding: 10px 15px;
       cursor: pointer;
       border-radius: 10px;
-      transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease, opacity 0.3s ease;
-      opacity: 0;
-    }
-    .result-item.show {
-      opacity: 1;
+      transition: background 0.2s;
     }
     .result-item:hover {
-      background: #e0eaff;
-      transform: translateX(3px);
-    }
-    .result-item.active {
-      background: #0366d6;
-      color: #fff;
+      background: #f0f0f0;
     }
     #detail {
       margin-top: 2rem;
       width: 100%;
       max-width: 700px;
-      max-height: 500px;
       padding: 20px;
       border-radius: 12px;
       background: #fff;
       box-shadow: 0 3px 10px rgba(0,0,0,0.1);
       display: none;
       line-height: 1.8;
-      overflow-y: auto;
-      overflow-x: auto;
-      opacity: 0;
-      transform: translateY(-10px);
-      transition: opacity 0.3s ease, transform 0.3s ease;
-    }
-    #detail.show {
-      display: block;
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* scrollbar سفارشی */
-    #detail::-webkit-scrollbar {
-      width: 10px;
-    }
-    #detail::-webkit-scrollbar-track {
-      background: #f0f0f0;
-      border-radius: 8px;
-    }
-    #detail::-webkit-scrollbar-thumb {
-      background: #0366d6;
-      border-radius: 8px;
-    }
-    #detail::-webkit-scrollbar-thumb:hover {
-      background: #024c9c;
-    }
-
-    /* استایل Markdown */
-    #detail h1 { font-size: 1.8rem; margin-bottom: 1rem; }
-    #detail h2 { font-size: 1.6rem; margin-bottom: 0.8rem; }
-    #detail h3 { font-size: 1.4rem; margin-bottom: 0.6rem; }
-    #detail p { margin-bottom: 1rem; }
-    #detail ul { padding-inline-start: 1.2rem; margin-bottom: 1rem; }
-    #detail ol { padding-inline-start: 1.2rem; margin-bottom: 1rem; }
-    #detail table { border-collapse: collapse; width: 100%; margin-bottom: 1rem; }
-    #detail table, #detail th, #detail td { border: 1px solid #ccc; }
-    #detail th, #detail td { padding: 8px; text-align: right; }
-    #detail a { color: #0366d6; text-decoration: none; }
-    #detail a:hover { text-decoration: underline; }
-    #detail code { background: #f5f5f5; padding: 2px 4px; border-radius: 4px; font-family: monospace; }
-    #detail pre { background: #f5f5f5; padding: 10px; border-radius: 6px; overflow-x: auto; }
-
-    /* ریسپانسیو */
-    @media (max-width: 768px) {
-      body { padding: 1rem; }
-      #search-box { font-size: 1rem; padding: 10px 14px; }
-      #results { max-width: 100%; }
-      #detail { max-width: 100%; padding: 15px; }
-    }
-    @media (max-width: 480px) {
-      #search-box { font-size: 0.95rem; padding: 8px 12px; }
-      #detail { font-size: 0.95rem; padding: 12px; }
     }
   </style>
 </head>
@@ -137,10 +68,12 @@
     let data = [];
     let fuse;
 
+    // بارگذاری ایندکس
     fetch("data.json")
       .then(res => res.json())
       .then(json => {
         data = json;
+        // جستجو روی title و keywords
         fuse = new Fuse(data, { keys: ["title", "keywords"], threshold: 0.3 });
       });
 
@@ -151,47 +84,27 @@
     searchBox.addEventListener("input", () => {
       const query = searchBox.value.trim();
       resultsDiv.innerHTML = "";
-      detailDiv.classList.remove("show");
+      detailDiv.style.display = "none";
       if (query.length > 1 && fuse) {
         const results = fuse.search(query);
-        results.forEach((r, idx) => {
+        results.forEach(r => {
           const item = r.item;
           const div = document.createElement("div");
           div.className = "result-item";
           div.innerHTML = `<strong>${item.title}</strong>`;
 
-          // fade-in با تاخیر جزئی برای ظاهر شدن آهسته
-          setTimeout(() => div.classList.add("show"), idx * 50);
-
-          div.onclick = (e) => {
-            e.stopPropagation();
-            document.querySelectorAll(".result-item").forEach(el => el.classList.remove("active"));
-
-            if (detailDiv.classList.contains("show") && div.classList.contains("active")) {
-              detailDiv.classList.remove("show");
-              div.classList.remove("active");
-            } else {
-              div.classList.add("active");
-              fetch(item.md_file)
-                .then(res => res.text())
-                .then(md => {
-                  detailDiv.innerHTML = marked.parse(md);
-                  detailDiv.classList.add("show");
-                });
-            }
+          div.onclick = () => {
+            fetch(item.file)
+              .then(res => res.text())
+              .then(html => {
+                detailDiv.innerHTML = html;
+                detailDiv.style.display = "block";
+              });
           };
           resultsDiv.appendChild(div);
         });
       }
     });
-
-    document.addEventListener("click", (e) => {
-      if (!detailDiv.contains(e.target)) {
-        detailDiv.classList.remove("show");
-        document.querySelectorAll(".result-item").forEach(el => el.classList.remove("active"));
-      }
-    });
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </body>
 </html>
