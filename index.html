@@ -15,10 +15,22 @@
       margin: 0;
       padding: 2rem;
       color: #222;
+      transition: background 0.3s, color 0.3s;
     }
     h1 {
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
       font-weight: 500;
+    }
+    #theme-toggle {
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      padding: .5rem 1rem;
+      border-radius: 1rem;
+      border: none;
+      cursor: pointer;
+      background: #eee;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
     #search-box {
       width: 100%;
@@ -30,19 +42,39 @@
       outline: none;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
+    #filters {
+      margin-top: .5rem;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+    #result-count {
+      margin-top: .5rem;
+      font-size: .9rem;
+      color: #666;
+    }
     #results {
-      margin-top: 1.5rem;
+      margin-top: 1rem;
       width: 100%;
       max-width: 700px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill,minmax(250px,1fr));
+      gap: 1rem;
     }
     .result-item {
-      padding: 10px 15px;
+      padding: 15px;
       cursor: pointer;
       border-radius: 10px;
-      transition: background 0.2s;
+      transition: background 0.2s, transform 0.2s;
+      background: #fff;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.05);
     }
     .result-item:hover {
       background: #f0f0f0;
+      transform: translateY(-2px);
+    }
+    .highlight {
+      background-color: #ffff99;
     }
     #detail {
       margin-top: 2rem;
@@ -54,56 +86,167 @@
       box-shadow: 0 3px 10px rgba(0,0,0,0.1);
       display: none;
       line-height: 1.8;
+      animation: fadein .4s ease;
+    }
+    #loading {
+      display: none;
+      margin-top: 1rem;
+      color: #555;
+      font-size: .9rem;
+    }
+    #pagination {
+      margin-top: 1rem;
+      display: flex;
+      gap: .5rem;
+    }
+    #pagination button {
+      padding: .3rem .8rem;
+      border-radius: .5rem;
+      border: none;
+      background: #eee;
+      cursor: pointer;
+    }
+    @keyframes fadein {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+    body.dark {
+      background: #121212;
+      color: #eee;
+    }
+    body.dark #search-box {
+      background: #1e1e1e;
+      color: #eee;
+      border: 1px solid #555;
+    }
+    body.dark .result-item {
+      background: #1e1e1e;
+      color: #eee;
+      box-shadow: 0 3px 10px rgba(255,255,255,0.05);
+    }
+    body.dark #detail {
+      background: #1e1e1e;
+      color: #eee;
+    }
+    body.dark #theme-toggle {
+      background: #333;
+      color: #eee;
     }
   </style>
 </head>
 <body>
+  <button id="theme-toggle">🌙 حالت تیره</button>
   <h1>کتابخانه طرح‌های تسهیلاتی</h1>
   <input id="search-box" type="text" placeholder="جستجو کنید..." />
-
+  <div id="filters">
+    <label>دسته‌بندی:
+      <select id="category-filter">
+        <option value="">همه</option>
+      </select>
+    </label>
+  </div>
+  <div id="result-count"></div>
   <div id="results"></div>
+  <div id="pagination"></div>
+  <div id="loading">در حال بارگذاری...</div>
   <div id="detail"></div>
 
   <script>
     let data = [];
     let fuse;
+    let filteredResults = [];
+    let currentPage = 1;
+    const perPage = 10;
 
-    // بارگذاری ایندکس
     fetch("data.json")
       .then(res => res.json())
       .then(json => {
         data = json;
-        // جستجو روی title و keywords
+        // ساخت fuse
         fuse = new Fuse(data, { keys: ["title", "keywords"], threshold: 0.3 });
+        // پرکردن دسته‌بندی‌ها
+        const cats = [...new Set(data.map(d => d.category).filter(Boolean))];
+        const catSelect = document.getElementById("category-filter");
+        cats.forEach(c=>{
+          const opt = document.createElement("option");
+          opt.value = c; opt.textContent = c;
+          catSelect.appendChild(opt);
+        });
       });
 
     const searchBox = document.getElementById("search-box");
     const resultsDiv = document.getElementById("results");
     const detailDiv = document.getElementById("detail");
+    const loading = document.getElementById("loading");
+    const resultCount = document.getElementById("result-count");
+    const paginationDiv = document.getElementById("pagination");
+    const catFilter = document.getElementById("category-filter");
 
-    searchBox.addEventListener("input", () => {
-      const query = searchBox.value.trim();
+    function renderPage(page){
       resultsDiv.innerHTML = "";
+      paginationDiv.innerHTML = "";
       detailDiv.style.display = "none";
-      if (query.length > 1 && fuse) {
-        const results = fuse.search(query);
-        results.forEach(r => {
-          const item = r.item;
-          const div = document.createElement("div");
-          div.className = "result-item";
-          div.innerHTML = `<strong>${item.title}</strong>`;
-
-          div.onclick = () => {
-            fetch(item.file)
-              .then(res => res.text())
-              .then(html => {
-                detailDiv.innerHTML = html;
-                detailDiv.style.display = "block";
-              });
-          };
-          resultsDiv.appendChild(div);
-        });
+      const start = (page-1)*perPage;
+      const pageItems = filteredResults.slice(start,start+perPage);
+      pageItems.forEach(r=>{
+        const item = r.item || r; // اگر جستجو نکرده باشیم
+        const div = document.createElement("div");
+        div.className = "result-item";
+        const query = searchBox.value.trim();
+        const regex = new RegExp("(" + query + ")", "gi");
+        const highlightedTitle = item.title.replace(regex, "<span class='highlight'>$1</span>");
+        div.innerHTML = `<strong>${highlightedTitle}</strong><br><small>${item.category||""}</small>`;
+        div.onclick = () => {
+          loading.style.display = "block";
+          fetch(item.file)
+            .then(res => res.text())
+            .then(html => {
+              loading.style.display = "none";
+              detailDiv.innerHTML = html + `<br><button onclick="detailDiv.style.display='none'">بازگشت به نتایج</button>`;
+              detailDiv.style.display = "block";
+            });
+        };
+        resultsDiv.appendChild(div);
+      });
+      // صفحه‌بندی
+      const totalPages = Math.ceil(filteredResults.length/perPage);
+      if(totalPages>1){
+        for(let i=1;i<=totalPages;i++){
+          const btn = document.createElement("button");
+          btn.textContent = i;
+          if(i===page) btn.style.fontWeight="bold";
+          btn.onclick = ()=>{currentPage=i;renderPage(i)};
+          paginationDiv.appendChild(btn);
+        }
       }
+    }
+
+    function doSearch(){
+      const query = searchBox.value.trim();
+      const category = catFilter.value;
+      let results;
+      if(query.length>1 && fuse){
+        results = fuse.search(query);
+      }else{
+        results = data.map(d=>({item:d})); // بدون جستجو
+      }
+      if(category){
+        results = results.filter(r=>(r.item||r).category===category);
+      }
+      filteredResults = results;
+      resultCount.textContent = results.length + " نتیجه یافت شد";
+      currentPage = 1;
+      renderPage(currentPage);
+    }
+
+    searchBox.addEventListener("input", doSearch);
+    catFilter.addEventListener("change", doSearch);
+
+    // حالت تیره/روشن
+    const themeToggle = document.getElementById("theme-toggle");
+    themeToggle.addEventListener("click", () => {
+      document.body.classList.toggle("dark");
+      themeToggle.textContent = document.body.classList.contains("dark") ? "☀️ حالت روشن" : "🌙 حالت تیره";
     });
   </script>
 </body>
