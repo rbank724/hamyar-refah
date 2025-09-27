@@ -34,8 +34,9 @@
 
   <div id="result-count" class="mt-2 text-gray-600 text-sm"></div>
 
-  <!-- نتایج -->
-  <div id="results" class="mt-4 w-full max-w-3xl grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"></div>
+  <!-- نتایج: دسکتاپ grid 1-2-3 ستون، موبایل stack -->
+  <div id="results" class="mt-4 w-full max-w-3xl grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+  </div>
 
   <div id="pagination" class="mt-4 flex gap-2"></div>
 
@@ -54,9 +55,7 @@
       .then(res => res.json())
       .then(json => {
         data = json;
-        // ساخت fuse
         fuse = new Fuse(data, { keys: ["title", "keywords"], threshold: 0.3 });
-        // پرکردن دسته‌بندی‌ها
         const cats = [...new Set(data.map(d => d.category).filter(Boolean))];
         const catSelect = document.getElementById("category-filter");
         cats.forEach(c=>{
@@ -80,7 +79,7 @@
       detailDiv.classList.add("hidden");
       const start = (page-1)*perPage;
       const pageItems = filteredResults.slice(start,start+perPage);
-      pageItems.forEach(r=>{
+      pageItems.forEach((r,index)=>{
         const item = r.item || r;
         const div = document.createElement("div");
         div.className = "result-item p-4 rounded-xl bg-white shadow-md cursor-pointer transform transition-all hover:scale-105 hover:bg-gray-100";
@@ -99,9 +98,16 @@
             });
         };
         resultsDiv.appendChild(div);
+
+        // انیمیشن ورود کارت‌ها
+        setTimeout(() => {
+          div.style.opacity = 1;
+          div.style.transform = "translateY(0) scale(1)";
+        }, index * 80);
+        div.style.opacity = 0;
+        div.style.transform = "translateY(20px) scale(0.95)";
       });
 
-      // صفحه‌بندی
       const totalPages = Math.ceil(filteredResults.length/perPage);
       if(totalPages>1){
         for(let i=1;i<=totalPages;i++){
@@ -136,7 +142,6 @@
     searchBox.addEventListener("input", doSearch);
     catFilter.addEventListener("change", doSearch);
 
-    // حالت تیره/روشن
     const themeToggle = document.getElementById("theme-toggle");
     themeToggle.addEventListener("click", () => {
       document.body.classList.toggle("dark");
@@ -145,22 +150,6 @@
       document.body.classList.toggle("text-gray-200");
     });
 
-    // انیمیشن کارت‌ها حرفه‌ای
-    function animateCards() {
-      const cards = document.querySelectorAll(".result-item");
-      cards.forEach((card, index) => {
-        card.style.opacity = 0;
-        card.style.transform = "translateY(30px) scale(0.95)";
-        card.style.transition = "transform 0.5s cubic-bezier(0.25, 1.5, 0.5, 1), opacity 0.5s ease, box-shadow 0.5s ease";
-        setTimeout(() => {
-          card.style.opacity = 1;
-          card.style.transform = "translateY(0) scale(1)";
-          card.style.boxShadow = "0 8px 20px rgba(0,0,0,0.15)";
-        }, index * 80);
-      });
-    }
-
-    // دکمه نمایش همه
     document.getElementById("show-all").addEventListener("click", () => {
       searchBox.value = "";
       catFilter.value = "";
@@ -168,10 +157,8 @@
       resultCount.textContent = filteredResults.length + " نتیجه یافت شد";
       currentPage = 1;
       renderPage(currentPage);
-      animateCards();
     });
 
-    // Service Worker (همان کد قبلی)
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').then(reg => {
         reg.onupdatefound = () => {
