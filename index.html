@@ -14,13 +14,16 @@
 
   <h1 class="mb-4 text-2xl font-medium">کتابخانه طرح‌های تسهیلاتی</h1>
 
+  <!-- جستجو -->
   <input id="search-box" type="text" placeholder="جستجو کنید..." 
          class="w-full max-w-md px-4 py-3 text-lg border border-gray-300 rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400"/>
 
+  <!-- دکمه نمایش همه طرح‌ها -->
   <button id="show-all" class="mt-3 px-6 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-300">
     نمایش همه طرح‌ها
   </button>
 
+  <!-- فیلتر دسته‌بندی -->
   <div id="filters" class="mt-2 flex gap-4 items-center">
     <label class="flex gap-2 items-center">دسته‌بندی:
       <select id="category-filter" class="border border-gray-300 rounded-md px-2 py-1">
@@ -31,13 +34,8 @@
 
   <div id="result-count" class="mt-2 text-gray-600 text-sm"></div>
 
-  <!-- نتایج: دسکتاپ grid، موبایل scroll افقی -->
-  <div id="results" class="mt-4 w-full max-w-3xl
-      grid gap-4
-      grid-cols-1 sm:grid-cols-2 lg:grid-cols-3
-      overflow-x-auto sm:overflow-x-visible
-      snap-x snap-mandatory scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200">
-  </div>
+  <!-- نتایج -->
+  <div id="results" class="mt-4 w-full max-w-3xl grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"></div>
 
   <div id="pagination" class="mt-4 flex gap-2"></div>
 
@@ -56,7 +54,9 @@
       .then(res => res.json())
       .then(json => {
         data = json;
+        // ساخت fuse
         fuse = new Fuse(data, { keys: ["title", "keywords"], threshold: 0.3 });
+        // پرکردن دسته‌بندی‌ها
         const cats = [...new Set(data.map(d => d.category).filter(Boolean))];
         const catSelect = document.getElementById("category-filter");
         cats.forEach(c=>{
@@ -83,7 +83,7 @@
       pageItems.forEach(r=>{
         const item = r.item || r;
         const div = document.createElement("div");
-        div.className = "result-item snap-start min-w-[250px] p-4 rounded-xl bg-white shadow-md cursor-pointer transform transition-all hover:scale-105 hover:bg-gray-100";
+        div.className = "result-item p-4 rounded-xl bg-white shadow-md cursor-pointer transform transition-all hover:scale-105 hover:bg-gray-100";
         const query = searchBox.value.trim();
         const regex = new RegExp("(" + query + ")", "gi");
         const highlightedTitle = item.title.replace(regex, "<span class='bg-yellow-300'>$1</span>");
@@ -101,6 +101,7 @@
         resultsDiv.appendChild(div);
       });
 
+      // صفحه‌بندی
       const totalPages = Math.ceil(filteredResults.length/perPage);
       if(totalPages>1){
         for(let i=1;i<=totalPages;i++){
@@ -135,6 +136,7 @@
     searchBox.addEventListener("input", doSearch);
     catFilter.addEventListener("change", doSearch);
 
+    // حالت تیره/روشن
     const themeToggle = document.getElementById("theme-toggle");
     themeToggle.addEventListener("click", () => {
       document.body.classList.toggle("dark");
@@ -143,6 +145,7 @@
       document.body.classList.toggle("text-gray-200");
     });
 
+    // انیمیشن کارت‌ها حرفه‌ای
     function animateCards() {
       const cards = document.querySelectorAll(".result-item");
       cards.forEach((card, index) => {
@@ -157,6 +160,7 @@
       });
     }
 
+    // دکمه نمایش همه
     document.getElementById("show-all").addEventListener("click", () => {
       searchBox.value = "";
       catFilter.value = "";
@@ -167,6 +171,7 @@
       animateCards();
     });
 
+    // Service Worker (همان کد قبلی)
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').then(reg => {
         reg.onupdatefound = () => {
