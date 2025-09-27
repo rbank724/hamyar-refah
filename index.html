@@ -248,14 +248,31 @@
       document.body.classList.toggle("dark");
       themeToggle.textContent = document.body.classList.contains("dark") ? "☀️ حالت روشن" : "🌙 حالت تیره";
     });
-    if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js').then(reg=>{
-      console.log('Service Worker ثبت شد:', reg.scope);
-    }).catch(err=>{
-      console.log('ثبت SW خطا:', err);
-    });
-    }
-  </script>
+   <script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').then(reg => {
+    // گوش بده اگر سرویس‌ورکر جدید آماده شد
+    reg.onupdatefound = () => {
+      const newWorker = reg.installing;
+      newWorker.onstatechange = () => {
+        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+          // نمایش اعلان ساده
+          const bar = document.createElement('div');
+          bar.textContent = 'نسخه‌ی جدید آماده است؛ برای به‌روزرسانی اینجا بزنید';
+          Object.assign(bar.style, {
+            position: 'fixed', bottom: '0', left: '0', right: '0',
+            background: '#007BFF', color: '#fff', textAlign: 'center',
+            padding: '10px', fontFamily: 'inherit', cursor: 'pointer', zIndex: 9999
+          });
+          bar.onclick = () => location.reload();
+          document.body.appendChild(bar);
+        }
+      };
+    };
+  });
+ }
+ </script>
 </body>
 </html>
+
 
