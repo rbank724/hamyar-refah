@@ -9,6 +9,7 @@
 </head>
 <body class="flex flex-col items-center bg-gray-50 text-gray-900 transition-colors duration-300 p-4">
 
+  <!-- حالت تیره -->
   <button id="theme-toggle" class="fixed top-4 left-4 px-4 py-2 rounded-full bg-gray-200 shadow-md hover:bg-gray-300 z-50">🌙 حالت تیره</button>
 
   <h1 class="mb-4 text-2xl font-medium">کتابخانه طرح‌های تسهیلاتی</h1>
@@ -30,9 +31,12 @@
 
   <div id="result-count" class="mt-2 text-gray-600 text-sm"></div>
 
-  <!-- نتایج: grid دسکتاپ، scroll موبایل -->
-  <div id="results" class="mt-4 w-full max-w-3xl grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 
-      overflow-x-auto snap-x snap-mandatory scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200">
+  <!-- نتایج: دسکتاپ grid، موبایل scroll افقی -->
+  <div id="results" class="mt-4 w-full max-w-3xl
+      grid gap-4
+      grid-cols-1 sm:grid-cols-2 lg:grid-cols-3
+      overflow-x-auto sm:overflow-x-visible
+      snap-x snap-mandatory scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200">
   </div>
 
   <div id="pagination" class="mt-4 flex gap-2"></div>
