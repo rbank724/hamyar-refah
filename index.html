@@ -138,6 +138,16 @@
   <button id="theme-toggle">🌙 حالت تیره</button>
   <h1>کتابخانه طرح‌های تسهیلاتی</h1>
   <input id="search-box" type="text" placeholder="جستجو کنید..." />
+  <button id="show-all" style="
+  margin-top: 10px; 
+  padding: 10px 20px; 
+  border-radius: 10px; 
+  border: none; 
+  background: #007BFF; 
+  color: #fff; 
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+">نمایش همه طرح‌ها</button>
   <div id="filters">
     <label>دسته‌بندی:
       <select id="category-filter">
@@ -270,6 +280,36 @@
     };
   });
  }
-  </script>
+  // افکت حرفه‌ای کارت‌ها با scale، bounce و هایلایت
+function animateCards() {
+  const cards = document.querySelectorAll(".result-item");
+  cards.forEach((card, index) => {
+    // تنظیم اولیه
+    card.style.opacity = 0;
+    card.style.transform = "translateY(30px) scale(0.95)";
+    card.style.boxShadow = "0 0 0 rgba(0,0,0,0)";
+    card.style.transition = "transform 0.5s cubic-bezier(0.25, 1.5, 0.5, 1), opacity 0.5s ease, box-shadow 0.5s ease";
+
+    setTimeout(() => {
+      // حالت نهایی
+      card.style.opacity = 1;
+      card.style.transform = "translateY(0) scale(1)";
+      card.style.boxShadow = "0 8px 20px rgba(0,0,0,0.15)";
+    }, index * 80); // افکت مرحله‌ای آبشاری
+  });
+}
+
+// عملکرد دکمه نمایش همه
+document.getElementById("show-all").addEventListener("click", () => {
+  searchBox.value = "";
+  catFilter.value = "";
+  filteredResults = data.map(d => ({ item: d }));
+  resultCount.textContent = filteredResults.length + " نتیجه یافت شد";
+  currentPage = 1;
+  renderPage(currentPage);
+  animateCards();
+});
+ </script>
 </body>
 </html>
+
