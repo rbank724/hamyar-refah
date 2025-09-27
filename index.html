@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-  <link rel="stylesheet" href="responsive.css">
   <meta charset="UTF-8">
   <title>جستجوی طرح‌های تسهیلاتی</title>
   <link href="https://cdn.jsdelivr.net/npm/vazirmatn@33.003/index.css" rel="stylesheet">
@@ -249,9 +248,8 @@
       document.body.classList.toggle("dark");
       themeToggle.textContent = document.body.classList.contains("dark") ? "☀️ حالت روشن" : "🌙 حالت تیره";
     });
-   <script>
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js').then(reg => {
+  if ('serviceWorker' in navigator) {
+   navigator.serviceWorker.register('sw.js').then(reg => {
     // گوش بده اگر سرویس‌ورکر جدید آماده شد
     reg.onupdatefound = () => {
       const newWorker = reg.installing;
@@ -272,9 +270,6 @@ if ('serviceWorker' in navigator) {
     };
   });
  }
- </script>
+  </script>
 </body>
 </html>
-
-
-
