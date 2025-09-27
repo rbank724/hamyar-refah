@@ -3,163 +3,43 @@
 <head>
   <meta charset="UTF-8">
   <title>جستجوی طرح‌های تسهیلاتی</title>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-M7SM10NFH6"></script>
-  <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
-  <style>
-    body {
-      font-family: "Vazirmatn", sans-serif;
-      background: #fafafa;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin: 0;
-      padding: 2rem;
-      color: #222;
-      transition: background 0.3s, color 0.3s;
-    }
-    h1 {
-      margin-bottom: 1rem;
-      font-weight: 500;
-    }
-    #theme-toggle {
-      position: fixed;
-      top: 1rem;
-      left: 1rem;
-      padding: .5rem 1rem;
-      border-radius: 1rem;
-      border: none;
-      cursor: pointer;
-      background: #eee;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    #search-box {
-      width: 100%;
-      max-width: 500px;
-      padding: 12px 16px;
-      font-size: 1.1rem;
-      border: 1px solid #ccc;
-      border-radius: 2rem;
-      outline: none;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    #filters {
-      margin-top: .5rem;
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-    }
-    #result-count {
-      margin-top: .5rem;
-      font-size: .9rem;
-      color: #666;
-    }
-    #results {
-      margin-top: 1rem;
-      width: 100%;
-      max-width: 700px;
-      display: grid;
-      grid-template-columns: repeat(auto-fill,minmax(250px,1fr));
-      gap: 1rem;
-    }
-    .result-item {
-      padding: 15px;
-      cursor: pointer;
-      border-radius: 10px;
-      transition: background 0.2s, transform 0.2s;
-      background: #fff;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-    }
-    .result-item:hover {
-      background: #f0f0f0;
-      transform: translateY(-2px);
-    }
-    .highlight {
-      background-color: #ffff99;
-    }
-    #detail {
-      margin-top: 2rem;
-      width: 100%;
-      max-width: 700px;
-      padding: 20px;
-      border-radius: 12px;
-      background: #fff;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-      display: none;
-      line-height: 1.8;
-      animation: fadein .4s ease;
-    }
-    #loading {
-      display: none;
-      margin-top: 1rem;
-      color: #555;
-      font-size: .9rem;
-    }
-    #pagination {
-      margin-top: 1rem;
-      display: flex;
-      gap: .5rem;
-    }
-    #pagination button {
-      padding: .3rem .8rem;
-      border-radius: .5rem;
-      border: none;
-      background: #eee;
-      cursor: pointer;
-    }
-    @keyframes fadein {
-      from {opacity: 0;}
-      to {opacity: 1;}
-    }
-    body.dark {
-      background: #121212;
-      color: #eee;
-    }
-    body.dark #search-box {
-      background: #1e1e1e;
-      color: #eee;
-      border: 1px solid #555;
-    }
-    body.dark .result-item {
-      background: #1e1e1e;
-      color: #eee;
-      box-shadow: 0 3px 10px rgba(255,255,255,0.05);
-    }
-    body.dark #detail {
-      background: #1e1e1e;
-      color: #eee;
-    }
-    body.dark #theme-toggle {
-      background: #333;
-      color: #eee;
-    }
-  </style>
+  <link href="https://cdn.jsdelivr.net/npm/vazirmatn@33.003/index.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.3/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-  <button id="theme-toggle">🌙 حالت تیره</button>
-  <h1>کتابخانه طرح‌های تسهیلاتی</h1>
-  <input id="search-box" type="text" placeholder="جستجو کنید..." />
-  <button id="show-all" style="
-  margin-top: 10px; 
-  padding: 10px 20px; 
-  border-radius: 10px; 
-  border: none; 
-  background: #007BFF; 
-  color: #fff; 
-  cursor: pointer;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-">نمایش همه طرح‌ها</button>
-  <div id="filters">
-    <label>دسته‌بندی:
-      <select id="category-filter">
+<body class="flex flex-col items-center bg-gray-50 text-gray-900 transition-colors duration-300 p-4">
+
+  <button id="theme-toggle" class="fixed top-4 left-4 px-4 py-2 rounded-full bg-gray-200 shadow-md hover:bg-gray-300 z-50">🌙 حالت تیره</button>
+
+  <h1 class="mb-4 text-2xl font-medium">کتابخانه طرح‌های تسهیلاتی</h1>
+
+  <input id="search-box" type="text" placeholder="جستجو کنید..." 
+         class="w-full max-w-md px-4 py-3 text-lg border border-gray-300 rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400"/>
+
+  <button id="show-all" class="mt-3 px-6 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition-colors duration-300">
+    نمایش همه طرح‌ها
+  </button>
+
+  <div id="filters" class="mt-2 flex gap-4 items-center">
+    <label class="flex gap-2 items-center">دسته‌بندی:
+      <select id="category-filter" class="border border-gray-300 rounded-md px-2 py-1">
         <option value="">همه</option>
       </select>
     </label>
   </div>
-  <div id="result-count"></div>
-  <div id="results"></div>
-  <div id="pagination"></div>
-  <div id="loading">در حال بارگذاری...</div>
-  <div id="detail"></div>
+
+  <div id="result-count" class="mt-2 text-gray-600 text-sm"></div>
+
+  <!-- نتایج: grid دسکتاپ، scroll موبایل -->
+  <div id="results" class="mt-4 w-full max-w-3xl grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 
+      overflow-x-auto snap-x snap-mandatory scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200">
+  </div>
+
+  <div id="pagination" class="mt-4 flex gap-2"></div>
+
+  <div id="loading" class="mt-2 text-gray-500 text-sm hidden">در حال بارگذاری...</div>
+
+  <div id="detail" class="mt-6 w-full max-w-3xl p-5 bg-white rounded-xl shadow-md hidden"></div>
 
   <script>
     let data = [];
@@ -172,9 +52,7 @@
       .then(res => res.json())
       .then(json => {
         data = json;
-        // ساخت fuse
         fuse = new Fuse(data, { keys: ["title", "keywords"], threshold: 0.3 });
-        // پرکردن دسته‌بندی‌ها
         const cats = [...new Set(data.map(d => d.category).filter(Boolean))];
         const catSelect = document.getElementById("category-filter");
         cats.forEach(c=>{
@@ -195,36 +73,37 @@
     function renderPage(page){
       resultsDiv.innerHTML = "";
       paginationDiv.innerHTML = "";
-      detailDiv.style.display = "none";
+      detailDiv.classList.add("hidden");
       const start = (page-1)*perPage;
       const pageItems = filteredResults.slice(start,start+perPage);
       pageItems.forEach(r=>{
-        const item = r.item || r; // اگر جستجو نکرده باشیم
+        const item = r.item || r;
         const div = document.createElement("div");
-        div.className = "result-item";
+        div.className = "result-item snap-start min-w-[250px] p-4 rounded-xl bg-white shadow-md cursor-pointer transform transition-all hover:scale-105 hover:bg-gray-100";
         const query = searchBox.value.trim();
         const regex = new RegExp("(" + query + ")", "gi");
-        const highlightedTitle = item.title.replace(regex, "<span class='highlight'>$1</span>");
-        div.innerHTML = `<strong>${highlightedTitle}</strong><br><small>${item.category||""}</small>`;
+        const highlightedTitle = item.title.replace(regex, "<span class='bg-yellow-300'>$1</span>");
+        div.innerHTML = `<strong>${highlightedTitle}</strong><br><small class="text-gray-500">${item.category||""}</small>`;
         div.onclick = () => {
-          loading.style.display = "block";
+          loading.classList.remove("hidden");
           fetch(item.file)
             .then(res => res.text())
             .then(html => {
-              loading.style.display = "none";
-              detailDiv.innerHTML = html + `<br><button onclick="detailDiv.style.display='none'">بازگشت به نتایج</button>`;
-              detailDiv.style.display = "block";
+              loading.classList.add("hidden");
+              detailDiv.innerHTML = html + `<br><button onclick="detailDiv.classList.add('hidden')" class="mt-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-300">بازگشت به نتایج</button>`;
+              detailDiv.classList.remove("hidden");
             });
         };
         resultsDiv.appendChild(div);
       });
-      // صفحه‌بندی
+
       const totalPages = Math.ceil(filteredResults.length/perPage);
       if(totalPages>1){
         for(let i=1;i<=totalPages;i++){
           const btn = document.createElement("button");
           btn.textContent = i;
-          if(i===page) btn.style.fontWeight="bold";
+          btn.className = "px-3 py-1 rounded-md bg-gray-200 hover:bg-gray-300";
+          if(i===page) btn.classList.add("font-bold","bg-blue-300");
           btn.onclick = ()=>{currentPage=i;renderPage(i)};
           paginationDiv.appendChild(btn);
         }
@@ -238,7 +117,7 @@
       if(query.length>1 && fuse){
         results = fuse.search(query);
       }else{
-        results = data.map(d=>({item:d})); // بدون جستجو
+        results = data.map(d=>({item:d}));
       }
       if(category){
         results = results.filter(r=>(r.item||r).category===category);
@@ -252,66 +131,58 @@
     searchBox.addEventListener("input", doSearch);
     catFilter.addEventListener("change", doSearch);
 
-    // حالت تیره/روشن
     const themeToggle = document.getElementById("theme-toggle");
     themeToggle.addEventListener("click", () => {
       document.body.classList.toggle("dark");
       themeToggle.textContent = document.body.classList.contains("dark") ? "☀️ حالت روشن" : "🌙 حالت تیره";
+      document.body.classList.toggle("bg-gray-900");
+      document.body.classList.toggle("text-gray-200");
     });
-  if ('serviceWorker' in navigator) {
-   navigator.serviceWorker.register('sw.js').then(reg => {
-    // گوش بده اگر سرویس‌ورکر جدید آماده شد
-    reg.onupdatefound = () => {
-      const newWorker = reg.installing;
-      newWorker.onstatechange = () => {
-        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-          // نمایش اعلان ساده
-          const bar = document.createElement('div');
-          bar.textContent = 'نسخه‌ی جدید آماده است؛ برای به‌روزرسانی اینجا بزنید';
-          Object.assign(bar.style, {
-            position: 'fixed', bottom: '0', left: '0', right: '0',
-            background: '#007BFF', color: '#fff', textAlign: 'center',
-            padding: '10px', fontFamily: 'inherit', cursor: 'pointer', zIndex: 9999
-          });
-          bar.onclick = () => location.reload();
-          document.body.appendChild(bar);
-        }
-      };
-    };
-  });
- }
-  // افکت حرفه‌ای کارت‌ها با scale، bounce و هایلایت
-function animateCards() {
-  const cards = document.querySelectorAll(".result-item");
-  cards.forEach((card, index) => {
-    // تنظیم اولیه
-    card.style.opacity = 0;
-    card.style.transform = "translateY(30px) scale(0.95)";
-    card.style.boxShadow = "0 0 0 rgba(0,0,0,0)";
-    card.style.transition = "transform 0.5s cubic-bezier(0.25, 1.5, 0.5, 1), opacity 0.5s ease, box-shadow 0.5s ease";
 
-    setTimeout(() => {
-      // حالت نهایی
-      card.style.opacity = 1;
-      card.style.transform = "translateY(0) scale(1)";
-      card.style.boxShadow = "0 8px 20px rgba(0,0,0,0.15)";
-    }, index * 80); // افکت مرحله‌ای آبشاری
-  });
-}
+    function animateCards() {
+      const cards = document.querySelectorAll(".result-item");
+      cards.forEach((card, index) => {
+        card.style.opacity = 0;
+        card.style.transform = "translateY(30px) scale(0.95)";
+        card.style.transition = "transform 0.5s cubic-bezier(0.25, 1.5, 0.5, 1), opacity 0.5s ease, box-shadow 0.5s ease";
+        setTimeout(() => {
+          card.style.opacity = 1;
+          card.style.transform = "translateY(0) scale(1)";
+          card.style.boxShadow = "0 8px 20px rgba(0,0,0,0.15)";
+        }, index * 80);
+      });
+    }
 
-// عملکرد دکمه نمایش همه
-document.getElementById("show-all").addEventListener("click", () => {
-  searchBox.value = "";
-  catFilter.value = "";
-  filteredResults = data.map(d => ({ item: d }));
-  resultCount.textContent = filteredResults.length + " نتیجه یافت شد";
-  currentPage = 1;
-  renderPage(currentPage);
-  animateCards();
-});
- </script>
+    document.getElementById("show-all").addEventListener("click", () => {
+      searchBox.value = "";
+      catFilter.value = "";
+      filteredResults = data.map(d => ({ item: d }));
+      resultCount.textContent = filteredResults.length + " نتیجه یافت شد";
+      currentPage = 1;
+      renderPage(currentPage);
+      animateCards();
+    });
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').then(reg => {
+        reg.onupdatefound = () => {
+          const newWorker = reg.installing;
+          newWorker.onstatechange = () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              const bar = document.createElement('div');
+              bar.textContent = 'نسخه‌ی جدید آماده است؛ برای به‌روزرسانی اینجا بزنید';
+              Object.assign(bar.style, {
+                position: 'fixed', bottom: '0', left: '0', right: '0',
+                background: '#007BFF', color: '#fff', textAlign: 'center',
+                padding: '10px', fontFamily: 'inherit', cursor: 'pointer', zIndex: 9999
+              });
+              bar.onclick = () => location.reload();
+              document.body.appendChild(bar);
+            }
+          };
+        };
+      });
+    }
+  </script>
 </body>
 </html>
-
-
-
