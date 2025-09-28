@@ -13,35 +13,53 @@
     .highlight {
       background-color: #ffff99;
     }
+
+    /* فونت‌ها و padding کاملاً پویا */
+    html {
+      font-size: calc(12px + 0.8vw); /* اندازه پایه فونت متناسب با عرض صفحه */
+    }
+    h1 {
+      font-size: calc(18px + 2vw);
+      line-height: 1.2;
+      text-align: center;
+    }
+    input, select, .result-item, #detail {
+      font-size: calc(14px + 0.6vw);
+      padding: calc(8px + 0.8vw);
+    }
+    .result-item {
+      min-height: calc(3em + 2vw);
+    }
+    #pagination button {
+      font-size: calc(12px + 0.5vw);
+      padding: calc(4px + 0.5vw) calc(8px + 0.8vw);
+    }
   </style>
 </head>
 <body class="bg-gray-50 flex flex-col items-center m-0 p-4 text-gray-900">
-  <!-- دکمه حالت روز/شب حذف شد -->
 
-  <h1 class="mb-4 font-medium text-xl sm:text-2xl">کتابخانه طرح‌های تسهیلاتی</h1>
+  <h1 class="mb-4 font-medium">کتابخانه طرح‌های تسهیلاتی</h1>
 
   <input id="search-box" type="text" placeholder="جستجو کنید..."
-    class="w-full max-w-md px-4 py-3 text-base sm:text-lg border border-gray-300 rounded-full outline-none shadow-md" />
+    class="w-full max-w-md border border-gray-300 rounded-full outline-none shadow-md" />
 
   <div id="filters" class="mt-2 flex flex-col sm:flex-row gap-4 items-start sm:items-center w-full max-w-md">
-    <label class="flex items-center gap-2 text-sm sm:text-base">
+    <label class="flex items-center gap-2">
       دسته‌بندی:
-      <select id="category-filter" class="px-3 py-2 border border-gray-300 rounded-lg text-sm sm:text-base">
-        <option value="">همه</option>
-      </select>
+      <select id="category-filter" class="border border-gray-300 rounded-lg w-full sm:w-auto"></select>
     </label>
   </div>
 
-  <div id="result-count" class="mt-2 text-sm sm:text-base text-gray-500"></div>
+  <div id="result-count" class="mt-2 text-gray-500"></div>
 
   <div id="results" class="mt-4 w-full max-w-3xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
 
-  <div id="pagination" class="mt-4 flex gap-2"></div>
+  <div id="pagination" class="mt-4 flex gap-2 flex-wrap"></div>
 
-  <div id="loading" class="hidden mt-4 text-gray-600 text-sm sm:text-base">در حال بارگذاری...</div>
+  <div id="loading" class="hidden mt-4 text-gray-600">در حال بارگذاری...</div>
 
   <div id="detail"
-    class="mt-8 w-full max-w-3xl p-5 rounded-xl bg-white shadow-md hidden leading-8 animate-fadein text-sm sm:text-base"></div>
+    class="mt-8 w-full max-w-3xl rounded-xl bg-white shadow-md hidden leading-8 animate-fadein"></div>
 
   <script>
     let data = [];
@@ -81,7 +99,7 @@
       pageItems.forEach(r=>{
         const item = r.item || r;
         const div = document.createElement("div");
-        div.className = "result-item p-4 cursor-pointer rounded-lg bg-white shadow hover:bg-gray-100 hover:-translate-y-0.5 transition text-sm sm:text-base";
+        div.className = "result-item cursor-pointer rounded-lg bg-white shadow hover:bg-gray-100 hover:-translate-y-0.5 transition";
         const query = searchBox.value.trim();
         const regex = new RegExp("(" + query + ")", "gi");
         const highlightedTitle = item.title.replace(regex, "<span class='highlight'>$1</span>");
@@ -131,8 +149,6 @@
 
     searchBox.addEventListener("input", doSearch);
     catFilter.addEventListener("change", doSearch);
-
-    // حذف کد حالت روز/شب
 
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').then(reg => {
