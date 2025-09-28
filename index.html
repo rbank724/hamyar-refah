@@ -37,12 +37,22 @@
       gap: 1rem;
     }
     @media (min-width: 768px) { /* تبلت و دسکتاپ کوچک */
-      #results { grid-template-columns: repeat(4, 1fr); }
+      #results { grid-template-columns: repeat(3, 1fr); }
     }
 
     /* متن فایل طرح‌ها justify */
     #detail {
       text-align: justify;
+      line-height: 1.6;
+      font-size: 0.95rem; /* پیش‌فرض دسکتاپ */
+    }
+
+    /* بهینه‌سازی متن برای موبایل */
+    @media (max-width: 640px) {
+      #detail {
+        font-size: 1rem;
+        line-height: 1.8;
+      }
     }
   </style>
 </head>
@@ -195,4 +205,3 @@
   </script>
 </body>
 </html>
-
