@@ -33,11 +33,8 @@
     /* کارت‌ها سبز و responsive */
     #results {
       display: grid;
-      grid-template-columns: repeat(1, 1fr); /* پیش‌فرض موبایل کوچک: یک ستون */
+      grid-template-columns: repeat(2, 1fr); /* موبایل: دو کارت در هر سطر */
       gap: 1rem;
-    }
-    @media (min-width: 640px) { /* موبایل بزرگ‌تر */
-      #results { grid-template-columns: repeat(2, 1fr); }
     }
     @media (min-width: 768px) { /* تبلت و دسکتاپ کوچک */
       #results { grid-template-columns: repeat(3, 1fr); }
@@ -61,7 +58,7 @@
 
   <div id="toggle-all-btn" class="show-all-btn" onclick="toggleAllResults()">نمایش تمام طرح های تسهیلاتی</div>
 
-  <div id="results" class="mt-4 w-full max-w-3xl"></div>
+  <div id="results" class="mt-4 w-full max-w-3xl grid grid-cols-2 md:grid-cols-3 gap-4"></div>
 
   <div id="pagination" class="mt-4 flex gap-2 flex-wrap justify-center"></div>
 
