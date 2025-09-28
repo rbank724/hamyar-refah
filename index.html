@@ -13,22 +13,14 @@
     .highlight {
       background-color: #ffff99;
     }
-
-    /* فونت‌ها و padding کاملاً واکنش‌گرا */
+    /* فونت ها و فاصله ها با واحد نسبی برای موبایل */
     h1 {
-      font-size: 8vw; /* در موبایل خوانا */
-      line-height: 1.2;
+      font-size: 6vw; /* در موبایل حدود 6٪ عرض صفحه */
     }
     input, select, .result-item, #detail {
-      font-size: 4.5vw; /* فونت خوانا در موبایل */
+      font-size: 4vw; /* در موبایل فونت خوانا */
       padding: 3vw;
     }
-
-    /* کارت‌ها با ارتفاع و padding نسبی */
-    .result-item {
-      min-height: 6em;
-    }
-
     @media(min-width: 640px){ /* sm */
       h1 { font-size: 1.5rem; }
       input, select, .result-item, #detail { font-size: 1rem; padding: 0.75rem; }
@@ -37,16 +29,12 @@
       h1 { font-size: 2rem; }
       input, select, .result-item, #detail { font-size: 1rem; padding: 1rem; }
     }
-    @media(min-width: 1024px){ /* lg */
-      h1 { font-size: 2.25rem; }
-      input, select, .result-item, #detail { font-size: 1rem; padding: 1rem; }
-    }
   </style>
 </head>
 <body class="bg-gray-50 flex flex-col items-center m-0 p-4 text-gray-900">
   <!-- دکمه حالت روز/شب حذف شد -->
 
-  <h1 class="mb-4 font-medium text-center">کتابخانه طرح‌های تسهیلاتی</h1>
+  <h1 class="mb-4 font-medium">کتابخانه طرح‌های تسهیلاتی</h1>
 
   <input id="search-box" type="text" placeholder="جستجو کنید..."
     class="w-full max-w-md border border-gray-300 rounded-full outline-none shadow-md" />
@@ -54,7 +42,9 @@
   <div id="filters" class="mt-2 flex flex-col sm:flex-row gap-4 items-start sm:items-center w-full max-w-md">
     <label class="flex items-center gap-2">
       دسته‌بندی:
-      <select id="category-filter" class="border border-gray-300 rounded-lg w-full sm:w-auto"></select>
+      <select id="category-filter" class="border border-gray-300 rounded-lg">
+        <option value="">همه</option>
+      </select>
     </label>
   </div>
 
@@ -62,7 +52,7 @@
 
   <div id="results" class="mt-4 w-full max-w-3xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
 
-  <div id="pagination" class="mt-4 flex gap-2 flex-wrap"></div>
+  <div id="pagination" class="mt-4 flex gap-2"></div>
 
   <div id="loading" class="hidden mt-4 text-gray-600">در حال بارگذاری...</div>
 
