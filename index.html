@@ -20,6 +20,13 @@
     .search-wrapper { position: relative; width: 100%; max-width: 28rem; margin-bottom: 0.5rem; }
     .search-clear { position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.2rem; color: #9ca3af; }
     .search-input { padding-left: 2rem; }
+    .show-all-btn { 
+      width: 100%; max-width: 28rem; margin-top: 0.5rem; 
+      background: linear-gradient(to right, #4f46e5, #8b5cf6);
+      color: white; font-weight: bold; padding: 0.75rem 1rem; border-radius: 9999px; 
+      text-align: center; cursor: pointer; transition: all 0.3s ease; 
+    }
+    .show-all-btn:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 10px 15px rgba(0,0,0,0.2); }
   </style>
 </head>
 <body class="flex flex-col items-center m-0 p-4">
@@ -31,6 +38,9 @@
     <input id="search-box" type="text" placeholder="جستجو کنید..." 
       class="search-input w-full px-4 py-3 text-base sm:text-lg border border-gray-300 rounded-full outline-none shadow-md"/>
   </div>
+
+  <!-- دکمه نمایش/مخفی کردن تمام طرح‌ها -->
+  <div id="toggle-all-btn" class="show-all-btn" onclick="toggleAllResults()">نمایش تمام طرح های تسهیلاتی</div>
 
   <div id="results" class="mt-4 w-full max-w-3xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
 
@@ -45,6 +55,7 @@
     let data = [];
     let fuse;
     let filteredResults = [];
+    let showAll = false;
     let currentPage = 1;
     const perPage = 10;
 
@@ -60,6 +71,7 @@
     const detailDiv = document.getElementById("detail");
     const loading = document.getElementById("loading");
     const paginationDiv = document.getElementById("pagination");
+    const toggleBtn = document.getElementById("toggle-all-btn");
 
     function renderPage(page){
       resultsDiv.innerHTML = "";
@@ -116,11 +128,28 @@
       filteredResults = results;
       currentPage = 1;
       renderPage(currentPage);
+      showAll = false;
+      toggleBtn.textContent = "نمایش تمام طرح های تسهیلاتی";
     }
 
     function clearSearch(){
       searchBox.value = "";
       filteredResults = [];
+      renderPage(1);
+      showAll = false;
+      toggleBtn.textContent = "نمایش تمام طرح های تسهیلاتی";
+    }
+
+    function toggleAllResults(){
+      if(showAll){
+        filteredResults = [];
+        showAll = false;
+        toggleBtn.textContent = "نمایش تمام طرح های تسهیلاتی";
+      } else {
+        filteredResults = data.map(d=>({item:d}));
+        showAll = true;
+        toggleBtn.textContent = "مخفی کردن تمام طرح های تسهیلاتی";
+      }
       renderPage(1);
     }
 
