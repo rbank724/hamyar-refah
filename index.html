@@ -11,20 +11,19 @@
     body {
       font-family: "Vazirmatn", sans-serif;
       background-color: #f9f9f9;
-      color: #1f2937; /* text-gray-800 */
+      color: #1f2937;
     }
-    .highlight {
-      background-color: #ffff99;
-    }
-    .fancy-button {
-      transition: all 0.3s ease;
-    }
-    .fancy-button:hover {
-      transform: translateY(-2px) scale(1.02);
-      box-shadow: 0 10px 15px rgba(0,0,0,0.15);
-    }
+    .highlight { background-color: #ffff99; }
+    .fancy-button { transition: all 0.3s ease; }
+    .fancy-button:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 10px 15px rgba(0,0,0,0.15); }
     .animate-fadein { animation: fadein 0.3s ease-in-out; }
     @keyframes fadein { from {opacity:0} to {opacity:1} }
+    .result-item strong, .result-item small { font-family: "Vazirmatn", sans-serif; display: block; }
+    /* استایل Pagination */
+    .pagination-btn { @apply px-3 py-1 rounded text-white font-medium transition-all duration-300; }
+    .pagination-btn:hover { @apply scale-105 shadow-lg; }
+    .pagination-active { @apply bg-gradient-to-r from-indigo-500 to-purple-600; }
+    .pagination-inactive { @apply bg-gray-300 text-gray-700; }
   </style>
 </head>
 <body class="flex flex-col items-center m-0 p-4">
@@ -92,30 +91,31 @@
       pageItems.forEach(r=>{
         const item = r.item || r;
         const div = document.createElement("div");
-        div.className = "result-item p-4 cursor-pointer rounded-lg bg-white shadow-md hover:bg-gray-100 hover:-translate-y-0.5 transform transition text-sm sm:text-base";
+        div.className = "result-item p-4 cursor-pointer rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md hover:from-indigo-600 hover:to-purple-700 hover:-translate-y-0.5 transform transition text-sm sm:text-base";
         const query = searchBox.value.trim();
         const regex = new RegExp("(" + query + ")", "gi");
-        const highlightedTitle = item.title.replace(regex, "<span class='highlight'>$1</span>");
-        div.innerHTML = `<strong>${highlightedTitle}</strong><br><small>${item.category||""}</small>`;
+        const highlightedTitle = item.title.replace(regex, "<span class='highlight text-black'>$1</span>");
+        div.innerHTML = `<strong>${highlightedTitle}</strong><small>${item.category||""}</small>`;
         div.onclick = () => {
+          resultsDiv.style.display = "none";
           loading.style.display = "block";
           fetch(item.file)
             .then(res => res.text())
             .then(html => {
               loading.style.display = "none";
-              detailDiv.innerHTML = html + `<br><button class="mt-4 px-4 py-2 bg-gray-200 rounded fancy-button" onclick="detailDiv.style.display='none'">بازگشت به نتایج</button>`;
+              detailDiv.innerHTML = html + `<br><button class="mt-4 px-4 py-2 bg-gray-200 rounded fancy-button" onclick="backToResults()">بازگشت به نتایج</button>`;
               detailDiv.style.display = "block";
             });
         };
         resultsDiv.appendChild(div);
       });
+
       const totalPages = Math.ceil(filteredResults.length/perPage);
       if(totalPages>1){
         for(let i=1;i<=totalPages;i++){
           const btn = document.createElement("button");
           btn.textContent = i;
-          btn.className = "px-3 py-1 rounded bg-gray-200 hover:bg-gray-300";
-          if(i===page) btn.classList.add("font-bold", "bg-blue-600", "text-white");
+          btn.className = "pagination-btn " + (i===page ? "pagination-active" : "pagination-inactive");
           btn.onclick = ()=>{currentPage=i;renderPage(i)};
           paginationDiv.appendChild(btn);
         }
@@ -137,7 +137,13 @@
       filteredResults = results;
       resultCount.textContent = results.length + " نتیجه یافت شد";
       currentPage = 1;
+      resultsDiv.style.display = "grid";
       renderPage(currentPage);
+    }
+
+    function backToResults() {
+      detailDiv.style.display = "none";
+      resultsDiv.style.display = "grid";
     }
 
     searchBox.addEventListener("input", doSearch);
