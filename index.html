@@ -14,25 +14,48 @@
       background-color: #ffff99;
     }
 
-    /* فونت‌ها و padding کاملاً پویا */
+    /* تمام اندازه‌ها کاملاً proportional با viewport */
     html {
-      font-size: calc(12px + 0.8vw); /* اندازه پایه فونت متناسب با عرض صفحه */
+      font-size: calc(12px + 1vw); /* پایه فونت proportional با عرض صفحه */
     }
+
     h1 {
       font-size: calc(18px + 2vw);
       line-height: 1.2;
       text-align: center;
     }
-    input, select, .result-item, #detail {
-      font-size: calc(14px + 0.6vw);
-      padding: calc(8px + 0.8vw);
+
+    input, select, .result-item, #detail, #pagination button {
+      font-size: calc(14px + 0.8vw);
+      padding: calc(8px + 1vw) calc(12px + 1vw);
     }
+
     .result-item {
       min-height: calc(3em + 2vw);
+      transition: transform 0.2s ease;
     }
+
+    .result-item:hover {
+      transform: translateY(-0.3em);
+    }
+
     #pagination button {
-      font-size: calc(12px + 0.5vw);
-      padding: calc(4px + 0.5vw) calc(8px + 0.8vw);
+      border-radius: 0.5em;
+    }
+
+    #filters {
+      width: 100%;
+      max-width: 100%;
+    }
+
+    select {
+      width: 100%;
+    }
+
+    @media (min-width: 640px) {
+      select {
+        width: auto; /* روی موبایل بزرگ فقط */
+      }
     }
   </style>
 </head>
@@ -43,23 +66,23 @@
   <input id="search-box" type="text" placeholder="جستجو کنید..."
     class="w-full max-w-md border border-gray-300 rounded-full outline-none shadow-md" />
 
-  <div id="filters" class="mt-2 flex flex-col sm:flex-row gap-4 items-start sm:items-center w-full max-w-md">
+  <div id="filters" class="mt-2 flex flex-col sm:flex-row gap-4 items-start sm:items-center">
     <label class="flex items-center gap-2">
       دسته‌بندی:
-      <select id="category-filter" class="border border-gray-300 rounded-lg w-full sm:w-auto"></select>
+      <select id="category-filter" class="border border-gray-300 rounded-lg"></select>
     </label>
   </div>
 
   <div id="result-count" class="mt-2 text-gray-500"></div>
 
-  <div id="results" class="mt-4 w-full max-w-3xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
+  <div id="results" class="mt-4 w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
 
   <div id="pagination" class="mt-4 flex gap-2 flex-wrap"></div>
 
   <div id="loading" class="hidden mt-4 text-gray-600">در حال بارگذاری...</div>
 
   <div id="detail"
-    class="mt-8 w-full max-w-3xl rounded-xl bg-white shadow-md hidden leading-8 animate-fadein"></div>
+    class="mt-8 w-full rounded-xl bg-white shadow-md hidden leading-8 animate-fadein"></div>
 
   <script>
     let data = [];
@@ -99,7 +122,7 @@
       pageItems.forEach(r=>{
         const item = r.item || r;
         const div = document.createElement("div");
-        div.className = "result-item cursor-pointer rounded-lg bg-white shadow hover:bg-gray-100 hover:-translate-y-0.5 transition";
+        div.className = "result-item cursor-pointer rounded-lg bg-white shadow hover:bg-gray-100 transition";
         const query = searchBox.value.trim();
         const regex = new RegExp("(" + query + ")", "gi");
         const highlightedTitle = item.title.replace(regex, "<span class='highlight'>$1</span>");
