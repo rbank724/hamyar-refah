@@ -9,7 +9,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body { font-family: "Vazirmatn", sans-serif; background-color: #f9f9f9; color: #1f2937; }
-    .result-item { transition: all 0.3s ease; cursor: pointer; border-radius: 1rem; }
+    .result-item { transition: all 0.3s ease; cursor: pointer; border-radius: 1rem; text-align: center; }
     .result-item:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 10px 15px rgba(0,0,0,0.2); }
     .animate-fadein { animation: fadein 0.3s ease-in-out; }
     @keyframes fadein { from {opacity:0} to {opacity:1} }
@@ -27,6 +27,14 @@
       text-align: center; cursor: pointer; transition: all 0.3s ease; 
     }
     .show-all-btn:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 10px 15px rgba(0,0,0,0.2); }
+
+    /* کارت‌ها سبز و responsive */
+    @media (min-width: 640px) {
+      #results { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (min-width: 768px) {
+      #results { grid-template-columns: repeat(3, 1fr); }
+    }
   </style>
 </head>
 <body class="flex flex-col items-center m-0 p-4">
@@ -39,7 +47,6 @@
       class="search-input w-full px-4 py-3 text-base sm:text-lg border border-gray-300 rounded-full outline-none shadow-md"/>
   </div>
 
-  <!-- دکمه نمایش/مخفی کردن تمام طرح‌ها -->
   <div id="toggle-all-btn" class="show-all-btn" onclick="toggleAllResults()">نمایش تمام طرح های تسهیلاتی</div>
 
   <div id="results" class="mt-4 w-full max-w-3xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
@@ -89,8 +96,8 @@
       pageItems.forEach(r=>{
         const item = r.item || r;
         const div = document.createElement("div");
-        div.className = "result-item p-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md text-sm sm:text-base";
-        div.innerHTML = `<strong>${item.title}</strong><small>${item.category||""}</small>`;
+        div.className = "result-item p-4 bg-green-500 text-white shadow-md text-sm sm:text-base";
+        div.innerHTML = `<strong>${item.title}</strong><br><small>${item.category||""}</small>`;
         div.onclick = () => {
           resultsDiv.style.display = "none";
           loading.style.display = "block";
