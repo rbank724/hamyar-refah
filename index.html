@@ -37,11 +37,33 @@
     }
     .show-all-btn:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 10px 15px rgba(0,0,0,0.2); }
 
-    /* کارت‌ها سبز و مربع و responsive */
-    #results { display: grid; gap: 1rem; grid-template-columns: repeat(2, 1fr); }
-    #results .result-item { background-color: #22c55e; color: white; width: 100%; aspect-ratio: 1/1; }
-    @media (min-width: 640px) { #results { grid-template-columns: repeat(2, 1fr); gap: 1.25rem; } }
-    @media (min-width: 768px) { #results { grid-template-columns: repeat(3, 1fr); gap: 1rem; } }
+    /* کارت‌ها سبز و responsive */
+    #results { display: grid; gap: 1rem; width: 100%; }
+
+    /* دسکتاپ: مستطیل، هم‌اندازه با باکس جستجو، هر کارت در یک سطر */
+    @media (min-width: 768px) {
+      #results { grid-template-columns: 1fr; }
+      #results .result-item { width: 100%; aspect-ratio: auto; }
+    }
+
+    /* موبایل: سه کارت در یک سطر، مربع */
+    @media (max-width: 767px) {
+      #results { grid-template-columns: repeat(3, 1fr); }
+      #results .result-item { width: 100%; aspect-ratio: 1/1; }
+    }
+
+    #results .result-item { 
+      background-color: #22c55e; 
+      color: white; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      text-align: center; 
+      padding: 0.5rem; 
+      border-radius: 1rem; 
+      font-size: 1rem; 
+      transition: all 0.3s ease; 
+    }
   </style>
 </head>
 <body class="flex flex-col items-center m-0 p-4">
@@ -168,27 +190,7 @@
     }
 
     searchBox.addEventListener("input", doSearch);
-
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js').then(reg => {
-        reg.onupdatefound = () => {
-          const newWorker = reg.installing;
-          newWorker.onstatechange = () => {
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              const bar = document.createElement('div');
-              bar.textContent = 'نسخه‌ی جدید آماده است؛ برای به‌روزرسانی اینجا بزنید';
-              Object.assign(bar.style, {
-                position: 'fixed', bottom: '0', left: '0', right: '0',
-                background: '#007BFF', color: '#fff', textAlign: 'center',
-                padding: '10px', fontFamily: 'inherit', cursor: 'pointer', zIndex: 9999
-              });
-              bar.onclick = () => location.reload();
-              document.body.appendChild(bar);
-            }
-          };
-        };
-      });
-    }
   </script>
+
 </body>
 </html>
