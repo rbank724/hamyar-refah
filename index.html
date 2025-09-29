@@ -8,18 +8,40 @@
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body { font-family: "Vazirmatn", sans-serif; background-color: #f9f9f9; color: #1f2937; }
-    .result-item { transition: all 0.3s ease; cursor: pointer; border-radius: 1rem; text-align: center; }
-    .result-item:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 10px 15px rgba(0,0,0,0.2); }
-    .animate-fadein { animation: fadein 0.3s ease-in-out; }
+    body {
+      font-family: "Vazirmatn", sans-serif;
+      background-color: #f9f9f9;
+      /* رنگ را حذف کردیم تا رنگ‌های ورد حفظ شود */
+    }
+
+    h1, .search-input, .show-all-btn {
+      color: #1f2937; /* رنگ فقط برای اجزای ثابت سایت */
+    }
+
+    .result-item {
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border-radius: 1rem;
+      text-align: center;
+    }
+    .result-item:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 10px 15px rgba(0,0,0,0.2);
+    }
+    .animate-fadein {
+      animation: fadein 0.3s ease-in-out;
+    }
     @keyframes fadein { from {opacity:0} to {opacity:1} }
+
     .pagination-btn { @apply px-3 py-1 rounded text-white font-medium transition-all duration-300; }
     .pagination-btn:hover { @apply scale-105 shadow-lg; }
     .pagination-active { @apply bg-gradient-to-r from-indigo-500 to-purple-600; }
     .pagination-inactive { @apply bg-gray-300 text-gray-700; }
+
     .search-wrapper { position: relative; width: 100%; max-width: 28rem; margin-bottom: 0.5rem; }
     .search-clear { position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.2rem; color: #9ca3af; }
     .search-input { padding-left: 2rem; }
+
     .show-all-btn { 
       width: 100%; max-width: 28rem; margin-top: 0.5rem; 
       background: linear-gradient(to right, #4f46e5, #8b5cf6);
@@ -28,7 +50,6 @@
     }
     .show-all-btn:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 10px 15px rgba(0,0,0,0.2); }
 
-    /* کارت‌ها سبز و responsive */
     #results {
       display: grid;
       grid-template-columns: repeat(2,1fr);
@@ -38,7 +59,6 @@
       #results { grid-template-columns: repeat(3, 1fr); }
     }
 
-    /* دکمه بازگشت به بالا */
     #backToTop {
       display:none;
       position:fixed;
@@ -54,6 +74,15 @@
       font-size:22px;
       cursor:pointer;
       box-shadow:0 2px 6px rgba(0,0,0,0.3);
+    }
+
+    /* محتوای طرح‌ها رنگ اصلی خودشان را داشته باشند */
+    #detail-content {
+      text-align:justify;
+    }
+    #detail-content * {
+      /* هر رنگی در فایل ورد هست را نگه می‌دارد */
+      color:inherit;
     }
   </style>
 </head>
@@ -78,7 +107,6 @@
   <div id="detail"
     class="mt-8 w-full max-w-3xl p-5 rounded-xl bg-white shadow-md hidden leading-8 animate-fadein text-sm sm:text-base"></div>
 
-  <!-- دکمه بازگشت به بالا -->
   <button id="backToTop" title="بازگشت به بالا">↑</button>
 
   <script>
@@ -88,6 +116,9 @@
     let showAll = false;
     let currentPage = 1;
     const perPage = 10;
+
+    // کش ساده برای فایل‌های html
+    const fileCache = new Map();
 
     fetch("data.json")
       .then(res => res.json())
@@ -124,53 +155,18 @@
         div.onclick = () => {
           resultsDiv.style.display = "none";
           loading.style.display = "block";
-          fetch(item.file)
-            .then(res => res.text())
-            .then(html => {
-              loading.style.display = "none";
-              detailDiv.innerHTML = `
-                <div style="position:relative;">
-                  <div style="position:absolute;top:10px;left:10px;display:flex;gap:6px;">
-                    <button id="font-plus" title="بزرگتر" style="background:#4f46e5;color:#fff;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-weight:bold;">A+</button>
-                    <button id="font-minus" title="کوچکتر" style="background:#4f46e5;color:#fff;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-weight:bold;">A-</button>
-                    <button id="share-btn" title="اشتراک‌گذاری" style="background:#4f46e5;color:#fff;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:18px;">📤</button>
-                  </div>
-                  <div id="detail-content" style="text-align:justify;">${html}</div>
-                </div>`;
-              detailDiv.style.display = "block";
-              detailDiv.scrollIntoView({behavior:"smooth"});
 
-              // آیکون اشتراک‌گذاری
-              const share = document.getElementById("share-btn");
-              share.onclick = () => {
-                const textToShare = item.title + "\n" + window.location.href;
-                if (navigator.share) {
-                  navigator.share({ title: item.title, text: textToShare, url: window.location.href });
-                } else {
-                  navigator.clipboard.writeText(textToShare).then(()=>{
-                    alert("لینک طرح کپی شد.");
-                  });
-                }
-              };
-
-              // کنترل فونت
-              const content = document.getElementById("detail-content");
-              const plus = document.getElementById("font-plus");
-              const minus = document.getElementById("font-minus");
-              let fontSize = 16;
-              plus.onclick = () => {
-                fontSize += 2;
-                content.style.fontSize = fontSize + "px";
-                content.style.lineHeight = "1.8";
-              };
-              minus.onclick = () => {
-                if(fontSize>10){
-                  fontSize -= 2;
-                  content.style.fontSize = fontSize + "px";
-                  content.style.lineHeight = "1.8";
-                }
-              };
-            });
+          // اگر قبلاً کش شده بود مستقیم نشان بده
+          if (fileCache.has(item.file)) {
+            showDetail(item, fileCache.get(item.file));
+          } else {
+            fetch(item.file)
+              .then(res => res.text())
+              .then(html => {
+                fileCache.set(item.file, html); // ذخیره در کش
+                showDetail(item, html);
+              });
+          }
         };
         resultsDiv.appendChild(div);
       });
@@ -185,6 +181,50 @@
           paginationDiv.appendChild(btn);
         }
       }
+    }
+
+    function showDetail(item, html){
+      loading.style.display = "none";
+      detailDiv.innerHTML = `
+        <div style="position:relative;">
+          <div style="position:absolute;top:10px;left:10px;display:flex;gap:6px;">
+            <button id="font-plus" title="بزرگتر" style="background:#4f46e5;color:#fff;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-weight:bold;">A+</button>
+            <button id="font-minus" title="کوچکتر" style="background:#4f46e5;color:#fff;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-weight:bold;">A-</button>
+            <button id="share-btn" title="اشتراک‌گذاری" style="background:#4f46e5;color:#fff;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:18px;">📤</button>
+          </div>
+          <div id="detail-content">${html}</div>
+        </div>`;
+      detailDiv.style.display = "block";
+      detailDiv.scrollIntoView({behavior:"smooth"});
+
+      const share = document.getElementById("share-btn");
+      share.onclick = () => {
+        const textToShare = item.title + "\n" + window.location.href;
+        if (navigator.share) {
+          navigator.share({ title: item.title, text: textToShare, url: window.location.href });
+        } else {
+          navigator.clipboard.writeText(textToShare).then(()=>{
+            alert("لینک طرح کپی شد.");
+          });
+        }
+      };
+
+      const content = document.getElementById("detail-content");
+      const plus = document.getElementById("font-plus");
+      const minus = document.getElementById("font-minus");
+      let fontSize = 16;
+      plus.onclick = () => {
+        fontSize += 2;
+        content.style.fontSize = fontSize + "px";
+        content.style.lineHeight = "1.8";
+      };
+      minus.onclick = () => {
+        if(fontSize>10){
+          fontSize -= 2;
+          content.style.fontSize = fontSize + "px";
+          content.style.lineHeight = "1.8";
+        }
+      };
     }
 
     function doSearch(){
@@ -225,7 +265,6 @@
 
     searchBox.addEventListener("input", doSearch);
 
-    // دکمه بازگشت به بالا
     const backToTop = document.getElementById("backToTop");
     window.addEventListener("scroll",()=>{
       if(window.scrollY>200){backToTop.style.display="block";}
