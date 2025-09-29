@@ -4,18 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>کتابخانه طرح‌های تسهیلاتی</title>
-  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
       font-family: "Vazirmatn", sans-serif;
       background-color: #f9f9f9;
-      /* رنگ را حذف کردیم تا رنگ‌های ورد حفظ شود */
     }
 
     h1, .search-input, .show-all-btn {
-      color: #1f2937; /* رنگ فقط برای اجزای ثابت سایت */
+      color: #1f2937;
     }
 
     .result-item {
@@ -23,15 +22,19 @@
       cursor: pointer;
       border-radius: 1rem;
       text-align: center;
+      opacity: 0;
+      animation: fadein 0.4s forwards;
     }
     .result-item:hover {
       transform: translateY(-3px) scale(1.02);
       box-shadow: 0 10px 15px rgba(0,0,0,0.2);
     }
+
+    @keyframes fadein { from {opacity:0} to {opacity:1} }
+
     .animate-fadein {
       animation: fadein 0.3s ease-in-out;
     }
-    @keyframes fadein { from {opacity:0} to {opacity:1} }
 
     .pagination-btn { @apply px-3 py-1 rounded text-white font-medium transition-all duration-300; }
     .pagination-btn:hover { @apply scale-105 shadow-lg; }
@@ -58,6 +61,11 @@
     @media (min-width: 768px) {
       #results { grid-template-columns: repeat(3, 1fr); }
     }
+    @media (max-width: 640px) {
+      #results { grid-template-columns: 1fr; gap:0.75rem; }
+      .result-item { padding: 0.75rem; font-size: 0.875rem; }
+      .search-input { padding-left:1.5rem; padding-right:1rem; }
+    }
 
     #backToTop {
       display:none;
@@ -76,14 +84,26 @@
       box-shadow:0 2px 6px rgba(0,0,0,0.3);
     }
 
-    /* محتوای طرح‌ها رنگ اصلی خودشان را داشته باشند */
     #detail-content {
       text-align:justify;
+      line-height:1.8;
+      word-break: break-word;
     }
     #detail-content * {
-      /* هر رنگی در فایل ورد هست را نگه می‌دارد */
       color:inherit;
     }
+
+    #detail button {
+      margin-right: 0.5rem;
+      transition: transform 0.2s;
+    }
+    #detail button:hover { transform: scale(1.1); }
+    @media (max-width: 640px) {
+      #detail button { width: 40px; height: 40px; font-size: 18px; }
+    }
+
+    #loading { transition: opacity 0.3s; }
+
   </style>
 </head>
 <body class="flex flex-col items-center m-0 p-4">
@@ -117,7 +137,6 @@
     let currentPage = 1;
     const perPage = 10;
 
-    // کش ساده برای فایل‌های html
     const fileCache = new Map();
 
     fetch("data.json")
@@ -147,7 +166,7 @@
 
       const start = (page-1)*perPage;
       const pageItems = filteredResults.slice(start,start+perPage);
-      pageItems.forEach(r=>{
+      pageItems.forEach((r, idx)=>{
         const item = r.item || r;
         const div = document.createElement("div");
         div.className = "result-item p-4 bg-green-500 text-white shadow-md text-sm sm:text-base";
@@ -156,18 +175,20 @@
           resultsDiv.style.display = "none";
           loading.style.display = "block";
 
-          // اگر قبلاً کش شده بود مستقیم نشان بده
           if (fileCache.has(item.file)) {
             showDetail(item, fileCache.get(item.file));
           } else {
             fetch(item.file)
               .then(res => res.text())
               .then(html => {
-                fileCache.set(item.file, html); // ذخیره در کش
+                fileCache.set(item.file, html);
                 showDetail(item, html);
               });
           }
         };
+        div.setAttribute("role", "button");
+        div.setAttribute("aria-label", item.title);
+        div.style.animationDelay = (idx*0.05) + "s";
         resultsDiv.appendChild(div);
       });
 
@@ -203,9 +224,7 @@
         if (navigator.share) {
           navigator.share({ title: item.title, text: textToShare, url: window.location.href });
         } else {
-          navigator.clipboard.writeText(textToShare).then(()=>{
-            alert("لینک طرح کپی شد.");
-          });
+          navigator.clipboard.writeText(textToShare).then(()=>{ alert("لینک طرح کپی شد."); });
         }
       };
 
@@ -213,33 +232,24 @@
       const plus = document.getElementById("font-plus");
       const minus = document.getElementById("font-minus");
       let fontSize = 16;
-      plus.onclick = () => {
-        fontSize += 2;
-        content.style.fontSize = fontSize + "px";
-        content.style.lineHeight = "1.8";
-      };
-      minus.onclick = () => {
-        if(fontSize>10){
-          fontSize -= 2;
-          content.style.fontSize = fontSize + "px";
-          content.style.lineHeight = "1.8";
-        }
-      };
+      plus.onclick = () => { fontSize += 2; content.style.fontSize = fontSize + "px"; content.style.lineHeight = "1.8"; };
+      minus.onclick = () => { if(fontSize>10){ fontSize -= 2; content.style.fontSize = fontSize + "px"; content.style.lineHeight = "1.8"; } };
     }
 
+    let debounceTimer;
     function doSearch(){
-      const query = searchBox.value.trim();
-      let results;
-      if(query.length>1 && fuse){
-        results = fuse.search(query);
-      } else {
-        results = [];
-      }
-      filteredResults = results;
-      currentPage = 1;
-      renderPage(currentPage);
-      showAll = false;
-      toggleBtn.textContent = "نمایش تمام طرح های تسهیلاتی";
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        const query = searchBox.value.trim();
+        let results;
+        if(query.length>1 && fuse){ results = fuse.search(query); } 
+        else { results = []; }
+        filteredResults = results;
+        currentPage = 1;
+        renderPage(currentPage);
+        showAll = false;
+        toggleBtn.textContent = "نمایش تمام طرح های تسهیلاتی";
+      }, 250);
     }
 
     function clearSearch(){
@@ -266,10 +276,7 @@
     searchBox.addEventListener("input", doSearch);
 
     const backToTop = document.getElementById("backToTop");
-    window.addEventListener("scroll",()=>{
-      if(window.scrollY>200){backToTop.style.display="block";}
-      else{backToTop.style.display="none";}
-    });
+    window.addEventListener("scroll",()=>{ backToTop.style.display = window.scrollY>200 ? "block" : "none"; });
     backToTop.onclick=()=>window.scrollTo({top:0,behavior:"smooth"});
 
     if ('serviceWorker' in navigator) {
