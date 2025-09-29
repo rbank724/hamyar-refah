@@ -8,11 +8,7 @@
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body {
-      font-family: "Vazirmatn", sans-serif;
-      background-color: #f9f9f9;
-    }
-
+    body { font-family: "Vazirmatn", sans-serif; background-color: #f9f9f9; }
     h1, .search-input, .show-all-btn { color: #1f2937; }
 
     .result-item {
@@ -24,11 +20,7 @@
       transform: translateY(10px);
       animation: fadeInUp 0.4s forwards;
     }
-
-    .result-item:hover {
-      transform: translateY(-3px) scale(1.02);
-      box-shadow: 0 10px 15px rgba(0,0,0,0.2);
-    }
+    .result-item:hover { transform: translateY(-3px) scale(1.02); box-shadow:0 10px 15px rgba(0,0,0,0.2); }
 
     @keyframes fadeInUp { to { opacity:1; transform:translateY(0); } }
 
@@ -41,32 +33,18 @@
     .search-clear { position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.2rem; color: #9ca3af; }
     .search-input { padding-left: 2rem; }
 
-    .show-all-btn { 
-      width: 100%; max-width: 28rem; margin-top: 0.5rem; 
-      background: linear-gradient(to right, #4f46e5, #8b5cf6);
-      color: white; font-weight: bold; padding: 0.75rem 1rem; border-radius: 9999px; 
-      text-align: center; cursor: pointer; transition: all 0.3s ease; 
-    }
-    .show-all-btn:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 10px 15px rgba(0,0,0,0.2); }
+    .show-all-btn { width:100%; max-width:28rem; margin-top:0.5rem; background:linear-gradient(to right, #4f46e5, #8b5cf6); color:white; font-weight:bold; padding:0.75rem 1rem; border-radius:9999px; text-align:center; cursor:pointer; transition: all 0.3s ease; }
+    .show-all-btn:hover { transform: translateY(-2px) scale(1.02); box-shadow:0 10px 15px rgba(0,0,0,0.2); }
 
-    #results {
-      display: grid;
-      grid-template-columns: repeat(2,1fr);
-      gap:1rem;
-    }
-    @media (min-width: 768px) { #results { grid-template-columns: repeat(3, 1fr); } }
+    #results { display:grid; grid-template-columns:repeat(2,1fr); gap:1rem; }
+    @media (min-width:768px){ #results { grid-template-columns:repeat(3,1fr); } }
 
-    #backToTop {
-      display:none; position:fixed; bottom:20px; left:20px; z-index:9999;
-      background:#4f46e5; color:#fff; border:none; border-radius:50%;
-      width:44px; height:44px; font-size:22px; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,0.3);
-    }
+    #backToTop { display:none; position:fixed; bottom:20px; left:20px; z-index:9999; background:#4f46e5; color:#fff; border:none; border-radius:50%; width:44px; height:44px; font-size:22px; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,0.3); }
 
     #detail-content { text-align:justify; }
     #detail-content * { color:inherit; }
 
     #detail-controls { display:flex; gap:8px; margin-bottom:6px; justify-start; }
-    #detail-content.animate-fadein { animation: fadeInUp 0.4s ease-in-out; }
   </style>
 </head>
 <body class="flex flex-col items-center m-0 p-4">
@@ -84,6 +62,14 @@
   <div id="results" class="mt-4 w-full max-w-3xl gap-4"></div>
   <div id="pagination" class="mt-4 flex gap-2 flex-wrap justify-center"></div>
   <div id="loading" class="hidden mt-4 text-gray-600 text-sm sm:text-base">در حال بارگذاری...</div>
+
+  <!-- دکمه‌ها بیرون از محتوای طرح -->
+  <div id="detail-controls" class="flex gap-2 mb-4 hidden">
+    <button id="font-plus" title="بزرگتر" style="background:#4f46e5;color:#fff;border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-weight:bold;">A+</button>
+    <button id="font-minus" title="کوچکتر" style="background:#4f46e5;color:#fff;border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-weight:bold;">A-</button>
+    <button id="share-btn" title="اشتراک‌گذاری" style="background:#4f46e5;color:#fff;border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:18px;">📤</button>
+  </div>
+
   <div id="detail" class="mt-8 w-full max-w-3xl p-5 rounded-xl bg-white shadow-md hidden leading-8 text-sm sm:text-base"></div>
 
   <button id="backToTop" title="بازگشت به بالا">↑</button>
@@ -92,9 +78,9 @@
     let data = [], fuse, filteredResults = [], showAll = false, currentPage = 1;
     const perPage = 10, fileCache = new Map();
 
-    fetch("data.json")
-      .then(res => res.json())
-      .then(json => { data = json; fuse = new Fuse(data, { keys: ["title","keywords"], threshold:0.3 }); });
+    fetch("data.json").then(res => res.json()).then(json => { 
+      data = json; fuse = new Fuse(data, { keys:["title","keywords"], threshold:0.3 });
+    });
 
     const searchBox = document.getElementById("search-box");
     const resultsDiv = document.getElementById("results");
@@ -102,9 +88,10 @@
     const loading = document.getElementById("loading");
     const paginationDiv = document.getElementById("pagination");
     const toggleBtn = document.getElementById("toggle-all-btn");
+    const controls = document.getElementById("detail-controls");
 
     function renderPage(page){
-      resultsDiv.innerHTML = ""; paginationDiv.innerHTML = ""; detailDiv.style.display = "none";
+      resultsDiv.innerHTML = ""; paginationDiv.innerHTML = ""; hideDetail();
       if(filteredResults.length===0){ resultsDiv.style.display="none"; return; } else { resultsDiv.style.display="grid"; }
 
       const start = (page-1)*perPage;
@@ -136,40 +123,32 @@
 
     function showDetail(item, html){
       loading.style.display = "none";
+      detailDiv.innerHTML = html;
+      detailDiv.style.display = "block";
+      detailDiv.scrollIntoView({behavior:"smooth"});
 
-      const controlsHtml = `
-        <div id="detail-controls">
-          <button id="font-plus" title="بزرگتر" style="background:#4f46e5;color:#fff;border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-weight:bold;">A+</button>
-          <button id="font-minus" title="کوچکتر" style="background:#4f46e5;color:#fff;border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-weight:bold;">A-</button>
-          <button id="share-btn" title="اشتراک‌گذاری" style="background:#4f46e5;color:#fff;border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:18px;">📤</button>
-        </div>`;
-
-      // قرار دادن دکمه‌ها بیرون از محتوا
-      detailDiv.innerHTML = controlsHtml + `<div id="detail-content" class="animate-fadein p-2 bg-white rounded shadow-sm">${html}</div>`;
-      detailDiv.style.display = "block"; detailDiv.scrollIntoView({behavior:"smooth"});
+      controls.style.display = "flex";
 
       const share = document.getElementById("share-btn");
       share.onclick = () => {
-        const contentText = document.getElementById("detail-content").innerText;
+        const contentText = detailDiv.innerText;
         const textToShare = item.title + "\n\n" + contentText;
-        if (navigator.share) {
-          navigator.share({ title:item.title, text:textToShare });
-        } else {
-          navigator.clipboard.writeText(textToShare).then(()=>{ alert("متن طرح و عنوان آن کپی شد."); });
-        }
+        if(navigator.share){ navigator.share({ title:item.title, text:textToShare }); }
+        else { navigator.clipboard.writeText(textToShare).then(()=>{ alert("متن طرح و عنوان آن کپی شد."); }); }
       };
 
-      const content = document.getElementById("detail-content");
       const plus = document.getElementById("font-plus");
       const minus = document.getElementById("font-minus");
       let fontSize = 16;
-      plus.onclick = () => { fontSize += 2; content.style.fontSize = fontSize + "px"; content.style.lineHeight = "1.8"; };
-      minus.onclick = () => { if(fontSize>10){ fontSize -= 2; content.style.fontSize = fontSize + "px"; content.style.lineHeight = "1.8"; } };
+      plus.onclick = () => { fontSize +=2; detailDiv.style.fontSize = fontSize+"px"; detailDiv.style.lineHeight="1.8"; };
+      minus.onclick = () => { if(fontSize>10){ fontSize-=2; detailDiv.style.fontSize=fontSize+"px"; detailDiv.style.lineHeight="1.8"; } };
     }
+
+    function hideDetail(){ detailDiv.style.display="none"; controls.style.display="none"; }
 
     function doSearch(){
       const query = searchBox.value.trim();
-      filteredResults = (query.length>1 && fuse) ? fuse.search(query) : [];
+      filteredResults = (query.length>1 && fuse)? fuse.search(query) : [];
       currentPage=1; renderPage(currentPage); showAll=false; toggleBtn.textContent="نمایش تمام طرح های تسهیلاتی";
     }
 
@@ -187,20 +166,22 @@
     window.addEventListener("scroll",()=>{ backToTop.style.display=(window.scrollY>200)?"block":"none"; });
     backToTop.onclick=()=>window.scrollTo({top:0,behavior:"smooth"});
 
-    if('serviceWorker' in navigator){
-      navigator.serviceWorker.register('sw.js').then(reg=>{
-        reg.onupdatefound=()=>{
-          const newWorker=reg.installing;
-          newWorker.onstatechange=()=>{
-            if(newWorker.state==='installed' && navigator.serviceWorker.controller){
-              const bar=document.createElement('div');
-              bar.textContent='نسخه‌ی جدید آماده است؛ برای به‌روزرسانی اینجا بزنید';
-              Object.assign(bar.style,{
-                position:'fixed', bottom:'0', left:'0', right:'0',
-                background:'#007BFF', color:'#fff', textAlign:'center',
-                padding:'10px', fontFamily:'inherit', cursor:'pointer', zIndex:9999
+    // بخش Service Worker بدون تغییر
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').then(reg => {
+        reg.onupdatefound = () => {
+          const newWorker = reg.installing;
+          newWorker.onstatechange = () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              const bar = document.createElement('div');
+              bar.textContent = 'نسخه‌ی جدید آماده است؛ برای به‌روزرسانی اینجا بزنید';
+              Object.assign(bar.style, {
+                position: 'fixed', bottom: '0', left: '0', right: '0',
+                background: '#007BFF', color: '#fff', textAlign: 'center',
+                padding: '10px', fontFamily: 'inherit', cursor: 'pointer', zIndex: 9999
               });
-              bar.onclick=()=>location.reload(); document.body.appendChild(bar);
+              bar.onclick = () => location.reload();
+              document.body.appendChild(bar);
             }
           };
         };
