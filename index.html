@@ -92,14 +92,24 @@
     const toggleBtn = document.getElementById("toggle-all-btn");
     const controls = document.getElementById("detail-controls");
 
-    // اطمینان از مخفی بودن دکمه‌ها هنگام بارگذاری سایت
     window.addEventListener("DOMContentLoaded", () => { controls.style.display = "none"; });
 
-    // تابع تبدیل اعداد انگلیسی به فارسی
+    // تبدیل اعداد انگلیسی به فارسی
     function convertToPersianNumbers(str){
       const en = ["0","1","2","3","4","5","6","7","8","9"];
       const fa = ["۰","۱","۲","۳","۴","۵","۶","۷","۸","۹"];
       return str.replace(/\d/g, d => fa[en.indexOf(d)]);
+    }
+
+    // فقط متن داخل المان را تبدیل می‌کند، بدون تغییر HTML
+    function convertElementTextToPersian(el){
+      el.childNodes.forEach(node=>{
+        if(node.nodeType === Node.TEXT_NODE){
+          node.textContent = convertToPersianNumbers(node.textContent);
+        } else {
+          convertElementTextToPersian(node);
+        }
+      });
     }
 
     function renderPage(page){
@@ -113,14 +123,21 @@
         const div = document.createElement("div");
         div.className="result-item p-4 bg-green-500 text-white shadow-md text-sm sm:text-base";
         div.innerHTML=`<strong>${item.title}</strong><br><small>${item.category||""}</small>`;
+        convertElementTextToPersian(div); // فقط متن داخل کارت فارسی شود
         div.onclick = () => {
           resultsDiv.style.display="none"; loading.style.display="block";
-          if(fileCache.has(item.file)){ showDetail(item, fileCache.get(item.file)); }
-          else { fetch(item.file).then(res=>res.text()).then(html=>{
-            html = convertToPersianNumbers(html); // تبدیل اعداد داخل محتوای فایل به فارسی
-            fileCache.set(item.file,html); 
-            showDetail(item,html); 
-          }); }
+          if(fileCache.has(item.file)){ 
+            showDetail(item, fileCache.get(item.file)); 
+          } else { 
+            fetch(item.file).then(res=>res.text()).then(html=>{
+              const tempDiv = document.createElement('div');
+              tempDiv.innerHTML = html;
+              convertElementTextToPersian(tempDiv); // متن داخل جزئیات فارسی شود
+              html = tempDiv.innerHTML;
+              fileCache.set(item.file, html); 
+              showDetail(item, html); 
+            }); 
+          }
         };
         resultsDiv.appendChild(div);
       });
@@ -129,7 +146,7 @@
       if(totalPages>1){
         for(let i=1;i<=totalPages;i++){
           const btn = document.createElement("button");
-          btn.textContent = convertToPersianNumbers(i.toString()); // تبدیل اعداد صفحات به فارسی
+          btn.textContent = convertToPersianNumbers(i.toString()); // شماره صفحات فارسی
           btn.className="pagination-btn "+(i===page?"pagination-active":"pagination-inactive");
           btn.onclick=()=>{currentPage=i; renderPage(i);}
           paginationDiv.appendChild(btn);
@@ -142,7 +159,6 @@
       detailDiv.innerHTML = html;
       detailDiv.style.display = "block";
       detailDiv.scrollIntoView({behavior:"smooth"});
-
       controls.style.display = "flex";
 
       const share = document.getElementById("share-btn");
@@ -164,7 +180,7 @@
 
     function doSearch(){
       let query = searchBox.value.trim();
-      query = convertToPersianNumbers(query); // تبدیل اعداد انگلیسی به فارسی قبل از جستجو
+      query = convertToPersianNumbers(query); // اعداد انگلیسی به فارسی
       filteredResults = (query.length>1 && fuse)? fuse.search(query) : [];
       currentPage=1; renderPage(currentPage); showAll=false; toggleBtn.textContent="نمایش تمام طرح های تسهیلاتی";
     }
@@ -189,7 +205,6 @@
     window.addEventListener("scroll",()=>{ backToTop.style.display=(window.scrollY>200)?"block":"none"; });
     backToTop.onclick=()=>window.scrollTo({top:0,behavior:"smooth"});
 
-    // بخش Service Worker بدون تغییر
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').then(reg => {
         reg.onupdatefound = () => {
