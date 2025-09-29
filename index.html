@@ -95,6 +95,13 @@
     // اطمینان از مخفی بودن دکمه‌ها هنگام بارگذاری سایت
     window.addEventListener("DOMContentLoaded", () => { controls.style.display = "none"; });
 
+    // تابع تبدیل اعداد انگلیسی به فارسی
+    function convertToPersianNumbers(str){
+      const en = ["0","1","2","3","4","5","6","7","8","9"];
+      const fa = ["۰","۱","۲","۳","۴","۵","۶","۷","۸","۹"];
+      return str.replace(/\d/g, d => fa[en.indexOf(d)]);
+    }
+
     function renderPage(page){
       resultsDiv.innerHTML = ""; paginationDiv.innerHTML = ""; hideDetail();
       if(filteredResults.length===0){ resultsDiv.style.display="none"; return; } else { resultsDiv.style.display="grid"; }
@@ -109,7 +116,11 @@
         div.onclick = () => {
           resultsDiv.style.display="none"; loading.style.display="block";
           if(fileCache.has(item.file)){ showDetail(item, fileCache.get(item.file)); }
-          else { fetch(item.file).then(res=>res.text()).then(html=>{ fileCache.set(item.file,html); showDetail(item,html); }); }
+          else { fetch(item.file).then(res=>res.text()).then(html=>{
+            html = convertToPersianNumbers(html); // تبدیل اعداد داخل محتوای فایل به فارسی
+            fileCache.set(item.file,html); 
+            showDetail(item,html); 
+          }); }
         };
         resultsDiv.appendChild(div);
       });
@@ -118,7 +129,7 @@
       if(totalPages>1){
         for(let i=1;i<=totalPages;i++){
           const btn = document.createElement("button");
-          btn.textContent=i;
+          btn.textContent = convertToPersianNumbers(i.toString()); // تبدیل اعداد صفحات به فارسی
           btn.className="pagination-btn "+(i===page?"pagination-active":"pagination-inactive");
           btn.onclick=()=>{currentPage=i; renderPage(i);}
           paginationDiv.appendChild(btn);
@@ -152,12 +163,19 @@
     function hideDetail(){ detailDiv.style.display="none"; controls.style.display="none"; }
 
     function doSearch(){
-      const query = searchBox.value.trim();
+      let query = searchBox.value.trim();
+      query = convertToPersianNumbers(query); // تبدیل اعداد انگلیسی به فارسی قبل از جستجو
       filteredResults = (query.length>1 && fuse)? fuse.search(query) : [];
       currentPage=1; renderPage(currentPage); showAll=false; toggleBtn.textContent="نمایش تمام طرح های تسهیلاتی";
     }
 
-    function clearSearch(){ searchBox.value=""; filteredResults=[]; renderPage(1); showAll=false; toggleBtn.textContent="نمایش تمام طرح های تسهیلاتی"; }
+    function clearSearch(){ 
+      searchBox.value=""; 
+      filteredResults=[]; 
+      renderPage(1); 
+      showAll=false; 
+      toggleBtn.textContent="نمایش تمام طرح های تسهیلاتی"; 
+    }
 
     function toggleAllResults(){
       if(showAll){ filteredResults=[]; showAll=false; toggleBtn.textContent="نمایش تمام طرح های تسهیلاتی"; }
