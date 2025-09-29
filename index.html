@@ -9,10 +9,8 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body { font-family: "Vazirmatn", sans-serif; background-color: #f9f9f9; color: #1f2937; }
-    .result-item { transition: all 0.3s ease; cursor: pointer; border-radius: 1rem; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+    .result-item { transition: all 0.3s ease; cursor: pointer; border-radius: 1rem; text-align: center; }
     .result-item:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 10px 15px rgba(0,0,0,0.2); }
-    .result-item strong { font-size: 1rem; } /* عنوان بزرگ‌تر */
-    .result-item small { font-size: 0.85rem; } /* کپشن بزرگ‌تر */
     .animate-fadein { animation: fadein 0.3s ease-in-out; }
     @keyframes fadein { from {opacity:0} to {opacity:1} }
     .pagination-btn { @apply px-3 py-1 rounded text-white font-medium transition-all duration-300; }
@@ -33,26 +31,29 @@
     /* کارت‌ها سبز و responsive */
     #results {
       display: grid;
-      grid-template-columns: repeat(2, 1fr); /* موبایل: دو کارت در هر سطر */
-      gap: 1rem;
+      grid-template-columns: repeat(2,1fr);
+      gap:1rem;
     }
-    @media (min-width: 768px) { /* تبلت و دسکتاپ کوچک */
+    @media (min-width: 768px) {
       #results { grid-template-columns: repeat(3, 1fr); }
     }
 
-    /* متن فایل طرح‌ها justify */
-    #detail {
-      text-align: justify;
-      line-height: 1.6;
-      font-size: 0.95rem; /* پیش‌فرض دسکتاپ */
-    }
-
-    /* بهینه‌سازی متن برای موبایل */
-    @media (max-width: 640px) {
-      #detail {
-        font-size: 1rem;
-        line-height: 1.8;
-      }
+    /* دکمه بازگشت به بالا */
+    #backToTop {
+      display:none;
+      position:fixed;
+      bottom:20px;
+      left:20px;
+      z-index:9999;
+      background:#4f46e5;
+      color:#fff;
+      border:none;
+      border-radius:50%;
+      width:44px;
+      height:44px;
+      font-size:22px;
+      cursor:pointer;
+      box-shadow:0 2px 6px rgba(0,0,0,0.3);
     }
   </style>
 </head>
@@ -68,7 +69,7 @@
 
   <div id="toggle-all-btn" class="show-all-btn" onclick="toggleAllResults()">نمایش تمام طرح های تسهیلاتی</div>
 
-  <div id="results" class="mt-4 w-full max-w-3xl grid grid-cols-2 md:grid-cols-3 gap-4"></div>
+  <div id="results" class="mt-4 w-full max-w-3xl gap-4"></div>
 
   <div id="pagination" class="mt-4 flex gap-2 flex-wrap justify-center"></div>
 
@@ -76,6 +77,9 @@
 
   <div id="detail"
     class="mt-8 w-full max-w-3xl p-5 rounded-xl bg-white shadow-md hidden leading-8 animate-fadein text-sm sm:text-base"></div>
+
+  <!-- دکمه بازگشت به بالا -->
+  <button id="backToTop" title="بازگشت به بالا">↑</button>
 
   <script>
     let data = [];
@@ -124,9 +128,48 @@
             .then(res => res.text())
             .then(html => {
               loading.style.display = "none";
-              detailDiv.innerHTML = html;
+              detailDiv.innerHTML = `
+                <div style="position:relative;">
+                  <div style="position:absolute;top:10px;right:10px;display:flex;gap:6px;">
+                    <button id="font-plus" title="بزرگتر" style="background:#4f46e5;color:#fff;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-weight:bold;">A+</button>
+                    <button id="font-minus" title="کوچکتر" style="background:#4f46e5;color:#fff;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-weight:bold;">A-</button>
+                    <button id="share-btn" title="اشتراک‌گذاری" style="background:#4f46e5;color:#fff;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:18px;">📤</button>
+                  </div>
+                  <div id="detail-content" style="text-align:justify;">${html}</div>
+                </div>`;
               detailDiv.style.display = "block";
               detailDiv.scrollIntoView({behavior:"smooth"});
+
+              // آیکون اشتراک‌گذاری
+              const share = document.getElementById("share-btn");
+              share.onclick = () => {
+                const textToShare = item.title + "\n" + window.location.href;
+                if (navigator.share) {
+                  navigator.share({ title: item.title, text: textToShare, url: window.location.href });
+                } else {
+                  navigator.clipboard.writeText(textToShare).then(()=>{
+                    alert("لینک طرح کپی شد.");
+                  });
+                }
+              };
+
+              // کنترل فونت
+              const content = document.getElementById("detail-content");
+              const plus = document.getElementById("font-plus");
+              const minus = document.getElementById("font-minus");
+              let fontSize = 16;
+              plus.onclick = () => {
+                fontSize += 2;
+                content.style.fontSize = fontSize + "px";
+                content.style.lineHeight = "1.8";
+              };
+              minus.onclick = () => {
+                if(fontSize>10){
+                  fontSize -= 2;
+                  content.style.fontSize = fontSize + "px";
+                  content.style.lineHeight = "1.8";
+                }
+              };
             });
         };
         resultsDiv.appendChild(div);
@@ -181,6 +224,14 @@
     }
 
     searchBox.addEventListener("input", doSearch);
+
+    // دکمه بازگشت به بالا
+    const backToTop = document.getElementById("backToTop");
+    window.addEventListener("scroll",()=>{
+      if(window.scrollY>200){backToTop.style.display="block";}
+      else{backToTop.style.display="none";}
+    });
+    backToTop.onclick=()=>window.scrollTo({top:0,behavior:"smooth"});
 
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').then(reg => {
