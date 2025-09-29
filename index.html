@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>کتابخانه طرح‌های تسهیلاتی</title>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: "Vazirmatn", sans-serif;
+      background-color: #f9f9f9;
+      /* رنگ را حذف کردیم تا رنگ‌های ورد حفظ شود */
+    }
+
+    h1, .search-input, .show-all-btn {
+      color: #1f2937; /* رنگ فقط برای اجزای ثابت سایت */
+    }
+
+    .result-item {
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border-radius: 1rem;
+      text-align: center;
+    }
+    .result-item:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 10px 15px rgba(0,0,0,0.2);
+    }
+    .animate-fadein {
+      animation: fadein 0.3s ease-in-out;
+    }
+    @keyframes fadein { from {opacity:0} to {opacity:1} }
+
+    .pagination-btn { @apply px-3 py-1 rounded text-white font-medium transition-all duration-300; }
+    .pagination-btn:hover { @apply scale-105 shadow-lg; }
+    .pagination-active { @apply bg-gradient-to-r from-indigo-500 to-purple-600; }
+    .pagination-inactive { @apply bg-gray-300 text-gray-700; }
+
+    .search-wrapper { position: relative; width: 100%; max-width: 28rem; margin-bottom: 0.5rem; }
+    .search-clear { position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.2rem; color: #9ca3af; }
+    .search-input { padding-left: 2rem; }
+
+    .show-all-btn { 
+      width: 100%; max-width: 28rem; margin-top: 0.5rem; 
+      background: linear-gradient(to right, #4f46e5, #8b5cf6);
+      color: white; font-weight: bold; padding: 0.75rem 1rem; border-radius: 9999px; 
+      text-align: center; cursor: pointer; transition: all 0.3s ease; 
+    }
+    .show-all-btn:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 10px 15px rgba(0,0,0,0.2); }
+
+    #results {
+      display: grid;
+      grid-template-columns: repeat(2,1fr);
+      gap:1rem;
+    }
+    @media (min-width: 768px) {
+      #results { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    #backToTop {
+      display:none;
+      position:fixed;
+      bottom:20px;
+      left:20px;
+      z-index:9999;
+      background:#4f46e5;
+      color:#fff;
+      border:none;
+      border-radius:50%;
+      width:44px;
+      height:44px;
+      font-size:22px;
+      cursor:pointer;
+      box-shadow:0 2px 6px rgba(0,0,0,0.3);
+    }
+
+    /* محتوای طرح‌ها رنگ اصلی خودشان را داشته باشند */
+    #detail-content {
+      text-align:justify;
+    }
+    #detail-content * {
+      /* هر رنگی در فایل ورد هست را نگه می‌دارد */
+      color:inherit;
+    }
+  </style>
+</head>
+<body class="flex flex-col items-center m-0 p-4">
+
+  <h1 class="mb-4 font-medium text-xl sm:text-2xl text-center">کتابخانه طرح‌های تسهیلاتی</h1>
+
+  <div class="search-wrapper">
+    <span class="search-clear" onclick="clearSearch()">🧹</span>
+    <input id="search-box" type="text" placeholder="جستجو کنید..." 
+      class="search-input w-full px-4 py-3 text-base sm:text-lg border border-gray-300 rounded-full outline-none shadow-md"/>
+  </div>
+
+  <div id="toggle-all-btn" class="show-all-btn" onclick="toggleAllResults()">نمایش تمام طرح های تسهیلاتی</div>
+
+  <div id="results" class="mt-4 w-full max-w-3xl gap-4"></div>
+
+  <div id="pagination" class="mt-4 flex gap-2 flex-wrap justify-center"></div>
+
+  <div id="loading" class="hidden mt-4 text-gray-600 text-sm sm:text-base">در حال بارگذاری...</div>
+
+  <div id="detail"
+    class="mt-8 w-full max-w-3xl p-5 rounded-xl bg-white shadow-md hidden leading-8 animate-fadein text-sm sm:text-base"></div>
+
+  <button id="backToTop" title="بازگشت به بالا">↑</button>
+
+  <script>
+    let data = [];
+    let fuse;
+    let filteredResults = [];
+    let showAll = false;
+    let currentPage = 1;
+    const perPage = 10;
+
+    // کش ساده برای فایل‌های html
+    const fileCache = new Map();
+
+    fetch("data.json")
+      .then(res => res.json())
+      .then(json => {
+        data = json;
+        fuse = new Fuse(data, { keys: ["title", "keywords"], threshold: 0.3 });
+      });
+
+    const searchBox = document.getElementById("search-box");
+    const resultsDiv = document.getElementById("results");
+    const detailDiv = document.getElementById("detail");
+    const loading = document.getElementById("loading");
+    const paginationDiv = document.getElementById("pagination");
+    const toggleBtn = document.getElementById("toggle-all-btn");
+
+    function renderPage(page){
+      resultsDiv.innerHTML = "";
+      paginationDiv.innerHTML = "";
+      detailDiv.style.display = "none";
+      if(filteredResults.length === 0){ 
+        resultsDiv.style.display = "none"; 
+        return; 
+      } else {
+        resultsDiv.style.display = "grid";
+      }
+
+      const start = (page-1)*perPage;
+      const pageItems = filteredResults.slice(start,start+perPage);
+      pageItems.forEach(r=>{
+        const item = r.item || r;
+        const div = document.createElement("div");
+        div.className = "result-item p-4 bg-green-500 text-white shadow-md text-sm sm:text-base";
+        div.innerHTML = `<strong>${item.title}</strong><br><small>${item.category||""}</small>`;
+        div.onclick = () => {
+          resultsDiv.style.display = "none";
+          loading.style.display = "block";
+
+          // اگر قبلاً کش شده بود مستقیم نشان بده
+          if (fileCache.has(item.file)) {
+            showDetail(item, fileCache.get(item.file));
+          } else {
+            fetch(item.file)
+              .then(res => res.text())
+              .then(html => {
+                fileCache.set(item.file, html); // ذخیره در کش
+                showDetail(item, html);
+              });
+          }
+        };
+        resultsDiv.appendChild(div);
+      });
+
+      const totalPages = Math.ceil(filteredResults.length/perPage);
+      if(totalPages>1){
+        for(let i=1;i<=totalPages;i++){
+          const btn = document.createElement("button");
+          btn.textContent = i;
+          btn.className = "pagination-btn " + (i===page ? "pagination-active" : "pagination-inactive");
+          btn.onclick = ()=>{currentPage=i;renderPage(i)};
+          paginationDiv.appendChild(btn);
+        }
+      }
+    }
+
+    function showDetail(item, html){
+      loading.style.display = "none";
+      detailDiv.innerHTML = `
+        <div style="position:relative;">
+          <div style="position:absolute;top:10px;left:10px;display:flex;gap:6px;">
+            <button id="font-plus" title="بزرگتر" style="background:#4f46e5;color:#fff;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-weight:bold;">A+</button>
+            <button id="font-minus" title="کوچکتر" style="background:#4f46e5;color:#fff;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-weight:bold;">A-</button>
+            <button id="share-btn" title="اشتراک‌گذاری" style="background:#4f46e5;color:#fff;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:18px;">📤</button>
+          </div>
+          <div id="detail-content">${html}</div>
+        </div>`;
+      detailDiv.style.display = "block";
+      detailDiv.scrollIntoView({behavior:"smooth"});
+
+      const share = document.getElementById("share-btn");
+      share.onclick = () => {
+        const textToShare = item.title + "\n" + window.location.href;
+        if (navigator.share) {
+          navigator.share({ title: item.title, text: textToShare, url: window.location.href });
+        } else {
+          navigator.clipboard.writeText(textToShare).then(()=>{
+            alert("لینک طرح کپی شد.");
+          });
+        }
+      };
+
+      const content = document.getElementById("detail-content");
+      const plus = document.getElementById("font-plus");
+      const minus = document.getElementById("font-minus");
+      let fontSize = 16;
+      plus.onclick = () => {
+        fontSize += 2;
+        content.style.fontSize = fontSize + "px";
+        content.style.lineHeight = "1.8";
+      };
+      minus.onclick = () => {
+        if(fontSize>10){
+          fontSize -= 2;
+          content.style.fontSize = fontSize + "px";
+          content.style.lineHeight = "1.8";
+        }
+      };
+    }
+
+    function doSearch(){
+      const query = searchBox.value.trim();
+      let results;
+      if(query.length>1 && fuse){
+        results = fuse.search(query);
+      } else {
+        results = [];
+      }
+      filteredResults = results;
+      currentPage = 1;
+      renderPage(currentPage);
+      showAll = false;
+      toggleBtn.textContent = "نمایش تمام طرح های تسهیلاتی";
+    }
+
+    function clearSearch(){
+      searchBox.value = "";
+      filteredResults = [];
+      renderPage(1);
+      showAll = false;
+      toggleBtn.textContent = "نمایش تمام طرح های تسهیلاتی";
+    }
+
+    function toggleAllResults(){
+      if(showAll){
+        filteredResults = [];
+        showAll = false;
+        toggleBtn.textContent = "نمایش تمام طرح های تسهیلاتی";
+      } else {
+        filteredResults = data.map(d=>({item:d}));
+        showAll = true;
+        toggleBtn.textContent = "مخفی کردن تمام طرح های تسهیلاتی";
+      }
+      renderPage(1);
+    }
+
+    searchBox.addEventListener("input", doSearch);
+
+    const backToTop = document.getElementById("backToTop");
+    window.addEventListener("scroll",()=>{
+      if(window.scrollY>200){backToTop.style.display="block";}
+      else{backToTop.style.display="none";}
+    });
+    backToTop.onclick=()=>window.scrollTo({top:0,behavior:"smooth"});
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').then(reg => {
+        reg.onupdatefound = () => {
+          const newWorker = reg.installing;
+          newWorker.onstatechange = () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              const bar = document.createElement('div');
+              bar.textContent = 'نسخه‌ی جدید آماده است؛ برای به‌روزرسانی اینجا بزنید';
+              Object.assign(bar.style, {
+                position: 'fixed', bottom: '0', left: '0', right: '0',
+                background: '#007BFF', color: '#fff', textAlign: 'center',
+                padding: '10px', fontFamily: 'inherit', cursor: 'pointer', zIndex: 9999
+              });
+              bar.onclick = () => location.reload();
+              document.body.appendChild(bar);
+            }
+          };
+        };
+      });
+    }
+  </script>
+</body>
+</html>
