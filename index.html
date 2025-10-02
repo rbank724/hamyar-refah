@@ -57,23 +57,27 @@
 
     #results {
      display: grid;
-     justify-content: center; /* مرکز کل گرید */
-     justify-items: center;   /* مرکز کارت‌ها درون سلول‌ها */
-     align-items: center;     /* مرکز کارت‌ها عمودی */
      gap: 1rem;
-     grid-auto-flow: dense;   /* پر کردن فضاها به صورت فشرده */
+     justify-content: center; /* کل گرید وسط */
+     justify-items: center;   /* خود آیتم‌ها وسط */
+     align-items: center;
+    /* ستون‌ها هوشمند بر اساس تعداد آیتم */
+     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    }
+
+    /* موبایل: تا سه ستون */
+    @media (max-width: 767px) {
+    #results {
      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
     }
+   }
 
-    /* موبایل: ۳ ستون */
-    @media (max-width: 767px) {
-     #results { grid-template-columns: repeat(3, minmax(80px, 1fr)); }
-    }
-
-    /* دسکتاپ: ۴ ستون */
-    @media (min-width: 768px) {
-     #results { grid-template-columns: repeat(4, minmax(100px, 1fr)); }
-    }
+   /* دسکتاپ: تا چهار ستون */
+   @media (min-width: 768px) {
+   #results {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+   }
+  }
 
     #backToTop { display:none; position:fixed; bottom:20px; left:20px; z-index:9999; background:#4f46e5; color:#fff; border:none; border-radius:50%; width:44px; height:44px; font-size:22px; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,0.3); }
 
