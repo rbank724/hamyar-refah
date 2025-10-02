@@ -1,6 +1,7 @@
 [
   {
     "title": "ارزیار",
+    "category": "ارزی"
     "file": "https://rbank724.github.io/e-refah/tarh-html/ارزیار.html",
     "keywords": [
       "تسهیلات",
@@ -22,6 +23,7 @@
   },
   {
     "title": "افق",
+    "category": "عمومی"
     "file": "https://rbank724.github.io/e-refah/tarh-html/افق.html",
     "keywords": [
       "حقوقی",
@@ -43,6 +45,7 @@
   },
   {
     "title": "حرکت",
+    "category": "بازنشستگان"
     "file": "https://rbank724.github.io/e-refah/tarh-html/حرکت.html",
     "keywords": [
       "000",
@@ -62,8 +65,8 @@
       "حرکت"
     ]
   }
-
 ]
+
 
 
 
