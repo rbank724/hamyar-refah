@@ -41,9 +41,7 @@
 
     #backToTop { display:none; position:fixed; bottom:20px; left:20px; z-index:9999; background:#4f46e5; color:#fff; border:none; border-radius:50%; width:44px; height:44px; font-size:22px; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,0.3); }
 
-    #detail, #detail * {
-      text-align: justify !important;
-    }
+    #detail, #detail * { text-align: justify !important; }
     #detail-content * { color:inherit; }
 
     #detail-controls { display:flex; gap:8px; margin-bottom:6px; justify-start; }
@@ -59,13 +57,15 @@
       class="search-input w-full px-4 py-3 text-base sm:text-lg border border-gray-300 rounded-full outline-none shadow-md"/>
   </div>
 
-  <div id="toggle-all-btn" class="show-all-btn" onclick="toggleAllResults()">نمایش تمام طرح های تسهیلاتی</div>
+  <!-- منوی انتخاب دسته‌بندی به جای دکمه -->
+  <select id="categorySelect" class="show-all-btn">
+    <option value="">انتخاب دسته‌بندی...</option>
+  </select>
 
   <div id="results" class="mt-4 w-full max-w-3xl gap-4"></div>
   <div id="pagination" class="mt-4 flex gap-2 flex-wrap justify-center"></div>
   <div id="loading" class="hidden mt-4 text-gray-600 text-sm sm:text-base">در حال بارگذاری...</div>
 
-  <!-- دکمه‌ها بیرون از محتوای طرح، ابتدا مخفی -->
   <div id="detail-controls" class="flex gap-2 mb-4 hidden">
     <button id="font-plus" title="بزرگتر" style="background:#4f46e5;color:#fff;border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-weight:bold;">A+</button>
     <button id="share-btn" title="اشتراک‌گذاری" style="background:#4f46e5;color:#fff;border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:18px;">📤</button>
@@ -80,8 +80,21 @@
     let data = [], fuse, filteredResults = [], showAll = false, currentPage = 1;
     const perPage = 10, fileCache = new Map();
 
+    // مجموعه دسته‌ها
+    let categories = new Set();
+
     fetch("data.json").then(res => res.json()).then(json => { 
-      data = json; fuse = new Fuse(data, { keys:["title","keywords"], threshold:0.3 });
+      data = json; 
+      fuse = new Fuse(data, { keys:["title","keywords"], threshold:0.3 });
+      // پرکردن لیست دسته‌بندی
+      json.forEach(item => categories.add(item.category));
+      const catSelect = document.getElementById("categorySelect");
+      categories.forEach(cat => {
+        const opt = document.createElement("option");
+        opt.value = cat;
+        opt.textContent = cat;
+        catSelect.appendChild(opt);
+      });
     });
 
     const searchBox = document.getElementById("search-box");
@@ -89,10 +102,8 @@
     const detailDiv = document.getElementById("detail");
     const loading = document.getElementById("loading");
     const paginationDiv = document.getElementById("pagination");
-    const toggleBtn = document.getElementById("toggle-all-btn");
     const controls = document.getElementById("detail-controls");
 
-    // اطمینان از مخفی بودن دکمه‌ها هنگام بارگذاری سایت
     window.addEventListener("DOMContentLoaded", () => { controls.style.display = "none"; });
 
     function renderPage(page){
@@ -131,9 +142,7 @@
       detailDiv.innerHTML = html;
       detailDiv.style.display = "block";
       detailDiv.scrollIntoView({behavior:"smooth"});
-
       controls.style.display = "flex";
-
       const share = document.getElementById("share-btn");
       share.onclick = () => {
         const contentText = detailDiv.innerText;
@@ -141,7 +150,6 @@
         if(navigator.share){ navigator.share({ title:item.title, text:textToShare }); }
         else { navigator.clipboard.writeText(textToShare).then(()=>{ alert("متن طرح و عنوان آن کپی شد."); }); }
       };
-
       const plus = document.getElementById("font-plus");
       const minus = document.getElementById("font-minus");
       let fontSize = 16;
@@ -154,16 +162,19 @@
     function doSearch(){
       const query = searchBox.value.trim();
       filteredResults = (query.length>1 && fuse)? fuse.search(query) : [];
-      currentPage=1; renderPage(currentPage); showAll=false; toggleBtn.textContent="نمایش تمام طرح های تسهیلاتی";
+      currentPage=1; renderPage(currentPage);
     }
 
-    function clearSearch(){ searchBox.value=""; filteredResults=[]; renderPage(1); showAll=false; toggleBtn.textContent="نمایش تمام طرح های تسهیلاتی"; }
+    function clearSearch(){ searchBox.value=""; filteredResults=[]; renderPage(1); }
 
-    function toggleAllResults(){
-      if(showAll){ filteredResults=[]; showAll=false; toggleBtn.textContent="نمایش تمام طرح های تسهیلاتی"; }
-      else { filteredResults=data.map(d=>({item:d})); showAll=true; toggleBtn.textContent="مخفی کردن تمام طرح های تسهیلاتی"; }
-      renderPage(1);
-    }
+    // فیلتر براساس انتخاب دسته‌بندی
+    document.getElementById("categorySelect").addEventListener("change", e=>{
+      const cat = e.target.value;
+      if(cat===""){ filteredResults=[]; renderPage(1); return; }
+      filteredResults = data.filter(d=>d.category===cat).map(d=>({item:d}));
+      currentPage=1;
+      renderPage(currentPage);
+    });
 
     searchBox.addEventListener("input", doSearch);
 
@@ -171,7 +182,6 @@
     window.addEventListener("scroll",()=>{ backToTop.style.display=(window.scrollY>200)?"block":"none"; });
     backToTop.onclick=()=>window.scrollTo({top:0,behavior:"smooth"});
 
-    // بخش Service Worker بدون تغییر
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').then(reg => {
         reg.onupdatefound = () => {
