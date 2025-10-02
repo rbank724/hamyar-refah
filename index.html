@@ -88,6 +88,10 @@
   <div id="loading" class="hidden mt-4 text-gray-600 text-sm sm:text-base">در حال بارگذاری...</div>
 
   <div id="detail-controls" class="flex gap-2 mb-4 hidden">
+    <button id="back-btn" title="بازگشت" 
+      style="background:#f87171;color:#fff;border:none;border-radius:8px;padding:0.5rem 1rem;cursor:pointer;font-weight:bold;">
+      بازگشت
+    </button>
     <button id="font-plus" title="بزرگتر" style="background:#4f46e5;color:#fff;border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-weight:bold;">A+</button>
     <button id="share-btn" title="اشتراک‌گذاری" style="background:#4f46e5;color:#fff;border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:18px;">📤</button>
     <button id="font-minus" title="کوچکتر" style="background:#4f46e5;color:#fff;border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-weight:bold;">A-</button>
@@ -195,36 +199,34 @@
     document.getElementById("categorySelect").addEventListener("change", e => {
      const cat = e.target.value;
 
-     // 1. مخفی کردن بخش جزئیات و کنترل‌ها
      hideDetail(); 
      detailDiv.innerHTML = "";
-
-     // 2. پاک کردن کارت‌ها و صفحه‌بندی قبلی
      resultsDiv.innerHTML = ""; 
      paginationDiv.innerHTML = "";
 
-     // 3. پر کردن filteredResults با کارت‌های دسته انتخاب شده
      filteredResults = (cat === "") ? [] : data.filter(d => d.category === cat).map(d => ({item: d}));
 
-     // 4. بازنشانی صفحه و رندر کارت‌ها
      currentPage = 1;
 
-     // 5. اطمینان از اینکه resultsDiv نمایش داده شود
-     if(filteredResults.length > 0){
-       resultsDiv.style.display = "grid";
-     } else {
-       resultsDiv.style.display = "none";
-     }
+     resultsDiv.style.display = (filteredResults.length > 0) ? "grid" : "none";
 
      renderPage(currentPage);
    });
-
 
     searchBox.addEventListener("input", doSearch);
 
     const backToTop=document.getElementById("backToTop");
     window.addEventListener("scroll",()=>{ backToTop.style.display=(window.scrollY>200)?"block":"none"; });
     backToTop.onclick=()=>window.scrollTo({top:0,behavior:"smooth"});
+
+    // دکمه بازگشت
+    const backBtn = document.getElementById("back-btn");
+    backBtn.onclick = () => {
+        hideDetail();
+        resultsDiv.style.display = "grid";
+        renderPage(currentPage);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    };
 
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').then(reg => {
