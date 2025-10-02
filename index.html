@@ -12,14 +12,20 @@
     h1, .search-input, .show-all-btn { color: #1f2937; }
 
     .result-item {
+      width: 100%;           /* عرض کارت */
+      aspect-ratio: 1 / 1;   /* ارتفاع = عرض → مربع */
+      border-radius: 50%;    /* کاملاً دایره */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
       transition: all 0.3s ease;
       cursor: pointer;
-      border-radius: 2rem; /* کارت‌ها دایره‌ای‌تر */
-      text-align: center;
       opacity: 0;
       transform: translateY(10px);
       animation: fadeInUp 0.4s forwards;
     }
+
     .result-item:hover { transform: translateY(-3px) scale(1.02); box-shadow:0 10px 15px rgba(0,0,0,0.2); }
 
     @keyframes fadeInUp { to { opacity:1; transform:translateY(0); } }
