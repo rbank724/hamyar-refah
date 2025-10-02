@@ -194,14 +194,14 @@
 
     document.getElementById("categorySelect").addEventListener("change", e => {
      const cat = e.target.value;
-     hideDetail();               // مخفی کردن جزئیات و کنترل‌ها
-     resultsDiv.innerHTML = "";  // پاک کردن کارت‌های قبلی
-     paginationDiv.innerHTML = ""; // پاک کردن صفحه‌بندی قبلی
+     hideDetail(); 
+     detailDiv.innerHTML = "";
+     resultsDiv.innerHTML = ""; 
+     paginationDiv.innerHTML = "";
      filteredResults = (cat === "") ? [] : data.filter(d => d.category === cat).map(d => ({item: d}));
      currentPage = 1;
-     renderPage(currentPage);    // رندر کارت‌های جدید
+     renderPage(currentPage);
     });
-
 
     searchBox.addEventListener("input", doSearch);
 
