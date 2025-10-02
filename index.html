@@ -12,19 +12,16 @@
     h1, .search-input, .show-all-btn { color: #1f2937; }
 
     .result-item {
-      aspect-ratio: 1 / 1;      /* کارت‌ها مربع → دایره */
-      border-radius: 50%;        /* کاملاً دایره */
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      width: 100%;
-      max-width: 150px;          /* حداکثر اندازه کارت در دسکتاپ */
-      transition: all 0.3s ease;
-      cursor: pointer;
-      opacity: 0;
-      transform: translateY(10px);
-      animation: fadeInUp 0.4s forwards;
+     border-radius: 50%;
+     aspect-ratio: 1/1;
+      /* اندازه دایره‌ها ثابت بماند */
+     width: 100px;   /* اندازه دلخواه */
+     height: 100px;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     text-align: center;
+     animation: fadeInUp 0.4s forwards;
     }
     .result-item:hover { transform: translateY(-3px) scale(1.02); box-shadow:0 10px 15px rgba(0,0,0,0.2); }
 
@@ -59,27 +56,22 @@
      display: grid;
      gap: 1rem;
 
-      /* عرض کل گرید فقط به اندازه آیتم‌ها */
+      /* عرض کل گرید به اندازه آیتم‌ها باشد و وسط قرار گیرد */
      width: max-content;
      margin-left: auto;
      margin-right: auto;
-
-      /* آیتم‌ها وسط */
      justify-content: center;
      justify-items: center;
      align-items: center;
-
-     /* در موبایل تا 3 ستون */
-     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+     /* موبایل: سه ستون */
+     grid-template-columns: repeat(3, 1fr);
    }
-
-   /* دسکتاپ: تا 4 ستون */
-  @media (min-width: 768px) {
-   #results {
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+   /* دسکتاپ: چهار ستون */
+   @media (min-width: 768px) {
+     #results {
+      grid-template-columns: repeat(4, 1fr);
+    }
    }
-  }
-
     #backToTop { display:none; position:fixed; bottom:20px; left:20px; z-index:9999; background:#4f46e5; color:#fff; border:none; border-radius:50%; width:44px; height:44px; font-size:22px; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,0.3); }
 
     #detail, #detail * { text-align: justify !important; }
