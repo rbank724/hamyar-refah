@@ -12,17 +12,16 @@
     h1, .search-input, .show-all-btn { color: #1f2937; }
 
     .result-item {
-     border-radius: 50%;
-     aspect-ratio: 1/1;
+      border-radius: 50%;
+      aspect-ratio: 1/1;
       /* اندازه دایره‌ها ثابت بماند */
-     width: 100px;   /* اندازه دلخواه */
-     height: 100px;
-     display: flex;
-     align-items: center;
-     justify-content: center;
-     text-align: center;
-     animation: fadeInUp 0.4s forwards;
-    }
+      width: 100px;   /* اندازه دلخواه */
+      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+     }
     .result-item:hover { transform: translateY(-3px) scale(1.02); box-shadow:0 10px 15px rgba(0,0,0,0.2); }
 
     @keyframes fadeInUp { to { opacity:1; transform:translateY(0); } }
@@ -39,39 +38,28 @@
     .show-all-btn { width:100%; max-width:28rem; margin-top:0.5rem; background:linear-gradient(to right, #4f46e5, #8b5cf6); color:white; font-weight:bold; padding:0.75rem 1rem; border-radius:9999px; text-align:center; cursor:pointer; transition: all 0.3s ease; }
     .show-all-btn:hover { transform: translateY(-2px) scale(1.02); box-shadow:0 10px 15px rgba(0,0,0,0.2); }
 
-    /* لیست دسته‌بندی مشکی با سایه */
-    #categorySelect {
-      color: #000; /* متن مشکی */
-      text-shadow: 0 1px 2px rgba(0,0,0,0.25);
-      background-color: #fff; /* پس‌زمینه سفید */
-      border: 1px solid #ccc;
-      border-radius: 9999px; /* گرد و نرم */
-      padding: 0.75rem 1rem;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    #categorySelect option { color: #000; }
-
     #results {
-     display: grid;
-     gap: 1rem;
+      display: grid;
+      gap: 1rem;
 
       /* عرض کل گرید به اندازه آیتم‌ها باشد و وسط قرار گیرد */
-     width: max-content;
-     margin-left: auto;
-     margin-right: auto;
-     justify-content: center;
-     justify-items: center;
-     align-items: center;
-     /* موبایل: سه ستون */
-     grid-template-columns: repeat(4, 1fr);
-   }
-   /* دسکتاپ: چهار ستون */
-   @media (min-width: 768px) {
-     #results {
-      grid-template-columns: repeat(6, 1fr);
+      width: max-content;
+      margin-left: auto;
+      margin-right: auto;
+      justify-content: center;
+      justify-items: center;
+      align-items: center;
+      /* موبایل: سه ستون */
+      grid-template-columns: repeat(3, 1fr);
     }
-   }
+
+    /* دسکتاپ: چهار ستون */
+    @media (min-width: 768px) {
+      #results {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
     #backToTop { display:none; position:fixed; bottom:20px; left:20px; z-index:9999; background:#4f46e5; color:#fff; border:none; border-radius:50%; width:44px; height:44px; font-size:22px; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,0.3); }
 
     #detail, #detail * { text-align: justify !important; }
@@ -90,7 +78,6 @@
       class="search-input w-full px-4 py-3 text-base sm:text-lg border border-gray-300 rounded-full outline-none shadow-md"/>
   </div>
 
-  <!-- منوی انتخاب دسته‌بندی -->
   <select id="categorySelect" class="show-all-btn">
     <option value="">انتخاب دسته‌بندی...</option>
   </select>
@@ -112,7 +99,6 @@
   <script>
     let data = [], fuse, filteredResults = [], showAll = false, currentPage = 1;
     const perPage = 10, fileCache = new Map();
-
     let categories = new Set();
 
     fetch("data.json").then(res => res.json()).then(json => { 
@@ -141,18 +127,12 @@
       resultsDiv.innerHTML = ""; paginationDiv.innerHTML = ""; hideDetail();
       if(filteredResults.length===0){ resultsDiv.style.display="none"; return; } else { resultsDiv.style.display="grid"; }
 
-      if(filteredResults.length===1){
-        resultsDiv.style.gridTemplateColumns="repeat(1,1fr)";
-      } else {
-        resultsDiv.style.gridTemplateColumns=window.innerWidth>=768?"repeat(4, minmax(100px,1fr))":"repeat(3, minmax(80px,1fr))";
-      }
-
       const start = (page-1)*perPage;
       const pageItems = filteredResults.slice(start,start+perPage);
       pageItems.forEach(r=>{
         const item = r.item||r;
         const div = document.createElement("div");
-        div.className="result-item p-4 bg-green-500 text-white shadow-md text-sm sm:text-base";
+        div.className="result-item bg-green-500 text-white shadow-md text-sm sm:text-base";
         div.innerHTML=`<strong>${item.title}</strong>`;
         div.onclick = () => {
           resultsDiv.style.display="none"; loading.style.display="block";
@@ -202,10 +182,21 @@
       currentPage=1; renderPage(currentPage);
     }
 
-    function clearSearch(){ searchBox.value=""; filteredResults=[]; renderPage(1); }
+    function clearSearch(){ 
+      searchBox.value=""; 
+      // ریست کردن دسته‌بندی به حالت پیش‌فرض
+      const catSelect = document.getElementById("categorySelect");
+      catSelect.value = "";
+      // جزئیات هم بسته شود
+      hideDetail();
+      filteredResults=[]; 
+      renderPage(1); 
+    }
 
     document.getElementById("categorySelect").addEventListener("change", e=>{
       const cat = e.target.value;
+      // هر بار که دسته‌بندی عوض شد جزئیات بسته شود
+      hideDetail();
       if(cat===""){ filteredResults=[]; renderPage(1); return; }
       filteredResults = data.filter(d=>d.category===cat).map(d=>({item:d}));
       currentPage=1;
