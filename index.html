@@ -194,14 +194,31 @@
 
     document.getElementById("categorySelect").addEventListener("change", e => {
      const cat = e.target.value;
+
+     // 1. مخفی کردن بخش جزئیات و کنترل‌ها
      hideDetail(); 
      detailDiv.innerHTML = "";
+
+     // 2. پاک کردن کارت‌ها و صفحه‌بندی قبلی
      resultsDiv.innerHTML = ""; 
      paginationDiv.innerHTML = "";
+
+     // 3. پر کردن filteredResults با کارت‌های دسته انتخاب شده
      filteredResults = (cat === "") ? [] : data.filter(d => d.category === cat).map(d => ({item: d}));
+
+     // 4. بازنشانی صفحه و رندر کارت‌ها
      currentPage = 1;
+
+     // 5. اطمینان از اینکه resultsDiv نمایش داده شود
+     if(filteredResults.length > 0){
+       resultsDiv.style.display = "grid";
+     } else {
+       resultsDiv.style.display = "none";
+     }
+
      renderPage(currentPage);
-    });
+   });
+
 
     searchBox.addEventListener("input", doSearch);
 
