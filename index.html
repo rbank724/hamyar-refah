@@ -193,13 +193,15 @@
     }
 
     document.getElementById("categorySelect").addEventListener("change", e => {
-      const cat = e.target.value;
-      hideDetail(); // مخفی کردن کنترل‌ها و جزئیات
-      resultsDiv.innerHTML = ""; // پاک کردن کارت‌های قبلی
-      filteredResults = (cat==="") ? [] : data.filter(d => d.category===cat).map(d => ({item:d}));
-      currentPage = 1;
-      renderPage(currentPage);
+     const cat = e.target.value;
+     hideDetail();               // مخفی کردن جزئیات و کنترل‌ها
+     resultsDiv.innerHTML = "";  // پاک کردن کارت‌های قبلی
+     paginationDiv.innerHTML = ""; // پاک کردن صفحه‌بندی قبلی
+     filteredResults = (cat === "") ? [] : data.filter(d => d.category === cat).map(d => ({item: d}));
+     currentPage = 1;
+     renderPage(currentPage);    // رندر کارت‌های جدید
     });
+
 
     searchBox.addEventListener("input", doSearch);
 
