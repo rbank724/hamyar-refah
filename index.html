@@ -21,6 +21,8 @@
       align-items: center;
       justify-content: center;
       text-align: center;
+      color: #000;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
      }
     .result-item:hover { transform: translateY(-3px) scale(1.02); box-shadow:0 10px 15px rgba(0,0,0,0.2); }
 
@@ -41,7 +43,6 @@
     #results {
       display: grid;
       gap: 1rem;
-
       /* عرض کل گرید به اندازه آیتم‌ها باشد و وسط قرار گیرد */
       width: max-content;
       margin-left: auto;
@@ -193,15 +194,19 @@
       renderPage(1); 
     }
 
-    document.getElementById("categorySelect").addEventListener("change", e=>{
-      const cat = e.target.value;
-      // هر بار که دسته‌بندی عوض شد جزئیات بسته شود
-      hideDetail();
-      if(cat===""){ filteredResults=[]; renderPage(1); return; }
-      filteredResults = data.filter(d=>d.category===cat).map(d=>({item:d}));
-      currentPage=1;
-      renderPage(currentPage);
-    });
+    document.getElementById("categorySelect").addEventListener("change", e => {
+     const cat = e.target.value;
+     detailDiv.innerHTML = "";
+     hideDetail(); // مخفی کردن کنترل‌ها
+     if(cat===""){
+       filteredResults=[];
+       renderPage(1);
+       return;
+     }
+     filteredResults = data.filter(d => d.category===cat).map(d => ({item:d}));
+     currentPage=1;
+     renderPage(currentPage);
+   });
 
     searchBox.addEventListener("input", doSearch);
 
