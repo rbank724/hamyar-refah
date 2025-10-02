@@ -58,22 +58,23 @@
     #results {
      display: grid;
      gap: 1rem;
-     justify-content: center; /* کل گرید وسط */
-     justify-items: center;   /* خود آیتم‌ها وسط */
-     align-items: center;
-    /* ستون‌ها هوشمند بر اساس تعداد آیتم */
-     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    }
 
-    /* موبایل: تا سه ستون */
-    @media (max-width: 767px) {
-    #results {
+      /* عرض کل گرید فقط به اندازه آیتم‌ها */
+     width: max-content;
+     margin-left: auto;
+     margin-right: auto;
+
+      /* آیتم‌ها وسط */
+     justify-content: center;
+     justify-items: center;
+     align-items: center;
+
+     /* در موبایل تا 3 ستون */
      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-    }
    }
 
-   /* دسکتاپ: تا چهار ستون */
-   @media (min-width: 768px) {
+   /* دسکتاپ: تا 4 ستون */
+  @media (min-width: 768px) {
    #results {
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
    }
