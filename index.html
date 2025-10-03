@@ -76,18 +76,22 @@
 
     /* باکس‌های بنر */
     .banner-box {
-      width: 30%;
+      width: 100%;
       max-width: 28rem; /* هم‌اندازه باکس جستجو */
       border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
     .banner-box img {
-      width: 30%;
+      width: 100%;
       height: auto;
       display: block;
       object-fit: cover;
       border-radius: 12px;
+    }
+    @media (max-width: 640px) {
+     .banner-box {
+      max-width: 9rem; /* یک سوم 28rem */
     }
   </style>
 </head>
