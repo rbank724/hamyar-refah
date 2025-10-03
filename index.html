@@ -12,26 +12,21 @@
     h1, .search-input, .show-all-btn { color: #1f2937; }
 
     .result-item {
-     border-radius: 50%;
-     aspect-ratio: 1/1;
-     width: 100px;
-     height: 100px;
-     display: flex;
-     align-items: center;
-     justify-content: center;
-     text-align: center;
-     color: #fff;
-     text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-     background: linear-gradient(to right, #1e3a8a, #8b5cf6);
+      border-radius: 50%;
+      aspect-ratio: 1/1;
+      width: 100px;
+      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #fff;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+      background: linear-gradient(to right, #1e3a8a, #8b5cf6);
     }
-
     .result-item:hover { transform: translateY(-3px) scale(1.02); box-shadow:0 10px 15px rgba(0,0,0,0.2); }
 
-    @keyframes fadeInUp { 
-      from { opacity:0; transform: translateY(20px); } 
-      to { opacity:1; transform: translateY(0); } 
-    }
-
+    @keyframes fadeInUp { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
     .fade-in-up { animation: fadeInUp 0.6s ease forwards; }
 
     .pagination-btn { @apply px-3 py-1 rounded text-white font-medium transition-all duration-300; }
@@ -47,16 +42,16 @@
     .show-all-btn:hover { transform: translateY(-2px) scale(1.02); box-shadow:0 10px 15px rgba(0,0,0,0.2); }
 
     #categorySelect {
-     color: #FFD700;
-     text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-     background-color: #090157;
-     text-align: center;
-     text-align-last: center;
-     direction: rtl;
-     -webkit-appearance: none;
-     -moz-appearance: none;
-     appearance: none;
-     font-size: clamp(0.9rem, 2.5vw, 1.2rem); 
+      color: #FFD700;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+      background-color: #090157;
+      text-align: center;
+      text-align-last: center;
+      direction: rtl;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      font-size: clamp(0.9rem, 2.5vw, 1.2rem); 
     }
 
     #results {
@@ -85,6 +80,9 @@
     /* انیمیشن ورود بنرها */
     @keyframes fadeIn { from {opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
     .animate-fadeIn { animation: fadeIn 0.6s ease forwards; }
+
+    /* بنرها نسبت 2:1 */
+    .ad-banner > div { aspect-ratio: 2/1; }
   </style>
 </head>
 <body class="flex flex-col items-center m-0 p-4">
@@ -117,25 +115,16 @@
 
   <div id="detail" class="mt-8 w-full max-w-3xl p-5 rounded-xl bg-white shadow-md hidden leading-8 text-sm sm:text-base"></div>
 
-  <!-- بنرهای تبلیغاتی -->
+  <!-- بنرهای تبلیغاتی 2:1 -->
   <div id="ad-banners" class="hidden w-full max-w-3xl mt-6 flex flex-col gap-4 animate-fadeIn">
-    <a href="https://example.com/banner1" target="_blank" 
-       class="ad-banner bg-white rounded-xl shadow-md overflow-hidden cursor-pointer transition-transform duration-300 hover:scale-105">
-      <div class="w-full aspect-square md:aspect-[4/3]">
-        <img src="banner1.jpg" alt="بنر ۱" class="w-full h-full object-cover">
-      </div>
+    <a href="https://example.com/banner1" target="_blank" class="ad-banner bg-white rounded-xl shadow-md overflow-hidden cursor-pointer transition-transform duration-300 hover:scale-105">
+      <div><img src="banner1.jpg" alt="بنر ۱" class="w-full h-full object-cover"></div>
     </a>
-    <a href="https://example.com/banner2" target="_blank" 
-       class="ad-banner bg-white rounded-xl shadow-md overflow-hidden cursor-pointer transition-transform duration-300 hover:scale-105">
-      <div class="w-full aspect-square md:aspect-[4/3]">
-        <img src="banner2.jpg" alt="بنر ۲" class="w-full h-full object-cover">
-      </div>
+    <a href="https://example.com/banner2" target="_blank" class="ad-banner bg-white rounded-xl shadow-md overflow-hidden cursor-pointer transition-transform duration-300 hover:scale-105">
+      <div><img src="banner2.jpg" alt="بنر ۲" class="w-full h-full object-cover"></div>
     </a>
-    <a href="https://example.com/banner3" target="_blank" 
-       class="ad-banner bg-white rounded-xl shadow-md overflow-hidden cursor-pointer transition-transform duration-300 hover:scale-105">
-      <div class="w-full aspect-square md:aspect-[4/3]">
-        <img src="banner3.jpg" alt="بنر ۳" class="w-full h-full object-cover">
-      </div>
+    <a href="https://example.com/banner3" target="_blank" class="ad-banner bg-white rounded-xl shadow-md overflow-hidden cursor-pointer transition-transform duration-300 hover:scale-105">
+      <div><img src="banner3.jpg" alt="بنر ۳" class="w-full h-full object-cover"></div>
     </a>
   </div>
 
@@ -168,9 +157,7 @@
 
     window.addEventListener("DOMContentLoaded", () => { 
       controls.style.display = "none"; 
-      // نمایش بنرها هنگام لود اولیه
-      const adBanners = document.getElementById('ad-banners');
-      adBanners.classList.remove('hidden');
+      document.getElementById('ad-banners').classList.remove('hidden'); // نمایش بنرها در لود اولیه
     });
 
     function renderPage(page){
