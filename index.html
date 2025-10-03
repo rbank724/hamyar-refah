@@ -126,24 +126,24 @@
 
   <!-- ======= بنرهای اطلاع‌رسانی ======= -->
   <div id="banners" style="display:none;">
-    <div id="banners-inner">
-      <div class="banner-item" onclick="openBannerDetail('banner1.html')">
-        <img src="banner1.jpg" alt="طرح بانک 1" loading="lazy">
-        <div>طرح ویژه وام مسکن</div>
-      </div>
-      <div class="banner-item" onclick="openBannerDetail('banner2.html')">
-        <img src="banner2.jpg" alt="طرح بانک 2" loading="lazy">
-        <div>تسهیلات خودرو</div>
-      </div>
-      <div class="banner-item" onclick="openBannerDetail('banner3.html')">
-        <img src="banner3.jpg" alt="طرح بانک 3" loading="lazy">
-        <div>طرح ویژه خرید لوازم خانگی</div>
-      </div>
-      <div class="banner-item" onclick="openBannerDetail('banner4.html')">
-        <img src="banner4.jpg" alt="طرح بانک 4" loading="lazy">
-        <div>تسهیلات قرض‌الحسنه</div>
-      </div>
-    </div>
+   <div id="banners-inner">
+     <div class="banner-item" onclick="openBannerDetail('banner1.html')">
+       <img src="banner1.jpg" alt="طرح بانک 1" loading="lazy">
+       <div>طرح ویژه وام مسکن</div>
+     </div>
+     <div class="banner-item" onclick="openBannerDetail('banner2.html')">
+       <img src="banner2.jpg" alt="طرح بانک 2" loading="lazy">
+       <div>تسهیلات خودرو</div>
+     </div>
+     <div class="banner-item" onclick="openBannerDetail('banner3.html')">
+       <img src="banner3.jpg" alt="طرح بانک 3" loading="lazy">
+       <div>طرح ویژه خرید لوازم خانگی</div>
+     </div>
+     <div class="banner-item" onclick="openBannerDetail('banner4.html')">
+       <img src="banner4.jpg" alt="طرح بانک 4" loading="lazy">
+       <div>تسهیلات قرض‌الحسنه</div>
+     </div>
+   </div>
   </div>
 
   <script>
@@ -294,27 +294,36 @@
     }
 
     // ======= نمایش بنرها فقط در صفحه اصلی =======
-    if(window.location.pathname.endsWith("index.html") || window.location.pathname === "/"){
-      const banners = document.getElementById("banners");
-      banners.style.display = "block";
+  <script>
+  // نمایش بنرها فقط در صفحه اصلی (انعطاف‌پذیر)
+  const path = window.location.pathname.split("/").pop().toLowerCase();
+  if(path === "" || path === "index.html") {
+    const banners = document.getElementById("banners");
+    banners.style.display = "block";
 
-      const bannerItems = document.querySelectorAll('.banner-item');
-      bannerItems.forEach((b,i) => { setTimeout(() => { b.style.opacity='1'; b.style.transform='translateY(0)'; }, i*200); });
+    const bannerItems = document.querySelectorAll('.banner-item');
+    bannerItems.forEach((b,i) => { 
+      setTimeout(() => { b.style.opacity='1'; b.style.transform='translateY(0)'; }, i*200); 
+    });
 
-      // ======= اسلایدر عمودی خودکار موبایل =======
-      const bannersInner = document.getElementById('banners-inner');
-      let bannerIndex = 0;
-      const bannerTotal = bannerItems.length;
-      function slideBanners() {
-        if(window.innerWidth < 768){
-          bannerIndex = (bannerIndex+1)%bannerTotal;
-          bannersInner.style.transform = `translateY(-${bannerIndex*11}rem)`; // ارتفاع تقریبی هر بنر
-        } else {
-          bannersInner.style.transform = 'translateY(0)';
-        }
+    // اسلایدر عمودی موبایل
+    const bannersInner = document.getElementById('banners-inner');
+    let bannerIndex = 0;
+    const bannerTotal = bannerItems.length;
+    const bannerHeight = bannerItems[0].offsetHeight + 16; // ارتفاع + فاصله gap
+
+    function slideBanners() {
+      if(window.innerWidth < 768){
+        bannerIndex = (bannerIndex+1)%bannerTotal;
+        bannersInner.style.transform = `translateY(-${bannerIndex*bannerHeight}px)`;
+      } else {
+        bannersInner.style.transform = 'translateY(0)';
       }
-      setInterval(slideBanners, 3000);
     }
+
+    setInterval(slideBanners, 3000);
+  }
+ </script>
 
     // ======= باز کردن جزئیات بنر =======
     function openBannerDetail(file) {
