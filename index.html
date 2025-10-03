@@ -27,7 +27,7 @@
 
     .result-item:hover { transform: translateY(-3px) scale(1.02); box-shadow:0 10px 15px rgba(0,0,0,0.2); }
 
-    @keyframes fadeInUp { to { opacity:1; transform:translateY(0); } }
+    @keyframes fadeInUp { from {opacity:0; transform:translateY(20px);} to { opacity:1; transform:translateY(0); } }
 
     .pagination-btn { @apply px-3 py-1 rounded text-white font-medium transition-all duration-300; }
     .pagination-btn:hover { @apply scale-105 shadow-lg; }
@@ -77,16 +77,20 @@
 
     #detail-controls { display:flex; gap:8px; margin-bottom:6px; justify-start; }
 
-    /* --- استایل بنرها --- */
-    #banners { display:none; position:fixed; top:80px; right:20px; width:300px; z-index:9999; }
-    #banners-inner { display:flex; flex-direction: column; gap:1rem; }
-    .banner-item { position: relative; border-radius:1rem; box-shadow:0 10px 15px rgba(0,0,0,0.2); cursor:pointer; overflow:hidden; transition: all 0.3s; opacity:0; transform: translateY(1rem); }
-    .banner-item img { width:100%; height:120px; object-fit:cover; border-radius:1rem; }
-    .banner-item div { position:absolute; bottom:0; left:0; width:100%; background: linear-gradient(to top, rgba(0,0,0,0.6), transparent); color:#fff; padding:0.5rem; font-weight:bold; border-radius:0 0 1rem 1rem; }
-    .banner-item:hover { transform: scale(1.03); box-shadow:0 12px 20px rgba(0,0,0,0.25); }
+    /* بنرها */
+    #banners { display:none; flex-direction: column; gap: 1rem; margin-bottom:1rem; }
+    .banner-item { width:100%; border-radius:12px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.2); opacity:0; animation:fadeInUp 0.6s forwards; }
+    .banner-item img { width:100%; height:auto; object-fit:cover; display:block; }
   </style>
 </head>
 <body class="flex flex-col items-center m-0 p-4">
+
+  <!-- بنرها -->
+  <div id="banners">
+    <div class="banner-item"><img src="banner1.jpg" alt="بنر 1"></div>
+    <div class="banner-item"><img src="banner2.jpg" alt="بنر 2"></div>
+    <div class="banner-item"><img src="banner3.jpg" alt="بنر 3"></div>
+  </div>
 
   <h1 class="mb-4 font-medium text-xl sm:text-2xl text-center">کتابخانه طرح‌های تسهیلاتی</h1>
 
@@ -118,63 +122,164 @@
 
   <button id="backToTop" title="بازگشت به بالا">↑</button>
 
-  <!-- ======= بنرهای اطلاع‌رسانی ======= -->
-  <div id="banners">
-    <div id="banners-inner">
-      <div class="banner-item" onclick="openBannerDetail('banner1.html')">
-        <img src="banner1.jpg" alt="طرح بانک 1" loading="lazy">
-        <div>طرح ویژه وام مسکن</div>
-      </div>
-      <div class="banner-item" onclick="openBannerDetail('banner2.html')">
-        <img src="banner2.jpg" alt="طرح بانک 2" loading="lazy">
-        <div>تسهیلات خودرو</div>
-      </div>
-      <div class="banner-item" onclick="openBannerDetail('banner3.html')">
-        <img src="banner3.jpg" alt="طرح بانک 3" loading="lazy">
-        <div>طرح ویژه خرید لوازم خانگی</div>
-      </div>
-      <div class="banner-item" onclick="openBannerDetail('banner4.html')">
-        <img src="banner4.jpg" alt="طرح بانک 4" loading="lazy">
-        <div>تسهیلات قرض‌الحسنه</div>
-      </div>
-    </div>
-  </div>
-
   <script>
-    // ==== بنرها فقط در صفحه اصلی ====
-    const path = window.location.pathname.split("/").pop().toLowerCase();
-    if(path === "" || path === "index.html") {
-      const banners = document.getElementById("banners");
-      const bannerItems = document.querySelectorAll('.banner-item');
+    let data = [], fuse, filteredResults = [], showAll = false, currentPage = 1;
+    const perPage = 10, fileCache = new Map();
+    let categories = new Set();
 
-      function showBanners() {
-        banners.style.display = "block";
-        bannerItems.forEach((b,i)=>{
-          setTimeout(()=>{b.style.opacity=1; b.style.transform='translateY(0)';}, i*100);
-        });
-      }
+    fetch("data.json").then(res => res.json()).then(json => { 
+      data = json; 
+      fuse = new Fuse(data, { keys:["title","keywords"], threshold:0.3 });
+      json.forEach(item => categories.add(item.category));
+      const catSelect = document.getElementById("categorySelect");
+      categories.forEach(cat => {
+        const opt = document.createElement("option");
+        opt.value = cat;
+        opt.textContent = cat;
+        catSelect.appendChild(opt);
+      });
+    });
 
-      function hideBanners() { banners.style.display = "none"; }
+    const searchBox = document.getElementById("search-box");
+    const resultsDiv = document.getElementById("results");
+    const detailDiv = document.getElementById("detail");
+    const loading = document.getElementById("loading");
+    const paginationDiv = document.getElementById("pagination");
+    const controls = document.getElementById("detail-controls");
 
-      // نمایش هنگام بارگذاری اولیه
-      window.addEventListener("DOMContentLoaded", showBanners);
+    const bannersDiv = document.getElementById("banners");
 
-      // نمایش هنگام کلیک روی آیکون جارو
-      const searchClear = document.querySelector(".search-clear");
-      if(searchClear){
-        searchClear.addEventListener("click", showBanners);
-      }
+    window.addEventListener("DOMContentLoaded", () => { 
+      controls.style.display = "none"; 
+      bannersDiv.style.display = "flex"; // نمایش اولیه بنرها
+    });
 
-      // مخفی شدن وقتی روی سایت کلیک شد
-      document.addEventListener("click", function(e){
-        if(!e.target.closest("#banners") && !e.target.closest(".search-clear")) {
-          hideBanners();
-        }
+    function renderPage(page){
+      resultsDiv.innerHTML = ""; paginationDiv.innerHTML = ""; hideDetail();
+      if(filteredResults.length===0){ resultsDiv.style.display="none"; return; } else { resultsDiv.style.display="grid"; }
+
+      const start = (page-1)*perPage;
+      const pageItems = filteredResults.slice(start,start+perPage);
+      pageItems.forEach(r=>{
+        const item = r.item||r;
+        const div = document.createElement("div");
+        div.className="result-item text-white shadow-md text-sm sm:text-base";
+        div.innerHTML=`<strong>${item.title}</strong>`;
+        div.onclick = () => {
+          resultsDiv.style.display="none"; loading.style.display="block";
+          if(fileCache.has(item.file)){ showDetail(item, fileCache.get(item.file)); }
+          else { fetch(item.file).then(res=>res.text()).then(html=>{ fileCache.set(item.file,html); showDetail(item,html); }); }
+        };
+        resultsDiv.appendChild(div);
       });
 
-      // مخفی شدن وقتی روی بنر کلیک شد
-      bannerItems.forEach(b=>{
-        b.addEventListener("click", hideBanners);
+      const totalPages = Math.ceil(filteredResults.length/perPage);
+      if(totalPages>1){
+        for(let i=1;i<=totalPages;i++){
+          const btn = document.createElement("button");
+          btn.textContent=i;
+          btn.className="pagination-btn "+(i===page?"pagination-active":"pagination-inactive");
+          btn.onclick=()=>{currentPage=i; renderPage(i);}
+          paginationDiv.appendChild(btn);
+        }
+      }
+    }
+
+    function showDetail(item, html){
+      loading.style.display = "none";
+      detailDiv.innerHTML = html;
+      detailDiv.style.display = "block";
+      detailDiv.scrollIntoView({behavior:"smooth"});
+      controls.style.display = "flex";
+      const share = document.getElementById("share-btn");
+      share.onclick = () => {
+        const contentText = detailDiv.innerText;
+        const textToShare = item.title + "\n\n" + contentText;
+        if(navigator.share){ navigator.share({ title:item.title, text:textToShare }); }
+        else { navigator.clipboard.writeText(textToShare).then(()=>{ alert("متن طرح و عنوان آن کپی شد."); }); }
+      };
+      const plus = document.getElementById("font-plus");
+      const minus = document.getElementById("font-minus");
+      let fontSize = 16;
+      plus.onclick = () => { fontSize +=2; detailDiv.style.fontSize = fontSize+"px"; detailDiv.style.lineHeight="1.8"; };
+      minus.onclick = () => { if(fontSize>10){ fontSize-=2; detailDiv.style.fontSize=fontSize+"px"; detailDiv.style.lineHeight="1.8"; } };
+    }
+
+    function hideDetail(){ detailDiv.style.display="none"; controls.style.display="none"; }
+
+    function doSearch(){
+      const query = searchBox.value.trim();
+      filteredResults = (query.length>1 && fuse)? fuse.search(query) : [];
+      currentPage=1; renderPage(currentPage);
+    }
+
+    function clearSearch(){ 
+      searchBox.value=""; 
+      const catSelect = document.getElementById("categorySelect");
+      catSelect.value = "";
+      hideDetail();
+      filteredResults=[]; 
+      renderPage(1); 
+      bannersDiv.style.display = "flex"; // نمایش بنرها هنگام کلیک روی جارو
+    }
+
+    document.getElementById("categorySelect").addEventListener("change", e => {
+     const cat = e.target.value;
+
+     hideDetail(); 
+     detailDiv.innerHTML = "";
+     resultsDiv.innerHTML = ""; 
+     paginationDiv.innerHTML = "";
+
+     filteredResults = (cat === "") ? [] : data.filter(d => d.category === cat).map(d => ({item: d}));
+
+     currentPage = 1;
+
+     resultsDiv.style.display = (filteredResults.length > 0) ? "grid" : "none";
+
+     renderPage(currentPage);
+   });
+
+    searchBox.addEventListener("input", doSearch);
+
+    const backToTop=document.getElementById("backToTop");
+    window.addEventListener("scroll",()=>{ backToTop.style.display=(window.scrollY>200)?"block":"none"; });
+    backToTop.onclick=()=>window.scrollTo({top:0,behavior:"smooth"});
+
+    // دکمه بازگشت
+   const backBtn = document.getElementById("back-btn");
+   backBtn.onclick = () => {
+    hideDetail();
+    resultsDiv.style.display = "grid";
+    renderPage(currentPage);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+   };
+
+   // مخفی کردن بنرها هنگام کلیک روی هر بخش از سایت یا روی هر بنر
+   document.addEventListener("click", (e) => {
+     if (!bannersDiv.contains(e.target) && e.target.id !== "search-box" && e.target.className !== "search-clear") {
+       bannersDiv.style.display = "none";
+     }
+   });
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').then(reg => {
+        reg.onupdatefound = () => {
+          const newWorker = reg.installing;
+          newWorker.onstatechange = () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              const bar = document.createElement('div');
+              bar.textContent = 'نسخه‌ی جدید آماده است؛ برای به‌روزرسانی اینجا بزنید';
+              Object.assign(bar.style, {
+                position: 'fixed', bottom: '0', left: '0', right: '0',
+                background: '#007BFF', color: '#fff', textAlign: 'center',
+                padding: '10px', fontFamily: 'inherit', cursor: 'pointer', zIndex: 9999
+              });
+              bar.onclick = () => location.reload();
+              document.body.appendChild(bar);
+            }
+          };
+        };
       });
     }
   </script>
