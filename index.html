@@ -81,7 +81,7 @@
     @keyframes fadeIn { from {opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
     .animate-fadeIn { animation: fadeIn 0.6s ease forwards; }
 
-    /* نسبت 2:1 برای بنرها */
+    /* بنرها نسبت 2:1 */
     .ad-banner > div { aspect-ratio: 2/1; }
   </style>
 </head>
@@ -154,11 +154,10 @@
     const loading = document.getElementById("loading");
     const paginationDiv = document.getElementById("pagination");
     const controls = document.getElementById("detail-controls");
-    const adBanners = document.getElementById('ad-banners');
 
     window.addEventListener("DOMContentLoaded", () => { 
       controls.style.display = "none"; 
-      adBanners.classList.remove('hidden'); // نمایش بنرها در لود اولیه
+      document.getElementById('ad-banners').classList.remove('hidden'); // نمایش بنرها در لود اولیه
     });
 
     function renderPage(page){
@@ -259,13 +258,20 @@
     const broom = document.querySelector('.search-clear');
     if (broom) {
       broom.addEventListener('click', () => {
+        const adBanners = document.getElementById('ad-banners');
         adBanners.classList.remove('hidden');
       });
     }
 
-    // پنهان شدن بنرها فقط وقتی روی خود بنر کلیک شود
-    adBanners.addEventListener('click', () => {
-      adBanners.classList.add('hidden');
+    // پنهان شدن بنرها وقتی کاربر روی صفحه یا خود بنر کلیک کند
+    document.addEventListener('click', (e) => {
+      const adBanners = document.getElementById('ad-banners');
+      if (!adBanners.contains(e.target) && !e.target.classList.contains('search-clear')) {
+        adBanners.classList.add('hidden');
+      }
+      if (adBanners.contains(e.target)) {
+        adBanners.classList.add('hidden');
+      }
     });
 
     if ('serviceWorker' in navigator) {
