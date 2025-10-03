@@ -20,11 +20,16 @@
      align-items: center;
      justify-content: center;
      text-align: center;
-     color: #fff;
+     color: #fff; /* متن سفید بشه */
      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-     background: linear-gradient(to right, #1e3a8a, #8b5cf6);
+
+     /* رنگ جدید */
+     background: linear-gradient(to right, #1e3a8a, #8b5cf6); /* سورمه‌ای به بنفش */
     }
+
     .result-item:hover { transform: translateY(-3px) scale(1.02); box-shadow:0 10px 15px rgba(0,0,0,0.2); }
+
+    @keyframes fadeInUp { to { opacity:1; transform:translateY(0); } }
 
     .pagination-btn { @apply px-3 py-1 rounded text-white font-medium transition-all duration-300; }
     .pagination-btn:hover { @apply scale-105 shadow-lg; }
@@ -39,17 +44,20 @@
     .show-all-btn:hover { transform: translateY(-2px) scale(1.02); box-shadow:0 10px 15px rgba(0,0,0,0.2); }
 
     #categorySelect {
-     color: #FFD700;
+     color: #FFD700; /* لیمویی */
      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
      background-color: #090157;
+     /* وسط‌چین واقعی در همه مرورگرها */
      text-align: center;
-     text-align-last: center;
-     direction: rtl;
-     -webkit-appearance: none;
-     -moz-appearance: none;
+     text-align-last: center;   /* برای Firefox */
+     direction: rtl;            /* برای درست شدن در حالت راست‌به‌چپ */
+     -webkit-appearance: none;  /* حذف استایل پیش‌فرض در WebKit */
+     -moz-appearance: none;     /* حذف استایل پیش‌فرض در Firefox */
      appearance: none;
+     /* فونت هوشمند */
      font-size: clamp(0.9rem, 2.5vw, 1.2rem); 
     }
+
 
     #results {
       display: grid;
@@ -73,26 +81,6 @@
     #detail-content * { color:inherit; }
 
     #detail-controls { display:flex; gap:8px; margin-bottom:6px; justify-start; }
-
-    /* باکس‌های بنر */
-    .banner-box {
-      width: 100%;
-      max-width: 28rem; /* هم‌اندازه باکس جستجو */
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
-    .banner-box img {
-      width: 100%;
-      height: auto;
-      display: block;
-      object-fit: cover;
-      border-radius: 12px;
-    }
-    @media (max-width: 640px) {
-     .banner-box {
-      max-width: 9rem; /* یک سوم 28rem */
-    }
   </style>
 </head>
 <body class="flex flex-col items-center m-0 p-4">
@@ -124,19 +112,6 @@
   </div>
 
   <div id="detail" class="mt-8 w-full max-w-3xl p-5 rounded-xl bg-white shadow-md hidden leading-8 text-sm sm:text-base"></div>
-
-  <!-- بنرها -->
-  <div id="banners" class="mt-8 w-full flex flex-col md:flex-row md:justify-center md:gap-6 gap-4">
-    <div class="banner-box">
-      <img src="banner1.jpg" alt="بنر 1">
-    </div>
-    <div class="banner-box">
-      <img src="banner2.jpg" alt="بنر 2">
-    </div>
-    <div class="banner-box">
-      <img src="banner3.jpg" alt="بنر 3">
-    </div>
-  </div>
 
   <button id="backToTop" title="بازگشت به بالا">↑</button>
 
@@ -258,6 +233,7 @@
     window.addEventListener("scroll",()=>{ backToTop.style.display=(window.scrollY>200)?"block":"none"; });
     backToTop.onclick=()=>window.scrollTo({top:0,behavior:"smooth"});
 
+    // دکمه بازگشت
    const backBtn = document.getElementById("back-btn");
    backBtn.onclick = () => {
     hideDetail();
@@ -265,6 +241,7 @@
     renderPage(currentPage);
     window.scrollTo({ top: 0, behavior: "smooth" });
    };
+
 
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').then(reg => {
