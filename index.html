@@ -12,22 +12,25 @@
     h1, .search-input, .show-all-btn { color: #1f2937; }
 
     .result-item {
-     border-radius: 50%;
-     aspect-ratio: 1/1;
-     width: 100px;
-     height: 100px;
-     display: flex;
-     align-items: center;
-     justify-content: center;
-     text-align: center;
-     color: #fff;
-     text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-     background: linear-gradient(to right, #1e3a8a, #8b5cf6);
+      border-radius: 50%;
+      aspect-ratio: 1/1;
+      width: 100px;
+      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #fff;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+      background: linear-gradient(to right, #1e3a8a, #8b5cf6);
     }
 
     .result-item:hover { transform: translateY(-3px) scale(1.02); box-shadow:0 10px 15px rgba(0,0,0,0.2); }
 
-    @keyframes fadeInUp { from {opacity:0; transform:translateY(20px);} to { opacity:1; transform:translateY(0); } }
+    @keyframes fadeInUp {
+      from {opacity:0; transform:translateY(20px);}
+      to { opacity:1; transform:translateY(0); }
+    }
 
     .pagination-btn { @apply px-3 py-1 rounded text-white font-medium transition-all duration-300; }
     .pagination-btn:hover { @apply scale-105 shadow-lg; }
@@ -42,16 +45,16 @@
     .show-all-btn:hover { transform: translateY(-2px) scale(1.02); box-shadow:0 10px 15px rgba(0,0,0,0.2); }
 
     #categorySelect {
-     color: #FFD700;
-     text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-     background-color: #090157;
-     text-align: center;
-     text-align-last: center;
-     direction: rtl;
-     -webkit-appearance: none;
-     -moz-appearance: none;
-     appearance: none;
-     font-size: clamp(0.9rem, 2.5vw, 1.2rem); 
+      color: #FFD700;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+      background-color: #090157;
+      text-align: center;
+      text-align-last: center;
+      direction: rtl;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      font-size: clamp(0.9rem, 2.5vw, 1.2rem);
     }
 
     #results {
@@ -77,20 +80,27 @@
 
     #detail-controls { display:flex; gap:8px; margin-bottom:6px; justify-start; }
 
-    /* بنرها */
+    /* بنرها پایین صفحه */
     #banners { display:none; flex-direction: column; gap: 1rem; margin-top:2rem; margin-bottom:2rem; align-items:center; }
-    .banner-item { width:100%; max-width:90%; border-radius:12px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.2); opacity:0; animation:fadeInUp 0.6s forwards; }
-    .banner-item img { width:100%; height:auto; object-fit:cover; display:block; border-radius:12px; }
-
-    @media(min-width:640px){ /* موبایل بزرگ و تبلت */
-      .banner-item { max-width:28rem; }
+    .banner-item {
+      width:100%;
+      max-width:90%;
+      border-radius:12px;
+      overflow:hidden;
+      box-shadow:0 4px 12px rgba(0,0,0,0.2);
+      opacity:0;
+      animation:fadeInUp 0.6s forwards;
     }
-
-    @media(min-width:1024px){ /* دسکتاپ */
-     .banner-item { max-width:600px; }
+    .banner-item img {
+      width:100%;
+      height:auto;
+      object-fit:cover;
+      display:block;
+      border-radius:12px;
     }
-    .banner-item { width:100%; max-width:28rem; border-radius:12px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.2); opacity:0; animation:fadeInUp 0.6s forwards; margin-left:auto; margin-right:auto; }
-    .banner-item img { width:100%; height:auto; object-fit:cover; display:block; }
+    @media(min-width:768px){
+      .banner-item{max-width:600px;} /* دسکتاپ */
+    }
   </style>
 </head>
 <body class="flex flex-col items-center m-0 p-4">
@@ -156,12 +166,11 @@
     const loading = document.getElementById("loading");
     const paginationDiv = document.getElementById("pagination");
     const controls = document.getElementById("detail-controls");
-
     const bannersDiv = document.getElementById("banners");
 
-    window.addEventListener("DOMContentLoaded", () => { 
-      controls.style.display = "none"; 
-      bannersDiv.style.display = "flex"; // نمایش اولیه بنرها
+    window.addEventListener("DOMContentLoaded", () => {
+      controls.style.display = "none";
+      bannersDiv.style.display = "flex";
     });
 
     function renderPage(page){
@@ -230,25 +239,20 @@
       hideDetail();
       filteredResults=[]; 
       renderPage(1); 
-      bannersDiv.style.display = "flex"; // نمایش بنرها هنگام کلیک روی جارو
+      bannersDiv.style.display="flex";
     }
 
     document.getElementById("categorySelect").addEventListener("change", e => {
-     const cat = e.target.value;
-
-     hideDetail(); 
-     detailDiv.innerHTML = "";
-     resultsDiv.innerHTML = ""; 
-     paginationDiv.innerHTML = "";
-
-     filteredResults = (cat === "") ? [] : data.filter(d => d.category === cat).map(d => ({item: d}));
-
-     currentPage = 1;
-
-     resultsDiv.style.display = (filteredResults.length > 0) ? "grid" : "none";
-
-     renderPage(currentPage);
-   });
+      const cat = e.target.value;
+      hideDetail(); 
+      detailDiv.innerHTML = "";
+      resultsDiv.innerHTML = ""; 
+      paginationDiv.innerHTML = "";
+      filteredResults = (cat === "") ? [] : data.filter(d => d.category === cat).map(d => ({item: d}));
+      currentPage = 1;
+      resultsDiv.style.display = (filteredResults.length > 0) ? "grid" : "none";
+      renderPage(currentPage);
+    });
 
     searchBox.addEventListener("input", doSearch);
 
@@ -256,21 +260,20 @@
     window.addEventListener("scroll",()=>{ backToTop.style.display=(window.scrollY>200)?"block":"none"; });
     backToTop.onclick=()=>window.scrollTo({top:0,behavior:"smooth"});
 
-    // دکمه بازگشت
-   const backBtn = document.getElementById("back-btn");
-   backBtn.onclick = () => {
-    hideDetail();
-    resultsDiv.style.display = "grid";
-    renderPage(currentPage);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-   };
+    const backBtn = document.getElementById("back-btn");
+    backBtn.onclick = () => {
+      hideDetail();
+      resultsDiv.style.display = "grid";
+      renderPage(currentPage);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    };
 
-   // مخفی کردن بنرها هنگام کلیک روی هر بخش از سایت بجز خود بنرها و جستجو
-   document.addEventListener("click", (e) => {
-     if (!bannersDiv.contains(e.target) && e.target.id !== "search-box" && e.target.className !== "search-clear") {
-       bannersDiv.style.display = "none";
-     }
-   });
+    // کلیک بیرون برای بستن بنرها
+    document.addEventListener("click", (e) => {
+      if (!bannersDiv.contains(e.target) && e.target.id !== "search-box" && !e.target.classList.contains("search-clear")) {
+        bannersDiv.style.display = "none";
+      }
+    });
 
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').then(reg => {
