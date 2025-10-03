@@ -82,7 +82,11 @@
     .animate-fadeIn { animation: fadeIn 0.6s ease forwards; }
 
     /* بنرها نسبت 2:1 */
-    .ad-banner > div { aspect-ratio: 2/1; }
+    .ad-banner > div {
+       height: 400px;     /* ارتفاع بنرها */
+       width: 100%;       /* عرض بنر همان عرض کانتینر */
+     }
+
   </style>
 </head>
 <body class="flex flex-col items-center m-0 p-4">
