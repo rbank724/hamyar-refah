@@ -27,13 +27,12 @@
 
     .result-item:hover { transform: translateY(-3px) scale(1.02); box-shadow:0 10px 15px rgba(0,0,0,0.2); }
 
-    @keyframes fadeInUp {
-      0% { opacity: 0; transform: translateY(20px); }
-      100% { opacity: 1; transform: translateY(0); }
+    @keyframes fadeInUp { 
+      from { opacity:0; transform: translateY(20px); } 
+      to { opacity:1; transform: translateY(0); } 
     }
-    .fade-in-up {
-      animation: fadeInUp 0.7s ease forwards;
-    }
+
+    .fade-in-up { animation: fadeInUp 0.6s ease forwards; }
 
     .pagination-btn { @apply px-3 py-1 rounded text-white font-medium transition-all duration-300; }
     .pagination-btn:hover { @apply scale-105 shadow-lg; }
@@ -82,6 +81,10 @@
     #detail-content * { color:inherit; }
 
     #detail-controls { display:flex; gap:8px; margin-bottom:6px; justify-start; }
+
+    /* انیمیشن ورود بنرها */
+    @keyframes fadeIn { from {opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
+    .animate-fadeIn { animation: fadeIn 0.6s ease forwards; }
   </style>
 </head>
 <body class="flex flex-col items-center m-0 p-4">
@@ -115,15 +118,24 @@
   <div id="detail" class="mt-8 w-full max-w-3xl p-5 rounded-xl bg-white shadow-md hidden leading-8 text-sm sm:text-base"></div>
 
   <!-- بنرهای تبلیغاتی -->
-  <div id="ad-banners" class="hidden w-full max-w-3xl mt-6 flex flex-col gap-4">
-    <a href="#" class="ad-banner bg-white rounded-xl shadow-md overflow-hidden cursor-pointer fade-in-up">
-      <img src="banner1.jpg" alt="بنر ۱" class="w-full h-auto">
+  <div id="ad-banners" class="hidden w-full max-w-3xl mt-6 flex flex-col gap-4 animate-fadeIn">
+    <a href="https://example.com/banner1" target="_blank" 
+       class="ad-banner bg-white rounded-xl shadow-md overflow-hidden cursor-pointer transition-transform duration-300 hover:scale-105">
+      <div class="w-full aspect-square md:aspect-[4/3]">
+        <img src="banner1.jpg" alt="بنر ۱" class="w-full h-full object-cover">
+      </div>
     </a>
-    <a href="#" class="ad-banner bg-white rounded-xl shadow-md overflow-hidden cursor-pointer fade-in-up">
-      <img src="banner2.jpg" alt="بنر ۲" class="w-full h-auto">
+    <a href="https://example.com/banner2" target="_blank" 
+       class="ad-banner bg-white rounded-xl shadow-md overflow-hidden cursor-pointer transition-transform duration-300 hover:scale-105">
+      <div class="w-full aspect-square md:aspect-[4/3]">
+        <img src="banner2.jpg" alt="بنر ۲" class="w-full h-full object-cover">
+      </div>
     </a>
-    <a href="#" class="ad-banner bg-white rounded-xl shadow-md overflow-hidden cursor-pointer fade-in-up">
-      <img src="banner3.jpg" alt="بنر ۳" class="w-full h-auto">
+    <a href="https://example.com/banner3" target="_blank" 
+       class="ad-banner bg-white rounded-xl shadow-md overflow-hidden cursor-pointer transition-transform duration-300 hover:scale-105">
+      <div class="w-full aspect-square md:aspect-[4/3]">
+        <img src="banner3.jpg" alt="بنر ۳" class="w-full h-full object-cover">
+      </div>
     </a>
   </div>
 
@@ -156,7 +168,7 @@
 
     window.addEventListener("DOMContentLoaded", () => { 
       controls.style.display = "none"; 
-      // نمایش بنرها در لود اولیه
+      // نمایش بنرها هنگام لود اولیه
       const adBanners = document.getElementById('ad-banners');
       adBanners.classList.remove('hidden');
     });
@@ -227,27 +239,19 @@
       hideDetail();
       filteredResults=[]; 
       renderPage(1); 
-      // نمایش بنرها در کلیک روی جارو
-      const adBanners = document.getElementById('ad-banners');
-      adBanners.classList.remove('hidden');
     }
 
     document.getElementById("categorySelect").addEventListener("change", e => {
-     const cat = e.target.value;
-
-     hideDetail(); 
-     detailDiv.innerHTML = "";
-     resultsDiv.innerHTML = ""; 
-     paginationDiv.innerHTML = "";
-
-     filteredResults = (cat === "") ? [] : data.filter(d => d.category === cat).map(d => ({item: d}));
-
-     currentPage = 1;
-
-     resultsDiv.style.display = (filteredResults.length > 0) ? "grid" : "none";
-
-     renderPage(currentPage);
-   });
+      const cat = e.target.value;
+      hideDetail(); 
+      detailDiv.innerHTML = "";
+      resultsDiv.innerHTML = ""; 
+      paginationDiv.innerHTML = "";
+      filteredResults = (cat === "") ? [] : data.filter(d => d.category === cat).map(d => ({item: d}));
+      currentPage = 1;
+      resultsDiv.style.display = (filteredResults.length > 0) ? "grid" : "none";
+      renderPage(currentPage);
+    });
 
     searchBox.addEventListener("input", doSearch);
 
@@ -255,17 +259,25 @@
     window.addEventListener("scroll",()=>{ backToTop.style.display=(window.scrollY>200)?"block":"none"; });
     backToTop.onclick=()=>window.scrollTo({top:0,behavior:"smooth"});
 
-    // دکمه بازگشت
-   const backBtn = document.getElementById("back-btn");
-   backBtn.onclick = () => {
-    hideDetail();
-    resultsDiv.style.display = "grid";
-    renderPage(currentPage);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-   };
+    const backBtn = document.getElementById("back-btn");
+    backBtn.onclick = () => {
+      hideDetail();
+      resultsDiv.style.display = "grid";
+      renderPage(currentPage);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    };
 
-   // پنهان شدن بنرها وقتی کاربر روی صفحه یا خود بنر کلیک کند
-   document.addEventListener('click', (e) => {
+    // نمایش دوباره بنرها هنگام کلیک روی جارو
+    const broom = document.querySelector('.search-clear');
+    if (broom) {
+      broom.addEventListener('click', () => {
+        const adBanners = document.getElementById('ad-banners');
+        adBanners.classList.remove('hidden');
+      });
+    }
+
+    // پنهان شدن بنرها وقتی کاربر روی صفحه یا خود بنر کلیک کند
+    document.addEventListener('click', (e) => {
       const adBanners = document.getElementById('ad-banners');
       if (!adBanners.contains(e.target) && !e.target.classList.contains('search-clear')) {
         adBanners.classList.add('hidden');
