@@ -43,11 +43,21 @@
     .show-all-btn { width:100%; max-width:28rem; margin-top:0.5rem; background:linear-gradient(to right, #4f46e5, #8b5cf6); color:white; font-weight:bold; padding:0.75rem 1rem; border-radius:9999px; text-align:center; cursor:pointer; transition: all 0.3s ease; }
     .show-all-btn:hover { transform: translateY(-2px) scale(1.02); box-shadow:0 10px 15px rgba(0,0,0,0.2); }
 
-    /* اضافه کردن رنگ مشکی و سایه به لیست افتادنی */
     #categorySelect {
-      color: #FFD700;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+     color: #FFD700; /* لیمویی */
+     text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+
+     /* وسط‌چین واقعی در همه مرورگرها */
+     text-align: center;
+     text-align-last: center;   /* برای Firefox */
+     direction: rtl;            /* برای درست شدن در حالت راست‌به‌چپ */
+     -webkit-appearance: none;  /* حذف استایل پیش‌فرض در WebKit */
+     -moz-appearance: none;     /* حذف استایل پیش‌فرض در Firefox */
+     appearance: none;
+     /* فونت هوشمند */
+     font-size: clamp(0.9rem, 2.5vw, 1.2rem); 
     }
+
 
     #results {
       display: grid;
