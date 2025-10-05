@@ -113,47 +113,11 @@
     جستجوگر طرح های تسهیلاتی بانک رفاه کارگران
   </div>
 
-  .search-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      border-radius: 12px;
-      background-color: #090157;
-      padding: 0.5rem 1rem;
-      box-shadow: 6px 6px 12px rgba(0,0,0,0.5),
-                  -6px -6px 12px rgba(255,255,255,0.1);
-      transition: all 0.3s ease;
-}
-
-.search-wrapper:hover {
-      box-shadow: inset 4px 4px 8px rgba(0,0,0,0.5),
-                  inset -4px -4px 8px rgba(255,255,255,0.1);
-}
-
-.search-input {
-      flex: 1;
-      background-color: transparent;
-      border: none;
-      outline: none;
-      color: #FFD700;
-      font-size: clamp(0.9rem, 2.5vw, 1.2rem);
-      text-align: right;
-      text-align-last: right;
-      padding: 0.5rem 1rem;
-}
-
-.search-clear {
-      font-size: 1.5rem;
-      cursor: pointer;
-      color: #FFD700;
-      transition: transform 0.2s ease, color 0.2s ease;
-}
-
-.search-clear:hover {
-      transform: scale(1.2);
-      color: #fff;
-}
-
+  <div class="search-wrapper">
+    <span class="search-clear" onclick="clearSearch()">🔄</span>
+    <input id="search-box" type="text" placeholder="جستجو کنید (نام یا کلیدواژه)" 
+      class="search-input w-full px-4 py-3 text-base sm:text-lg border border-gray-300 rounded-full outline-none shadow-md"/>
+  </div>
 
   <select id="categorySelect" class="show-all-btn">
     <option value="">انتخاب دسته‌بندی</option>
