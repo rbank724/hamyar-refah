@@ -52,6 +52,19 @@
       -moz-appearance: none;
       appearance: none;
       font-size: clamp(0.9rem, 2.5vw, 1.2rem); 
+
+      /* نئومورفیسم سه‌بعدی */
+      border-radius: 12px;
+      box-shadow: 6px 6px 12px rgba(0,0,0,0.5),
+                  -6px -6px 12px rgba(255,255,255,0.1);
+      transition: all 0.3s ease;
+    }
+
+  #categorySelect:hover {
+      box-shadow: inset 4px 4px 8px rgba(0,0,0,0.5),
+                  inset -4px -4px 8px rgba(255,255,255,0.1);
+      transform: translateY(-2px);
+      cursor: pointer;
     }
 
     #results {
