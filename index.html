@@ -11,38 +11,21 @@
     body { font-family: "Vazirmatn", sans-serif; background-color: #f9f9f9; }
     h1, .search-input, .show-all-btn { color: #1f2937; }
 
-  .result-item {
-  border-radius: 50%;
-  aspect-ratio: 1/1;
-  width: 100px;
-  height: 100px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  background: linear-gradient(135deg, rgba(17,3,171,0.8), rgba(184,6,133,0.8));
-  backdrop-filter: blur(5px);
-
-  /* سایهٔ بیرونی قوی‌تر برای جدا شدن از بک‌گراند */
-  box-shadow:
-    0 12px 24px rgba(0, 0, 0, 0.4),   /* سایهٔ اصلی */
-    0 6px 6px rgba(0, 0, 0, 0.3);      /* سایهٔ دوم برای عمق بیشتر */
-  
-  /* کمی براقیت بالایی برای حالت توپی */
-  position: relative;
-  overflow: hidden;
-}
-
-.result-item::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2), transparent 60%);
-}
+   .result-item {
+      border-radius: 50%;
+      aspect-ratio: 1/1;
+      width: 100px;
+      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #fff;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+      background: linear-gradient(135deg, rgba(17,3,171,0.8), rgba(184,6,133,0.8));
+      backdrop-filter: blur(5px);
+    }
+    .result-item:hover { transform: translateY(-3px) scale(1.02); box-shadow:0 10px 15px rgba(0,0,0,0.2); }
     @keyframes fadeInUp { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
     .fade-in-up { animation: fadeInUp 0.6s ease forwards; }
 
