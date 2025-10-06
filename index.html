@@ -11,21 +11,41 @@
     body { font-family: "Vazirmatn", sans-serif; background-color: #f9f9f9; }
     h1, .search-input, .show-all-btn { color: #1f2937; }
 
-    .result-item {
-      border-radius: 50%;
-      aspect-ratio: 1/1;
-      width: 100px;
-      height: 100px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      color: #fff;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-      background: linear-gradient(135deg, rgba(17,3,171,0.8), rgba(184,6,133,0.8));
-      backdrop-filter: blur(5px);
-    }
-    .result-item:hover { transform: translateY(-3px) scale(1.02); box-shadow:0 10px 15px rgba(0,0,0,0.2); }
+  .result-item {
+  border-radius: 50%;
+  aspect-ratio: 1/1;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #fff;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+
+  /* گرادیان شعاعی برای حالت توپی */
+  background: radial-gradient(circle at 30% 30%,
+              rgba(255,255,255,0.4) 0%,
+              rgba(184,6,133,0.8) 70%,
+              rgba(17,3,171,0.8) 100%);
+
+  /* محو شیشه‌ای قبلی */
+  backdrop-filter: blur(5px);
+
+  /* سایه‌های سه‌بعدی */
+  box-shadow:
+    inset -6px -6px 12px rgba(255,255,255,0.3), /* هایلایت داخلی */
+    inset 6px 6px 12px rgba(0,0,0,0.15),        /* سایه داخلی */
+    0 8px 15px rgba(0,0,0,0.25);               /* سایه خارجی */
+}
+
+.result-item:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow:
+    inset -6px -6px 12px rgba(255,255,255,0.3),
+    inset 6px 6px 12px rgba(0,0,0,0.15),
+    0 12px 18px rgba(0,0,0,0.3);
+}
 
     @keyframes fadeInUp { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
     .fade-in-up { animation: fadeInUp 0.6s ease forwards; }
