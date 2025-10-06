@@ -21,29 +21,30 @@
   justify-content: center;
   text-align: center;
   color: #fff;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
 
-  /* گرادیان شعاعی فقط با رنگ‌های خودت (بدون سفید) */
+  /* گرادیان شعاعی تیره‌تر و مدرن */
   background: radial-gradient(circle at 30% 30%,
-              #b64c9f 0%,    /* صورتی روشن‌تر برای مرکز */
-              #b80685 60%,   /* صورتی اصلی */
-              #1103ab 100%); /* بنفش اصلی */
+              #7a024b 0%,    /* صورتی تیره‌تر مرکز */
+              #85025a 60%,   /* صورتی ارغوانی */
+              #0a0260 100%); /* بنفش خیلی تیره در لبه */
 
   backdrop-filter: blur(5px);
 
-  /* سایه‌ها برای سه‌بعدی */
+  /* سایه‌ها برای سه‌بعدی تیره */
   box-shadow:
-    inset -6px -6px 12px rgba(184,6,133,0.2), /* هایلایت داخلی صورتی */
-    inset 6px 6px 12px rgba(17,3,171,0.2),    /* سایه داخلی بنفش */
-    0 8px 15px rgba(0,0,0,0.25);              /* سایه خارجی */
+    inset -6px -6px 14px rgba(255,255,255,0.05), /* هایلایت داخلی کم‌رنگ */
+    inset 6px 6px 14px rgba(0,0,0,0.3),          /* سایه داخلی تیره‌تر */
+    0 10px 18px rgba(0,0,0,0.4);                /* سایه خارجی عمیق */
 }
 
 .result-item:hover {
-  transform: translateY(-3px) scale(1.02);
+  transform: translateY(-3px) scale(1.03);
   box-shadow:
-    inset -6px -6px 12px rgba(184,6,133,0.2),
-    inset 6px 6px 12px rgba(17,3,171,0.2),
-    0 12px 18px rgba(0,0,0,0.3);
+    inset -6px -6px 14px rgba(255,255,255,0.05),
+    inset 6px 6px 14px rgba(0,0,0,0.3),
+    0 14px 22px rgba(0,0,0,0.5);
+}
 }
 
     @keyframes fadeInUp { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
