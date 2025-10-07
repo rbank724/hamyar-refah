@@ -162,15 +162,48 @@
 </head>
 <body class="flex flex-col items-center m-0 p-4">
 
-  <div class="title">همیار رفاه</div>
-  <style>
-  .title {
-    font-size: 2rem;       /* اندازه فونت درشت */
-    font-weight: bold;     /* ضخیم‌تر */
-    color: #210c8a;        /* بنفش تیره */
-    text-align: center;    /* اختیاری: وسط‌چین */
-   }
-  </style>
+<div class="title">همیار رفاه</div>
+
+<style>
+/* فونت مدرن و وزن مناسب */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
+
+.title {
+    font-family: 'Montserrat', sans-serif; /* فونت مدرن */
+    font-size: 3rem; /* اندازه بزرگ برای تیتر */
+    font-weight: 700;
+    background: linear-gradient(135deg, #1103ab, #b80685); /* گرادیانت مدرن */
+    -webkit-background-clip: text; /* فقط متن گرادیانت داشته باشد */
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+    margin: 50px 0;
+    position: relative;
+    letter-spacing: 2px;
+    
+    /* سایه ظریف */
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+    
+    /* افکت ورود */
+    opacity: 0;
+    transform: translateY(-20px);
+    animation: fadeInUp 1s forwards;
+}
+
+/* انیمیشن */
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* افکت هاور */
+.title:hover {
+    background: linear-gradient(135deg, #b80685, #1103ab);
+    text-shadow: 3px 3px 8px rgba(0,0,0,0.3);
+    cursor: default;
+}
+</style>
   <div class="subtitle text-center mx-auto max-w-3xl overflow-wrap-break-word" 
      style="margin-top: 15px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">
   جستجوگر طرح های تسهیلاتی بانک رفاه کارگران
