@@ -344,8 +344,12 @@
 
     function hideDetail(){ detailDiv.style.display="none"; controls.style.display="none"; }
 
+    function persianToEnglishNumbers(str) {
+      return str.replace(/[۰-۹]/g, d => '0123456789'[d.charCodeAt(0) - 1776]);
+    }
+
     function doSearch(){
-      const query = searchBox.value.trim();
+      const query = persianToEnglishNumbers(searchBox.value.trim());
       filteredResults = (query.length>1 && fuse)? fuse.search(query) : [];
       currentPage=1; renderPage(currentPage);
     }
