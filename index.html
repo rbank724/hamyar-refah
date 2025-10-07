@@ -124,8 +124,8 @@
 
     #detail, #detail * { text-align: justify !important; }
     #detail-content * { color:inherit; }
-    #detail > p:first-child {
-       margin-top: 1.5rem; /* فاصله قبل از اولین پاراگراف */
+    #detail p:first-of-type {
+      margin-top: 1.5rem;
     }
     #detail-controls { display:flex; gap:8px; margin-bottom:6px; justify-start; }
 
@@ -334,6 +334,19 @@
         }
       }
     }
+   function fixNumbersWithSlash() {
+     const detail = document.getElementById("detail");
+     // پیدا کردن تمام متن‌ها که شامل اعداد فارسی و / هستند
+     detail.querySelectorAll("*").forEach(el => {
+       if (el.childNodes.length === 1 && el.childNodes[0].nodeType === 3) { // فقط تک متن
+         const text = el.textContent;
+         if (/[۰-۹]+\/[۰-۹]+/.test(text)) {
+           el.style.direction = "ltr";
+           el.style.unicodeBidi = "embed";
+         }
+       }
+     });
+   }
 
     function showDetail(item, html){
       loading.style.display = "none";
@@ -343,6 +356,7 @@
       detailDiv.scrollIntoView({behavior:"smooth"});
       controls.style.display = "flex";
       controls.style.marginTop = "20px"; // فاصله از بالای کادر
+      fixNumbersWithSlash(); 
       const share = document.getElementById("share-btn");
       share.onclick = () => {
         const contentText = detailDiv.innerText;
