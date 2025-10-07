@@ -399,6 +399,8 @@
       hideDetail();
       filteredResults=[]; 
       renderPage(1); 
+      const adBanners = document.getElementById('ad-banners');
+      if(adBanners) adBanners.classList.remove('hidden');
     }
 
     document.getElementById("categorySelect").addEventListener("change", e => {
