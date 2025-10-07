@@ -124,9 +124,6 @@
 
     #detail, #detail * { text-align: justify !important; }
     #detail-content * { color:inherit; }
-    #detail p:only-child {
-      margin-top: 1.5rem;
-    }
     #detail-controls { display:flex; gap:8px; margin-bottom:6px; justify-start; }
 
     /* انیمیشن ورود بنرها */
@@ -334,25 +331,10 @@
         }
       }
     }
-    function fixNumbersWithSymbols() {
-    const detail = document.getElementById("detail");
-    // همه المان‌های متن
-    detail.querySelectorAll("*").forEach(el => {
-      if (el.childNodes.length === 1 && el.childNodes[0].nodeType === 3) { // فقط تک متن
-        const text = el.textContent;
-        // اگر شامل اعداد فارسی و / یا : یا - باشد
-        if (/[۰-۹]+[\/:\-][۰-۹]+/.test(text)) {
-          el.style.direction = "ltr";
-          el.style.unicodeBidi = "embed";
-        }
-      }
-    });
-  }
 
     function showDetail(item, html){
       loading.style.display = "none";
       detailDiv.innerHTML = html;
-      fixNumbersWithSymbols();
       detailDiv.style.display = "block";
       paginationDiv.style.display = "none";
       detailDiv.scrollIntoView({behavior:"smooth"});
