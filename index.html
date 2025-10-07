@@ -160,7 +160,7 @@
   </div>
 
   <div class="search-wrapper">
-    <span class="search-clear" onclick="clearSearch()">🔄</span>
+    <span class="search-clear" onclick="clearSearch(event)">🔄</span>
     <input id="search-box" type="text" placeholder="جستجو کنید (نام طرح، کلیدواژه یا شماره اطلاعیه و بخشنامه)" 
       class="search-input w-full px-4 py-3 text-sm text-lg border border-gray-300 rounded-full outline-none shadow-md"/>
   </div>
@@ -177,7 +177,7 @@
   <div id="detail-controls" class="flex gap-2 mb-4 hidden">
    <button id="home-btn" 
      title="بازگشت به صفحه اصلی" 
-     onclick="clearSearch()"
+     onclick="clearSearch(event)"
      style="background: linear-gradient(145deg, #5c4bd6, #3c33a8);
           color:#fff;
           border:none;
@@ -392,7 +392,7 @@
       currentPage=1; renderPage(currentPage);
     }
 
-    function clearSearch(){ 
+    function clearSearch(event){ 
       searchBox.value=""; 
       const catSelect = document.getElementById("categorySelect");
       catSelect.value = "";
@@ -400,7 +400,14 @@
       filteredResults=[]; 
       renderPage(1); 
       const adBanners = document.getElementById('ad-banners');
-      if(adBanners) adBanners.classList.remove('hidden');
+      if(adBanners) {
+        adBanners.classList.remove('hidden');
+        // اضافه کردن انیمیشن ورود نرم
+        adBanners.classList.add('animate-fadeIn');
+      }
+
+  // جلوگیری از اینکه رویداد click روی document، بنرها رو دوباره مخفی کنه
+  if(event) event.stopPropagation();
     }
 
     document.getElementById("categorySelect").addEventListener("change", e => {
