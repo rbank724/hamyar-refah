@@ -293,6 +293,7 @@
       paginationDiv.style.display = "none";
       detailDiv.scrollIntoView({behavior:"smooth"});
       controls.style.display = "flex";
+      controls.style.marginTop = "20px"; // فاصله از بالای کادر
       const share = document.getElementById("share-btn");
       share.onclick = () => {
         const contentText = detailDiv.innerText;
