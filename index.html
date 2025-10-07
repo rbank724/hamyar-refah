@@ -129,6 +129,12 @@
 
     /* بنرها نسبت 2:1 */
     .ad-banner > div { aspect-ratio: 3/1; }
+    /* حفظ فضای شماره صفحات حتی وقتی مخفی می‌شود */
+    #pagination {
+      min-height: 60px; /* ارتفاع ثابت، مانع از پرش محتوا */
+      transition: opacity 0.4s ease;
+    }
+
   </style>
 </head>
 <body class="flex flex-col items-center m-0 p-4">
@@ -323,6 +329,8 @@
       loading.style.display = "none";
       detailDiv.innerHTML = html;
       detailDiv.style.display = "block";
+      paginationDiv.style.opacity = "0";
+      paginationDiv.style.pointerEvents = "none";
       paginationDiv.style.display = "none";
       detailDiv.scrollIntoView({behavior:"smooth"});
       controls.style.display = "flex";
@@ -344,6 +352,10 @@
       detailDiv.style.display="none";
       controls.style.display="none";
       paginationDiv.style.display = "flex";
+      paginationDiv.style.opacity = "1";
+      paginationDiv.style.pointerEvents = "auto";
+      paginationDiv.classList.remove("fade-out");
+      paginationDiv.classList.add("fade-in");
     }
 
     function doSearch(){
