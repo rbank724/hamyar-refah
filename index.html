@@ -331,8 +331,7 @@
       detailDiv.style.display = "block";
       paginationDiv.style.opacity = "0";
       paginationDiv.style.pointerEvents = "none";
-      paginationDiv.style.display = "none";
-      detailDiv.scrollIntoView({behavior:"smooth"});
+      detailDiv.scrollIntoView({ behavior: "smooth" });
       controls.style.display = "flex";
       const share = document.getElementById("share-btn");
       share.onclick = () => {
@@ -349,13 +348,10 @@
     }
 
     function hideDetail(){
-      detailDiv.style.display="none";
-      controls.style.display="none";
-      paginationDiv.style.display = "flex";
+      detailDiv.style.display = "none";
+      controls.style.display = "none";
       paginationDiv.style.opacity = "1";
       paginationDiv.style.pointerEvents = "auto";
-      paginationDiv.classList.remove("fade-out");
-      paginationDiv.classList.add("fade-in");
     }
 
     function doSearch(){
