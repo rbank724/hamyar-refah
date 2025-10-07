@@ -393,6 +393,7 @@
       loading.style.display = "none";
       detailDiv.innerHTML = html;
       detailDiv.style.display = "block";
+      document.getElementById("site-footer").style.display = "none";
       paginationDiv.style.display = "none";
       detailDiv.scrollIntoView({behavior:"smooth"});
       controls.style.display = "flex";
@@ -438,6 +439,7 @@
       }
 
        // جلوگیری از اینکه رویداد click روی document، بنرها رو دوباره مخفی کنه
+      document.getElementById("site-footer").style.display = "block";
       if(event) event.stopPropagation();
     }
 
@@ -467,6 +469,7 @@
       paginationDiv.style.display = "flex"; // شماره صفحات نمایش داده شود
       renderPage(currentPage);
       window.scrollTo({ top: 0, behavior: "smooth" });
+      document.getElementById("site-footer").style.display = "block";
     };
 
     // نمایش دوباره بنرها هنگام کلیک روی جارو
