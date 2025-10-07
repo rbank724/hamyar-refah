@@ -331,6 +331,7 @@
       detailDiv.innerHTML = "";
       resultsDiv.innerHTML = ""; 
       paginationDiv.innerHTML = "";
+      paginationDiv.style.display = "flex"; // دوباره شماره صفحات
       filteredResults = (cat === "") ? [] : data.filter(d => d.category === cat).map(d => ({item: d}));
       currentPage = 1;
       resultsDiv.style.display = (filteredResults.length > 0) ? "grid" : "none";
@@ -347,6 +348,7 @@
     backBtn.onclick = () => {
       hideDetail();
       resultsDiv.style.display = "grid";
+      paginationDiv.style.display = "flex"; // شماره صفحات نمایش داده شود
       renderPage(currentPage);
       window.scrollTo({ top: 0, behavior: "smooth" });
     };
