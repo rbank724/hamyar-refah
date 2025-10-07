@@ -175,7 +175,26 @@
 
   <!-- دکمه‌ها -->
   <div id="detail-controls" class="flex gap-2 mb-4 hidden">
-    <button id="calc-btn" title="ماشین حساب"
+   <button id="home-btn" 
+     title="بازگشت به صفحه اصلی" 
+     onclick="clearSearch()"
+     style="background: linear-gradient(145deg, #5c4bd6, #3c33a8);
+          color:#fff;
+          border:none;
+          border-radius:50%;
+          width:48px;
+          height:48px;
+          cursor:pointer;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          box-shadow:4px 4px 8px rgba(0,0,0,0.3),
+                     -4px -4px 8px rgba(255,255,255,0.1);">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+        </svg>
+      </button>
+      <button id="calc-btn" title="ماشین حساب"
       style="background: linear-gradient(145deg, #5c4bd6, #3c33a8);
              color:#fff;
              border:none;
@@ -269,8 +288,15 @@
     </a>
   </div>
 
-  <button id="backToTop" title="بازگشت به بالا">↑</button>
-
+  <button id="backToTop" title="بازگشت به بالا" style="background: linear-gradient(145deg, #5c4bd6, #3c33a8);
+             color:#fff;
+             border:none;
+             border-radius:50%;
+             width:48px;
+             height:48px;
+             cursor:pointer;
+             font-weight:bold;
+             box-shadow: 4px 4px 8px rgba(0,0,0,0.3), -4px -4px 8px rgba(255,255,255,0.1);">↑</button>
   <script>
     let data = [], fuse, filteredResults = [], showAll = false, currentPage = 1;
     const perPage = 12, fileCache = new Map();
