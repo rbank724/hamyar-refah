@@ -323,6 +323,7 @@
       loading.style.display = "none";
       detailDiv.innerHTML = html;
       detailDiv.style.display = "block";
+      paginationDiv.style.display = "none";
       detailDiv.scrollIntoView({behavior:"smooth"});
       controls.style.display = "flex";
       const share = document.getElementById("share-btn");
@@ -339,7 +340,11 @@
       minus.onclick = () => { if(fontSize>10){ fontSize-=2; detailDiv.style.fontSize=fontSize+"px"; detailDiv.style.lineHeight="1.8"; } };
     }
 
-    function hideDetail(){ detailDiv.style.display="none"; controls.style.display="none"; }
+    function hideDetail(){
+      detailDiv.style.display="none";
+      controls.style.display="none";
+      paginationDiv.style.display = "flex";
+    }
 
     function doSearch(){
       const query = searchBox.value.trim();
