@@ -388,24 +388,32 @@
   function showDetail(item, html) {
   loading.style.display = "none";
 
-  // اگر فایل ورد باشد (.docx)
+  // 🔹 بررسی فایل ورد
   if (item.file.toLowerCase().endsWith(".docx")) {
     fetch(item.file)
       .then(res => res.arrayBuffer())
       .then(arrayBuffer => mammoth.convertToHtml({ arrayBuffer }))
       .then(result => {
-        detailDiv.innerHTML = result.value;
+        // ✅ اعمال تنظیمات فارسی قبل از نمایش
+        const htmlContent = `
+          <div dir="rtl" style="text-align:justify; line-height:1.9; font-family:'Vazirmatn', sans-serif;">
+            ${result.value}
+          </div>
+        `;
+
+        detailDiv.innerHTML = htmlContent;
         styleDocxContent();
         convertEnglishNumbersToPersian(detailDiv);
         afterDetailLoad(item);
       })
       .catch(err => {
-        console.error("خطا در خواندن فایل ورد:", err);
-        detailDiv.innerHTML = "<p>❌ خطا در نمایش فایل ورد</p>";
+        console.error("❌ خطا در خواندن فایل ورد:", err);
+        detailDiv.innerHTML = "<p>خطا در نمایش فایل ورد</p>";
         afterDetailLoad(item);
       });
-  } else {
-    // فایل HTML معمولی
+  } 
+  else {
+    // 🔹 فایل HTML معمولی
     detailDiv.innerHTML = html;
     styleDocxContent();
     convertEnglishNumbersToPersian(detailDiv);
@@ -415,6 +423,8 @@
 
 function styleDocxContent() {
   const detail = document.getElementById("detail");
+  if (!detail) return;
+
   detail.style.direction = "rtl";
   detail.style.fontFamily = "Vazirmatn, sans-serif";
   detail.style.textAlign = "justify";
@@ -422,6 +432,11 @@ function styleDocxContent() {
   detail.querySelectorAll("p, h1, h2, h3, li").forEach(el => {
     el.style.textAlign = "justify";
     el.style.lineHeight = "1.9";
+  });
+
+  // 🔹 رنگ خاص برای strong
+  detail.querySelectorAll("strong").forEach(strong => {
+    strong.style.color = "#001f5b"; // سورمه‌ای
   });
 }
 
