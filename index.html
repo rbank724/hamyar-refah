@@ -2,7 +2,7 @@
 <html lang="fa" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>همیار رفاه</title>
   <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
@@ -124,7 +124,9 @@
 
     #detail, #detail * { text-align: justify !important; }
     #detail-content * { color:inherit; }
-
+    #detail > p:first-child {
+       margin-top: 1.5rem; /* فاصله قبل از اولین پاراگراف */
+    }
     #detail-controls { display:flex; gap:8px; margin-bottom:6px; justify-start; }
 
     /* انیمیشن ورود بنرها */
