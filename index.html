@@ -512,6 +512,20 @@
         };
       });
     }
+    const siteFooter = document.getElementById("site-footer");
+
+// ابتدا فوتر همیشه در صفحه اصلی نمایش داده شود
+siteFooter.style.display = "block";
+
+// وقتی جزئیات طرح باز می‌شود، فوتر مخفی شود
+function hideFooter() {
+  siteFooter.style.display = "none";
+}
+
+// وقتی به صفحه اصلی برمی‌گردیم، فوتر دوباره نمایش داده شود
+function showFooter() {
+  siteFooter.style.display = "block";
+}
   </script>
     <!-- فوتر سایت -->
   <footer class="site-footer">
