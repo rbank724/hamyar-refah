@@ -145,35 +145,8 @@
        direction: ltr;
        unicode-bidi: embed;
      }
-  
-  /* 🎨 فوتر شیشه‌ای و نئومورفیک */
-.site-footer {
-  width: 100%;
-  text-align: center;
-  font-size: 0.85rem;
-  color: rgba(0, 0, 0, 0.6);
-  margin-top: 60px;
-  padding: 12px 0;
-  background: rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(6px);
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: inset 0 1px 4px rgba(255, 255, 255, 0.3);
-  user-select: none;
-  transition: all 0.4s ease;
-}
 
-.site-footer span {
-  font-weight: bold;
-  color: #2c2f7b; /* هماهنگ با رنگ‌های بنفش تیره سایت */
-}
-
-.site-footer:hover {
-  background: rgba(255, 255, 255, 0.6);
-  color: rgba(0, 0, 0, 0.8);
-  border-top-color: rgba(0, 0, 0, 0.1);
-}
-  
- </style>
+  </style>
 </head>
 <body class="flex flex-col items-center m-0 p-4">
 
@@ -393,7 +366,6 @@
       loading.style.display = "none";
       detailDiv.innerHTML = html;
       detailDiv.style.display = "block";
-      document.getElementById("site-footer").style.display = "none";
       paginationDiv.style.display = "none";
       detailDiv.scrollIntoView({behavior:"smooth"});
       controls.style.display = "flex";
@@ -439,7 +411,6 @@
       }
 
        // جلوگیری از اینکه رویداد click روی document، بنرها رو دوباره مخفی کنه
-      document.getElementById("site-footer").style.display = "block";
       if(event) event.stopPropagation();
     }
 
@@ -469,7 +440,6 @@
       paginationDiv.style.display = "flex"; // شماره صفحات نمایش داده شود
       renderPage(currentPage);
       window.scrollTo({ top: 0, behavior: "smooth" });
-      document.getElementById("site-footer").style.display = "block";
     };
 
     // نمایش دوباره بنرها هنگام کلیک روی جارو
@@ -512,26 +482,6 @@
         };
       });
     }
-    const siteFooter = document.getElementById("site-footer");
-
-// ابتدا فوتر همیشه در صفحه اصلی نمایش داده شود
-siteFooter.style.display = "block";
-
-// وقتی جزئیات طرح باز می‌شود، فوتر مخفی شود
-function hideFooter() {
-  siteFooter.style.display = "none";
-}
-
-// وقتی به صفحه اصلی برمی‌گردیم، فوتر دوباره نمایش داده شود
-function showFooter() {
-  siteFooter.style.display = "block";
-}
   </script>
-    <!-- فوتر سایت -->
-  <footer class="site-footer">
-    طراحی و پیاده‌سازی:<br>    
-    <span>گروه کارشناسی فناوری اطلاعات</span><br>
-    مدیریت شعب استان بوشهر
-  </footer>
 </body>
 </html>
