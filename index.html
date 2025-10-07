@@ -178,12 +178,23 @@
 
   <div class="search-wrapper">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
-<span class="search-clear" onclick="clearSearch(event)" 
-      style="font-size: 26px; color: #6a0dad; cursor: pointer;">
+
+<span class="search-clear" onclick="clearSearch(event)">
   <span class="material-icons-outlined">autorenew</span>
 </span>
 
 <style>
+.search-clear {
+  display: inline-flex;            /* برای تنظیم وسط‌چین عمودی */
+  align-items: center;             /* وسط‌چین عمودی */
+  justify-content: center;         /* وسط‌چین افقی */
+  width: 32px;                     /* اندازه باکس (اختیاری) */
+  height: 32px;                    /* ارتفاع باکس */
+  cursor: pointer;
+  color: #6a0dad;
+  font-size: 26px;
+}
+
 .search-clear:hover .material-icons-outlined {
   transform: rotate(180deg);
   transition: transform 0.4s ease;
