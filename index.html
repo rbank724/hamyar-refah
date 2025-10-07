@@ -178,13 +178,16 @@
 
   <div class="search-wrapper">
 <span class="search-clear" onclick="clearSearch(event)" 
-      style="display: inline-flex; align-items: center; justify-content: center; cursor: pointer;">
-  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
-       fill="none" stroke="#6a0dad" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-       class="refresh-icon">
-    <polyline points="23 4 23 10 17 10"></polyline>
-    <polyline points="1 20 1 14 7 14"></polyline>
-    <path d="M3.51 9a9 9 0 0114.13-3.36L23 10M1 14l5.36 4.36A9 9 0 0020.49 15"></path>
+      style="display:inline-flex;align-items:center;justify-content:center;cursor:pointer;">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="26" height="26" 
+       fill="url(#grad1)" class="refresh-icon">
+    <defs>
+      <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#6a0dad;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#b80685;stop-opacity:1" />
+      </linearGradient>
+    </defs>
+    <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.38-.47 2.64-1.26 3.64l1.46 1.46A7.97 7.97 0 0020 12c0-4.42-3.58-8-8-8zm-6 6c0-1.38.47-2.64 1.26-3.64L5.8 4.9A7.97 7.97 0 004 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3c-3.31 0-6-2.69-6-6z"/>
   </svg>
 </span>
 
@@ -192,13 +195,11 @@
 .refresh-icon {
   transition: transform 0.6s ease;
 }
-
+.search-clear:hover .refresh-icon {
+  transform: rotate(180deg);
+}
 .search-clear:active .refresh-icon {
   transform: rotate(360deg);
-}
-
-.search-clear:hover .refresh-icon {
-  stroke: #9c27b0; /* تغییر رنگ در حالت hover */
 }
 </style>
     <input id="search-box" type="text" placeholder="جستجو کنید (نام طرح، کلیدواژه یا شماره اطلاعیه و بخشنامه)" 
