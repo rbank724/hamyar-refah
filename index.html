@@ -227,7 +227,7 @@
 
   <script>
     let data = [], fuse, filteredResults = [], showAll = false, currentPage = 1;
-    const perPage = 10, fileCache = new Map();
+    const perPage = 12, fileCache = new Map();
     let categories = new Set();
 
     fetch("data.json").then(res => res.json()).then(json => { 
