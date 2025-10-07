@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <script src="https://rbank724.github.io/hamyar-refah/mammoth.browser.min.js"></script>
   <title>همیار رفاه</title>
   <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
@@ -11,32 +10,6 @@
   <style>
     body { font-family: "Vazirmatn", sans-serif; background-color: #f9f9f9; }
     h1, .search-input, .show-all-btn { color: #1f2937; }
-
-  #detail {
-  direction: rtl;
-  text-align: justify;
-  font-family: "Vazirmatn", sans-serif;
-  font-size: 16px;
-  line-height: 1.9;
-  color: #111;
- }
-
- #detail p strong {
-  color: #001f5b; /* سرمه‌ای */
- }
-
- #detail h1, #detail h2, #detail h3 {
-  color: #001f5b;
-  font-weight: 700;
-  margin-top: 1em;
- }
-
-/* فاصله قبل از پاراگراف‌های بولد */
- #detail p strong::before {
-  content: "";
-  display: block;
-  margin-top: 10px;
- }
 
    .result-item {
       border-radius: 50%;
@@ -187,7 +160,7 @@
   </div>
 
   <div class="search-wrapper">
-    <span class="search-clear" onclick="clearSearch(event)">🔄</span>
+    <span class="search-clear" onclick="clearSearch()">🔄</span>
     <input id="search-box" type="text" placeholder="جستجو کنید (نام طرح، کلیدواژه یا شماره اطلاعیه و بخشنامه)" 
       class="search-input w-full px-4 py-3 text-sm text-lg border border-gray-300 rounded-full outline-none shadow-md"/>
   </div>
@@ -204,7 +177,7 @@
   <div id="detail-controls" class="flex gap-2 mb-4 hidden">
    <button id="home-btn" 
      title="بازگشت به صفحه اصلی" 
-     onclick="clearSearch(event)"
+     onclick="clearSearch()"
      style="background: linear-gradient(145deg, #5c4bd6, #3c33a8);
           color:#fff;
           border:none;
@@ -385,107 +358,27 @@
       }
     }
 
-  function showDetail(item, html) {
-  loading.style.display = "none";
-
-  // 🔹 بررسی فایل ورد
-  if (item.file.toLowerCase().endsWith(".docx")) {
-    fetch(item.file)
-      .then(res => res.arrayBuffer())
-      .then(arrayBuffer => mammoth.convertToHtml({ arrayBuffer }))
-      .then(result => {
-        // ✅ اعمال تنظیمات فارسی قبل از نمایش
-        const htmlContent = `
-          <div dir="rtl" style="text-align:justify; line-height:1.9; font-family:'Vazirmatn', sans-serif;">
-            ${result.value}
-          </div>
-        `;
-
-        detailDiv.innerHTML = htmlContent;
-        styleDocxContent();
-        convertEnglishNumbersToPersian(detailDiv);
-        afterDetailLoad(item);
-      })
-      .catch(err => {
-        console.error("❌ خطا در خواندن فایل ورد:", err);
-        detailDiv.innerHTML = "<p>خطا در نمایش فایل ورد</p>";
-        afterDetailLoad(item);
-      });
-  } 
-  else {
-    // 🔹 فایل HTML معمولی
-    detailDiv.innerHTML = html;
-    styleDocxContent();
-    convertEnglishNumbersToPersian(detailDiv);
-    afterDetailLoad(item);
-  }
-}
-
-function styleDocxContent() {
-  const detail = document.getElementById("detail");
-  if (!detail) return;
-
-  detail.style.direction = "rtl";
-  detail.style.fontFamily = "Vazirmatn, sans-serif";
-  detail.style.textAlign = "justify";
-
-  detail.querySelectorAll("p, h1, h2, h3, li").forEach(el => {
-    el.style.textAlign = "justify";
-    el.style.lineHeight = "1.9";
-  });
-
-  // 🔹 رنگ خاص برای strong
-  detail.querySelectorAll("strong").forEach(strong => {
-    strong.style.color = "#001f5b"; // سورمه‌ای
-  });
-}
-
-/* 🔹 تبدیل اعداد انگلیسی به فارسی */
-function convertEnglishNumbersToPersian(element) {
-  const persianDigits = ["۰","۱","۲","۳","۴","۵","۶","۷","۸","۹"];
-  const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null, false);
-  while (walker.nextNode()) {
-    walker.currentNode.nodeValue = walker.currentNode.nodeValue.replace(/\d/g, d => persianDigits[d]);
-  }
-}
-
-function afterDetailLoad(item) {
-  detailDiv.style.display = "block";
-  paginationDiv.style.display = "none";
-  detailDiv.scrollIntoView({ behavior: "smooth" });
-  controls.style.display = "flex";
-  controls.style.marginTop = "20px";
-
-  const share = document.getElementById("share-btn");
-  share.onclick = () => {
-    const contentText = detailDiv.innerText;
-    const textToShare = item.title + "\n\n" + contentText;
-    if (navigator.share) {
-      navigator.share({ title: item.title, text: textToShare });
-    } else {
-      navigator.clipboard.writeText(textToShare).then(() => {
-        alert("متن طرح و عنوان آن کپی شد.");
-      });
+    function showDetail(item, html){
+      loading.style.display = "none";
+      detailDiv.innerHTML = html;
+      detailDiv.style.display = "block";
+      paginationDiv.style.display = "none";
+      detailDiv.scrollIntoView({behavior:"smooth"});
+      controls.style.display = "flex";
+      controls.style.marginTop = "20px"; // فاصله از بالای کادر
+      const share = document.getElementById("share-btn");
+      share.onclick = () => {
+        const contentText = detailDiv.innerText;
+        const textToShare = item.title + "\n\n" + contentText;
+        if(navigator.share){ navigator.share({ title:item.title, text:textToShare }); }
+        else { navigator.clipboard.writeText(textToShare).then(()=>{ alert("متن طرح و عنوان آن کپی شد."); }); }
+      };
+      const plus = document.getElementById("font-plus");
+      const minus = document.getElementById("font-minus");
+      let fontSize = 16;
+      plus.onclick = () => { fontSize +=2; detailDiv.style.fontSize = fontSize+"px"; detailDiv.style.lineHeight="1.8"; };
+      minus.onclick = () => { if(fontSize>10){ fontSize-=2; detailDiv.style.fontSize=fontSize+"px"; detailDiv.style.lineHeight="1.8"; } };
     }
-  };
-
-  const plus = document.getElementById("font-plus");
-  const minus = document.getElementById("font-minus");
-  let fontSize = 16;
-  plus.onclick = () => {
-    fontSize += 2;
-    detailDiv.style.fontSize = fontSize + "px";
-    detailDiv.style.lineHeight = "1.8";
-  };
-  minus.onclick = () => {
-    if (fontSize > 10) {
-      fontSize -= 2;
-      detailDiv.style.fontSize = fontSize + "px";
-      detailDiv.style.lineHeight = "1.8";
-    }
-  };
-}
-
 
     function hideDetail(){ detailDiv.style.display="none"; controls.style.display="none"; }
 
@@ -499,7 +392,7 @@ function afterDetailLoad(item) {
       currentPage=1; renderPage(currentPage);
     }
 
-    function clearSearch(event){ 
+    function clearSearch(){ 
       searchBox.value=""; 
       const catSelect = document.getElementById("categorySelect");
       catSelect.value = "";
@@ -507,14 +400,7 @@ function afterDetailLoad(item) {
       filteredResults=[]; 
       renderPage(1); 
       const adBanners = document.getElementById('ad-banners');
-      if(adBanners) {
-        adBanners.classList.remove('hidden');
-        // اضافه کردن انیمیشن ورود نرم
-        adBanners.classList.add('animate-fadeIn');
-      }
-
-  // جلوگیری از اینکه رویداد click روی document، بنرها رو دوباره مخفی کنه
-  if(event) event.stopPropagation();
+      if(adBanners) adBanners.classList.remove('hidden');
     }
 
     document.getElementById("categorySelect").addEventListener("change", e => {
