@@ -97,11 +97,16 @@
       transition: all 0.3s ease;
     }
 
-  #categorySelect:hover {
+    #categorySelect:hover {
       box-shadow: inset 4px 4px 8px rgba(0,0,0,0.5),
                   inset -4px -4px 8px rgba(255,255,255,0.1);
       transform: translateY(-2px);
       cursor: pointer;
+    }
+    #categorySelect option {
+      text-align: center;
+      direction: rtl;
+      unicode-bidi: bidi-override; /* برای راست‌به‌چپ درست */
     }
 
     #results {
