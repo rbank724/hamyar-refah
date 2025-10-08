@@ -281,7 +281,6 @@
             align-items:center;
             justify-content:center;
             box-shadow: 4px 4px 8px rgba(0,0,0,0.3), -4px -4px 8px rgba(255,255,255,0.1);">
-     <!-- SVG آیکن info -->
      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 24 24">
        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 15h-1v-6h2v6h-1zm0-8a1 1 0 110-2 1 1 0 010 2z"/>
      </svg>
@@ -299,14 +298,13 @@
              align-items:center;
              justify-content:center;
              box-shadow: 4px 4px 8px rgba(0,0,0,0.3), -4px -4px 8px rgba(255,255,255,0.1);">
-      <!-- SVG ماشین حساب -->
       <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 24 24">
         <path d="M5 2h14a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 2v16h14V4H5zm2 2h10v3H7V6zm0 5h2v2H7v-2zm3 0h2v2h-2v-2zm3 0h2v2h-2v-2zM7 14h2v2H7v-2zm3 0h2v2h-2v-2zm3 0h2v2h-2v-2zM7 17h2v2H7v-2zm3 0h2v2h-2v-2zm3 0h2v2h-2v-2z"/>
       </svg>
 </button>
 <script>
  document.getElementById('calc-btn').addEventListener('click', function() {
-  window.open('https://www.refah-bank.ir/vam-to', '_blank'); // باز شدن در تب جدید
+  window.open('https://www.refah-bank.ir/vam-to', '_blank');
  });
 </script>
 
@@ -322,7 +320,6 @@
             align-items:center;
             justify-content:center;
             box-shadow: 4px 4px 8px rgba(0,0,0,0.3), -4px -4px 8px rgba(255,255,255,0.1);">
-     <!-- SVG آیکن شیر -->
      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"></path>
       <polyline points="16 6 12 2 8 6"></polyline>
@@ -360,14 +357,13 @@
             align-items:center;
             justify-content:center;
             box-shadow: 4px 4px 8px rgba(0,0,0,0.3), -4px -4px 8px rgba(255,255,255,0.1);">
-     <!-- SVG فلش -->
       <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
        <polyline points="15 18 9 12 15 6"></polyline>
       </svg>
 </button>
 
-<!-- ✅ مودال درباره -->
-<div id="aboutModal" style="display:none; position:fixed; z-index:2000; left:0; top:0; width:100%; height:100%; background-color:rgba(0,0,0,0.4); backdrop-filter:blur(3px);">
+<!-- ✅ مودال درباره با افکت -->
+<div id="aboutModal" style="display:none; position:fixed; z-index:2000; left:0; top:0; width:100%; height:100%; background-color:rgba(0,0,0,0.4); backdrop-filter:blur(3px); opacity:0; transition:opacity 0.3s ease;">
   <div style="background:#fff; margin:10% auto; padding:20px 25px; border-radius:12px; max-width:500px; direction:rtl; line-height:1.8; text-align:justify; box-shadow:0 5px 15px rgba(0,0,0,0.3);">
     <span onclick="closeAbout()" style="color:#999; float:left; font-size:28px; font-weight:bold; cursor:pointer;">&times;</span>
     <h2 style="text-align:center; color:#5c4bd6; margin-bottom:15px;">درباره وب‌سایت</h2>
@@ -380,18 +376,21 @@
 </div>
 
 <script>
+  const aboutModal = document.getElementById('aboutModal');
+
   document.getElementById('about-btn').addEventListener('click', function() {
-    document.getElementById('aboutModal').style.display = 'block';
+    aboutModal.style.display = 'block';
+    setTimeout(() => { aboutModal.style.opacity = '1'; }, 10);
   });
 
   function closeAbout() {
-    document.getElementById('aboutModal').style.display = 'none';
+    aboutModal.style.opacity = '0';
+    setTimeout(() => { aboutModal.style.display = 'none'; }, 300);
   }
 
   window.onclick = function(event) {
-    const modal = document.getElementById('aboutModal');
-    if (event.target === modal) {
-      modal.style.display = 'none';
+    if (event.target === aboutModal) {
+      closeAbout();
     }
   };
 </script>
