@@ -266,8 +266,28 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 24 24">
           <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
         </svg>
-      </button>
-      <button id="calc-btn" title="ماشین حساب"
+</button>
+
+<!-- ✅ دکمه درباره -->
+<button id="about-btn" title="درباره"
+     style="background: linear-gradient(145deg, #5c4bd6, #3c33a8);
+            color:#fff;
+            border:none;
+            border-radius:50%;
+            width:48px;
+            height:48px;
+            cursor:pointer;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            box-shadow: 4px 4px 8px rgba(0,0,0,0.3), -4px -4px 8px rgba(255,255,255,0.1);">
+     <!-- SVG آیکن info -->
+     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 24 24">
+       <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 15h-1v-6h2v6h-1zm0-8a1 1 0 110-2 1 1 0 010 2z"/>
+     </svg>
+</button>
+
+<button id="calc-btn" title="ماشین حساب"
       style="background: linear-gradient(145deg, #5c4bd6, #3c33a8);
              color:#fff;
              border:none;
@@ -283,13 +303,14 @@
       <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 24 24">
         <path d="M5 2h14a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 2v16h14V4H5zm2 2h10v3H7V6zm0 5h2v2H7v-2zm3 0h2v2h-2v-2zm3 0h2v2h-2v-2zM7 14h2v2H7v-2zm3 0h2v2h-2v-2zm3 0h2v2h-2v-2zM7 17h2v2H7v-2zm3 0h2v2h-2v-2zm3 0h2v2h-2v-2z"/>
       </svg>
-    </button>
-    <script>
-     document.getElementById('calc-btn').addEventListener('click', function() {
-      window.open('https://www.refah-bank.ir/vam-to', '_blank'); // باز شدن در تب جدید
-     });
-    </script>
-   <button id="share-btn" title="اشتراک‌گذاری" 
+</button>
+<script>
+ document.getElementById('calc-btn').addEventListener('click', function() {
+  window.open('https://www.refah-bank.ir/vam-to', '_blank'); // باز شدن در تب جدید
+ });
+</script>
+
+<button id="share-btn" title="اشتراک‌گذاری" 
      style="background: linear-gradient(145deg, #5c4bd6, #3c33a8);
             color:#fff;
             border:none;
@@ -307,8 +328,9 @@
       <polyline points="16 6 12 2 8 6"></polyline>
       <line x1="12" y1="2" x2="12" y2="15"></line>
      </svg>
-    </button>
-    <button id="font-plus" title="بزرگتر" style="background: linear-gradient(145deg, #5c4bd6, #3c33a8);
+</button>
+
+<button id="font-plus" title="بزرگتر" style="background: linear-gradient(145deg, #5c4bd6, #3c33a8);
              color:#fff;
              border:none;
              border-radius:50%;
@@ -317,7 +339,7 @@
              cursor:pointer;
              font-weight:bold;
              box-shadow: 4px 4px 8px rgba(0,0,0,0.3), -4px -4px 8px rgba(255,255,255,0.1);">A+</button>
-    <button id="font-minus" title="کوچکتر" style="background: linear-gradient(145deg, #5c4bd6, #3c33a8);
+<button id="font-minus" title="کوچکتر" style="background: linear-gradient(145deg, #5c4bd6, #3c33a8);
              color:#fff;
              border:none;
              border-radius:50%;
@@ -326,7 +348,7 @@
              cursor:pointer;
              font-weight:bold;
              box-shadow: 4px 4px 8px rgba(0,0,0,0.3), -4px -4px 8px rgba(255,255,255,0.1);">A-</button>
-    <button id="back-btn" title="بازگشت" 
+<button id="back-btn" title="بازگشت" 
      style="background: linear-gradient(145deg, #5c4bd6, #3c33a8);
             color:#fff;
             border:none;
@@ -342,7 +364,37 @@
       <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
        <polyline points="15 18 9 12 15 6"></polyline>
       </svg>
-    </button>
+</button>
+
+<!-- ✅ مودال درباره -->
+<div id="aboutModal" style="display:none; position:fixed; z-index:2000; left:0; top:0; width:100%; height:100%; background-color:rgba(0,0,0,0.4); backdrop-filter:blur(3px);">
+  <div style="background:#fff; margin:10% auto; padding:20px 25px; border-radius:12px; max-width:500px; direction:rtl; line-height:1.8; text-align:justify; box-shadow:0 5px 15px rgba(0,0,0,0.3);">
+    <span onclick="closeAbout()" style="color:#999; float:left; font-size:28px; font-weight:bold; cursor:pointer;">&times;</span>
+    <h2 style="text-align:center; color:#5c4bd6; margin-bottom:15px;">درباره وب‌سایت</h2>
+    <p>وب‌سایت <strong>همیار رفاه</strong> با هدف تسهیل دسترسی آحاد جامعه به خدمات و طرح‌های متنوع <strong>بانک رفاه کارگران</strong> طراحی و راه‌اندازی شده است.</p>
+    <p>این سامانه بستری ساده، شفاف و کاربردی را فراهم می‌کند تا مشتریان بتوانند با آگاهی کامل از تسهیلات و طرح‌های اعتباری، بهترین گزینه را متناسب با نیاز خود انتخاب کنند.</p>
+    <p>مأموریت اصلی این وب‌سایت، <strong>حمایت از اقتصاد خانوارها</strong> و <strong>توانمندسازی بنگاه‌های اقتصادی</strong> از طریق دسترسی آسان‌تر به منابع مالی و خدمات بانکی است؛ گامی کوچک در مسیر تقویت تولید، اشتغال و رفاه اجتماعی.</p>
+    <hr>
+    <p style="text-align:center; color:#555; font-size:0.95rem;">💻 <strong>طراحی و پیاده‌سازی:</strong><br>گروه کارشناسی فناوری اطلاعات<br>مدیریت شعب استان بوشهر</p>
+  </div>
+</div>
+
+<script>
+  document.getElementById('about-btn').addEventListener('click', function() {
+    document.getElementById('aboutModal').style.display = 'block';
+  });
+
+  function closeAbout() {
+    document.getElementById('aboutModal').style.display = 'none';
+  }
+
+  window.onclick = function(event) {
+    const modal = document.getElementById('aboutModal');
+    if (event.target === modal) {
+      modal.style.display = 'none';
+    }
+  };
+</script>
   </div>
 
 
