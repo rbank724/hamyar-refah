@@ -437,9 +437,6 @@
     fetch("data.json").then(res => res.json()).then(json => { 
       data = json; 
       fuse = new Fuse(data, { keys:["title","keywords"], threshold:0.3 });
-      // تبدیل Set به آرایه و مرتب‌سازی الفبایی
-      const sortedCategories = Array.from(new Set(json.map(item => item.category)))
-        .sort((a, b) => a.localeCompare(b, 'fa')); // مرتب‌سازی فارسی
       json.forEach(item => categories.add(item.category));
       const catSelect = document.getElementById("categorySelect");
       categories.forEach(cat => {
@@ -580,6 +577,12 @@
       paginationDiv.innerHTML = "";
       paginationDiv.style.display = "flex"; // دوباره شماره صفحات
       filteredResults = (cat === "") ? [] : data.filter(d => d.category === cat).map(d => ({item: d}));
+      // ======= ✅ مرتب‌سازی الفبایی فارسی آیتم‌های داخل دسته =======
+      filteredResults.sort((a, b) => {
+        const titleA = (a.item ? a.item.title : a.title) || "";
+        const titleB = (b.item ? b.item.title : b.title) || "";
+        return titleA.localeCompare(titleB, 'fa', { sensitivity: 'base' });
+      });
       currentPage = 1;
       resultsDiv.style.display = (filteredResults.length > 0) ? "grid" : "none";
       renderPage(currentPage);
