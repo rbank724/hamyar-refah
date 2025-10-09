@@ -79,16 +79,15 @@
     .show-all-btn:hover { transform: translateY(-2px) scale(1.02); box-shadow:0 10px 15px rgba(0,0,0,0.2); }
 
     #categorySelect {
-      font-family: 'Vazirmatn', sans-serif;
       color: #FFD700;
       text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-      -webkit-appearance: menulist; /* برای دسکتاپ */
-      -moz-appearance: menulist;
-      appearance: menulist;
       background-color: #090157;
       text-align: center;
       text-align-last: center;
       direction: rtl;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
       font-size: clamp(0.9rem, 2.5vw, 1.2rem); 
 
       /* نئومورفیسم سه‌بعدی */
@@ -103,12 +102,6 @@
                   inset -4px -4px 8px rgba(255,255,255,0.1);
       transform: translateY(-2px);
       cursor: pointer;
-    }
-    #categorySelect option {
-      font-family: 'Vazirmatn', sans-serif;
-      text-align: center;
-      direction: rtl;
-      unicode-bidi: bidi-override; /* برای راست‌به‌چپ درست */
     }
 
     #results {
