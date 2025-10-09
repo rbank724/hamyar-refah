@@ -462,7 +462,12 @@
     function renderPage(page){
       resultsDiv.innerHTML = ""; paginationDiv.innerHTML = ""; hideDetail();
       if(filteredResults.length===0){ resultsDiv.style.display="none"; return; } else { resultsDiv.style.display="grid"; }
-
+      // ✅ مرتب‌سازی الفبایی فارسی قبل از نمایش
+      filteredResults.sort((a, b) => {
+        const titleA = (a.item?.title || "").trim();
+        const titleB = (b.item?.title || "").trim();
+        return titleA.localeCompare(titleB, 'fa', { sensitivity: 'base' });
+      });
       const start = (page-1)*perPage;
       const pageItems = filteredResults.slice(start,start+perPage);
       pageItems.forEach(r=>{
@@ -519,34 +524,33 @@
     }
 
     function doSearch(){
-  const raw = searchBox.value.trim();
-  const query = persianToEnglishNumbers(raw); // تو تابعت هست
+     const raw = searchBox.value.trim();
+     const query = persianToEnglishNumbers(raw); // تو تابعت هست
 
-  // اگر Fuse هنوز آماده نبود یا داده‌ها خالیست
-  if(!fuse || !data.length) { filteredResults = []; renderPage(1); return; }
+     // اگر Fuse هنوز آماده نبود یا داده‌ها خالیست
+     if(!fuse || !data.length) { filteredResults = []; renderPage(1); return; }
 
-  // اگر پرس‌وجو فقط شامل ارقام (انگلیسی) باشد -> جستجوی عددی دقیق
-  if(/^\d+$/.test(query) && query.length > 0){
-    const q = query;
-    filteredResults = data.filter(d => {
-      // یک رشتهٔ مرکب از عنوان + کلیدواژه‌ها می‌سازیم
-      let combined = (d.title || "") + " ";
-      if (Array.isArray(d.keywords)) combined += d.keywords.join(" ");
+     // اگر پرس‌وجو فقط شامل ارقام (انگلیسی) باشد -> جستجوی عددی دقیق
+     if(/^\d+$/.test(query) && query.length > 0){
+       const q = query;
+       filteredResults = data.filter(d => {
+         // یک رشتهٔ مرکب از عنوان + کلیدواژه‌ها می‌سازیم
+         let combined = (d.title || "") + " ";
+         if (Array.isArray(d.keywords)) combined += d.keywords.join(" ");
 
-      // تبدیل اعداد فارسی به انگلیسی (در صورت وجود)
-      combined = persianToEnglishNumbers(combined);
+         // تبدیل اعداد فارسی به انگلیسی (در صورت وجود)
+         combined = persianToEnglishNumbers(combined);
 
-      // استخراج توالی‌های عددی (مثل 1215 یا 1215/3 -> جدا می‌شوند)
-      const nums = combined.match(/\d+/g) || [];
+         // استخراج توالی‌های عددی (مثل 1215 یا 1215/3 -> جدا می‌شوند)
+         const nums = combined.match(/\d+/g) || [];
 
-      // ✅ شرط: فقط توالی‌های عددی که دقیقاً برابر با q هستند را قبول کن
-      return nums.some(n => n === q);
-    }).map(d => ({ item: d })); // شکل خروجی مشابه fuse.search
-  } else {
+         // ✅ شرط: فقط توالی‌های عددی که دقیقاً برابر با q هستند را قبول کن
+         return nums.some(n => n === q);
+       }).map(d => ({ item: d })); // شکل خروجی مشابه fuse.search
+     } else {
     // غیر از جستجوی عددی، از Fuse استفاده کن (مثل گذشته)
     filteredResults = (query.length>1 && fuse) ? fuse.search(query) : [];
   }
-
   currentPage = 1;
   renderPage(currentPage);
 }
@@ -577,12 +581,6 @@
       paginationDiv.innerHTML = "";
       paginationDiv.style.display = "flex"; // دوباره شماره صفحات
       filteredResults = (cat === "") ? [] : data.filter(d => d.category === cat).map(d => ({item: d}));
-      // ======= ✅ مرتب‌سازی الفبایی فارسی آیتم‌های داخل دسته =======
-      filteredResults.sort((a, b) => {
-        const titleA = (a.item ? a.item.title : a.title) || "";
-        const titleB = (b.item ? b.item.title : b.title) || "";
-        return titleA.localeCompare(titleB, 'fa', { sensitivity: 'base' });
-      });
       currentPage = 1;
       resultsDiv.style.display = (filteredResults.length > 0) ? "grid" : "none";
       renderPage(currentPage);
