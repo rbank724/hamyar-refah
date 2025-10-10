@@ -698,40 +698,40 @@
 
     function hideDetail(){ detailDiv.style.display="none"; controls.style.display="none"; }
 
-    // --- منطق جستجو (بهبود یافته) ---
     function doSearch(){
      const raw = searchBox.value.trim();
-     const query = persianToEnglishNumbers(raw); // تو تابع هست
+     const query = persianToEnglishNumbers(raw); // تبدیل اعداد فارسی به انگلیسی
 
-     // اگر Fuse هنوز آماده نبود یا داده‌ها خالیست
      if(!fuse || !data.length) { filteredResults = []; renderPage(1); return; }
 
-     // اگر کاربر چیزی تایپ نکرد
+     // ✅ اگر کاربر چیزی تایپ نکرد
      if(query.length === 0) {
        filteredResults = [];
        renderPage(1);
        return;
      }
 
-     // اگر شامل فقط ارقام و جداکننده‌ها (مثل 1/1365 یا ۱-۱۳۶۵) باشه -> جستجوی دقیق
-     if (isNumericPattern(raw)) {
-       const q = normalizeNumberQuery(raw);
+     // ✅ بررسی اینکه رشته شامل عدد و احتمالا / باشد (مثل 1/1365 یا ۱۳/۱۴۰۲)
+     if (/^[\d\/]+$/.test(query)) {
+       const q = query.replace(/\s+/g, '').trim(); // حذف فاصله اضافی
        filteredResults = data.filter(d => {
-         let combined = (d.title || "") + " ";
-         if (Array.isArray(d.keywords)) combined += d.keywords.join(" ");
-         let norm = normalizeForSearch(combined).replace(/\s+/g,'').replace(/[-\.]+/g,'/');
-         // split by non-alnum to find tokens then exact match to q or q without slash
-         const tokens = (norm.match(/[\d\/]+/g) || []);
-         return tokens.some(t => t === q || t === q.replace(/\//g,''));
-       }).map(d => ({ item: d }));
+         const combined = [
+           d.title,
+           ...(d.keywords || [])
+         ].map(x => persianToEnglishNumbers(x.toString().replace(/\s+/g, '')));
+
+         // تطبیق دقیق روی شماره کامل، نه بخشی از آن
+         return combined.some(x => x === q);
+       });
      } else {
-       // غیر از جستجوی عددی، از Fuse استفاده کن (مثل گذشته) — فقط وقتی query بیش از 1 کاراکتره
-       filteredResults = (query.length>1 && fuse) ? fuse.search(query).map(r => r.item ? r : r) : [];
-       // NOTE: fuse.search با includeScore ممکنه آبجکت برگردونه؛ renderPage با r.item||r سازگاره
+       // ✅ حالت معمولی Fuse.js
+       filteredResults = fuse.search(query);
      }
+
      currentPage = 1;
      renderPage(currentPage);
-    }
+   }
+
 
     function clearSearch(event){
       searchBox.value="";
