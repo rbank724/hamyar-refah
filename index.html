@@ -476,7 +476,7 @@
     </a>
   </div>
   
-  <script>
+<script>
     let data = [], fuse, filteredResults = [], showAll = false, currentPage = 1;
     const perPage = 12, fileCache = new Map();
     let categories = new Set();
@@ -484,43 +484,127 @@
     // ⏳ تعیین زمان اعتبار کش (به میلی‌ثانیه) — مثلاً 24 ساعت
     const CACHE_DURATION = 24 * 60 * 60 * 1000;
 
-    // 🟢 مرحله ۱: بررسی کش
-    const cachedData = localStorage.getItem("data");
-    const cachedTime = localStorage.getItem("data_time");
-    const now = Date.now();
+    // --- توابع کمکی ---
+    function persianToEnglishNumbers(str) {
+      return String(str).replace(/[۰-۹]/g, d => '0123456789'[d.charCodeAt(0) - 1776]);
+    }
 
-    if (cachedData && cachedTime && (now - cachedTime) < CACHE_DURATION) {
-      // ✅ اگر کش معتبره → مستقیماً همون رو استفاده کن
-      const json = JSON.parse(cachedData);
-      data = json;
-      fuse = new Fuse(data, { keys:["title","keywords"], threshold:0.3 });
-      json.forEach(item => categories.add(item.category));
+    function isNumericPattern(s){
+      // شامل ارقام فارسی/انگلیسی، /، -، . و فاصله
+      return /^[\d۰-۹\/\-\.\s]+$/.test(String(s||''));
+    }
+    function normalizeNumberQuery(s){
+      return persianToEnglishNumbers(String(s||''))
+               .replace(/\s+/g,'')        // حذف فاصله‌ها
+               .replace(/[-\.]+/g,'/')    // - و . => /
+               .trim();
+    }
+
+    function normalizeForSearch(s){
+      // نگه داشتن حروف فارسی/انگلیسی و اعداد و اسلش و فاصله
+      return persianToEnglishNumbers(String(s||''))
+               .replace(/[^\w\u0600-\u06FF\/\s]/g,' ')
+               .replace(/\s+/g,' ')
+               .trim()
+               .toLowerCase();
+    }
+
+    // debounce ساده
+    function debounce(fn, wait=180){
+      let t;
+      return function(...args){ clearTimeout(t); t = setTimeout(()=>fn.apply(this, args), wait); };
+    }
+
+    // محدود کردن اندازه fileCache
+    function cacheFile(url, html){
+      const MAX = 50;
+      if (fileCache.size >= MAX) {
+        const first = fileCache.keys().next().value;
+        fileCache.delete(first);
+      }
+      fileCache.set(url, html);
+    }
+
+    // 🟢 مرحله ۱: بررسی کش با try/catch امن
+    try {
+      const cachedData = localStorage.getItem("data");
+      const cachedTime = localStorage.getItem("data_time");
+      const now = Date.now();
+
+      if (cachedData && cachedTime && (now - cachedTime) < CACHE_DURATION) {
+        const json = JSON.parse(cachedData);
+        if (Array.isArray(json) && json.length) {
+          data = json;
+        }
+      }
+    } catch(e) {
+      console.warn('cached data corrupted — clearing cache', e);
+      localStorage.removeItem('data');
+      localStorage.removeItem('data_time');
+      data = [];
+    }
+
+    // 🟡 بارگذاری یا تکمیل داده‌ها
+    (function initData(){
       const catSelect = document.getElementById("categorySelect");
-      categories.forEach(cat => {
-        const opt = document.createElement("option");
-        opt.value = cat;
-        opt.textContent = cat;
-        catSelect.appendChild(opt);
-      });
-
-    } else {
-      // 🟡 اگر کش نبود یا منقضی شده بود → fetch کن و کش رو بروز کن
-      fetch("data.json").then(res => res.json()).then(json => { 
-        data = json; 
-        fuse = new Fuse(data, { keys:["title","keywords"], threshold:0.3 });
-        json.forEach(item => categories.add(item.category));
-        const catSelect = document.getElementById("categorySelect");
+      if (data.length) {
+        // نرمال‌سازی ایندکس برای جستجو (فقط اضافه کردن یک فیلد کمکی)
+        data.forEach(it => {
+          it._searchText = normalizeForSearch((it.title || '') + ' ' + (Array.isArray(it.keywords)? it.keywords.join(' '): ''));
+        });
+        // پیکربندی Fuse با گزینه‌های بهتر
+        fuse = new Fuse(data, {
+          keys: [{name:'_searchText', weight:0.9}, {name:'title', weight:0.7}, {name:'keywords', weight:0.3}],
+          threshold: 0.25,
+          distance: 100,
+          includeScore: true,
+          useExtendedSearch: true,
+          ignoreLocation: true
+        });
+        data.forEach(item => categories.add(item.category));
         categories.forEach(cat => {
           const opt = document.createElement("option");
           opt.value = cat;
           opt.textContent = cat;
           catSelect.appendChild(opt);
         });
-        // 📝 ذخیره داده و زمان در کش
-        localStorage.setItem("data", JSON.stringify(json));
-        localStorage.setItem("data_time", Date.now());
-      });
-    }
+      } else {
+        // fetch امن با catch و پیام خطا
+        fetch("data.json").then(res=>{
+          if(!res.ok) throw new Error('HTTP '+res.status);
+          return res.json();
+        }).then(json => {
+          data = Array.isArray(json)? json : [];
+          data.forEach(it => {
+            it._searchText = normalizeForSearch((it.title || '') + ' ' + (Array.isArray(it.keywords)? it.keywords.join(' '): ''));
+          });
+          fuse = new Fuse(data, {
+            keys: [{name:'_searchText', weight:0.9}, {name:'title', weight:0.7}, {name:'keywords', weight:0.3}],
+            threshold: 0.25,
+            distance: 100,
+            includeScore: true,
+            useExtendedSearch: true,
+            ignoreLocation: true
+          });
+          data.forEach(item => categories.add(item.category));
+          categories.forEach(cat => {
+            const opt = document.createElement("option");
+            opt.value = cat;
+            opt.textContent = cat;
+            catSelect.appendChild(opt);
+          });
+          try {
+            localStorage.setItem("data", JSON.stringify(json));
+            localStorage.setItem("data_time", Date.now());
+          } catch(e){
+            console.warn('Could not save to localStorage', e);
+          }
+        }).catch(err => {
+          console.error('Failed to load data.json', err);
+          alert('خطا در بارگذاری داده‌ها. لطفا صفحه را دوباره بارگذاری کنید یا بعدا تلاش کنید.');
+        });
+      }
+    })();
 
     const searchBox = document.getElementById("search-box");
     const resultsDiv = document.getElementById("results");
@@ -529,11 +613,13 @@
     const paginationDiv = document.getElementById("pagination");
     const controls = document.getElementById("detail-controls");
 
-    window.addEventListener("DOMContentLoaded", () => { 
-      controls.style.display = "none"; 
-      document.getElementById('ad-banners').classList.remove('hidden'); // نمایش بنرها در لود اولیه
+    window.addEventListener("DOMContentLoaded", () => {
+      controls.style.display = "none";
+      const adBannersEl = document.getElementById('ad-banners');
+      if (adBannersEl) adBannersEl.classList.remove('hidden');
     });
 
+    // --- renderPage (ساختار حفظ شده، فقط ایمن‌تر و دسترس‌پذیرتر) ---
     function renderPage(page){
       resultsDiv.innerHTML = ""; paginationDiv.innerHTML = ""; hideDetail();
       if(filteredResults.length===0){ resultsDiv.style.display="none"; return; } else { resultsDiv.style.display="grid"; }
@@ -544,10 +630,28 @@
         const div = document.createElement("div");
         div.className="result-item text-white shadow-md text-sm sm:text-base";
         div.innerHTML=`<strong>${item.title}</strong>`;
-        div.onclick = () => {
+        // دسترس‌پذیری
+        div.tabIndex = 0;
+        div.setAttribute('role','button');
+        div.addEventListener('keydown', e => { if (e.key === 'Enter') div.click(); });
+
+        div.onclick = async () => {
           resultsDiv.style.display="none"; loading.style.display="block";
-          if(fileCache.has(item.file)){ showDetail(item, fileCache.get(item.file)); }
-          else { fetch(item.file).then(res=>res.text()).then(html=>{ fileCache.set(item.file,html); showDetail(item,html); }); }
+          try {
+            if(fileCache.has(item.file)){ showDetail(item, fileCache.get(item.file)); }
+            else {
+              const res = await fetch(item.file);
+              if (!res.ok) throw new Error('HTTP ' + res.status);
+              const html = await res.text();
+              cacheFile(item.file, html);
+              showDetail(item, html);
+            }
+          } catch (err) {
+            console.error(err);
+            loading.style.display = "none";
+            resultsDiv.style.display = "grid";
+            alert('خطا در بارگذاری جزئیات. لطفا دوباره تلاش کنید.');
+          }
         };
         resultsDiv.appendChild(div);
       });
@@ -566,6 +670,12 @@
 
     function showDetail(item, html){
       loading.style.display = "none";
+      // هشدار امنیتی کوچک در صورت لود فایل از دامنهٔ خارجی
+      try {
+        if (!String(item.file).startsWith(location.origin) && !String(item.file).startsWith('/')) {
+          console.warn('Loading remote file — ensure it is trusted:', item.file);
+        }
+      } catch(e){ /* ignore */ }
       detailDiv.innerHTML = html;
       detailDiv.style.display = "block";
       paginationDiv.style.display = "none";
@@ -588,98 +698,92 @@
 
     function hideDetail(){ detailDiv.style.display="none"; controls.style.display="none"; }
 
-    function persianToEnglishNumbers(str) {
-      return str.replace(/[۰-۹]/g, d => '0123456789'[d.charCodeAt(0) - 1776]);
-    }
-
+    // --- منطق جستجو (بهبود یافته) ---
     function doSearch(){
      const raw = searchBox.value.trim();
-     const query = persianToEnglishNumbers(raw); // تبدیل اعداد فارسی به انگلیسی
+     const query = persianToEnglishNumbers(raw); // تو تابع هست
 
+     // اگر Fuse هنوز آماده نبود یا داده‌ها خالیست
      if(!fuse || !data.length) { filteredResults = []; renderPage(1); return; }
 
-      // ✅ اگر کاربر چیزی تایپ نکرد
+     // اگر کاربر چیزی تایپ نکرد
      if(query.length === 0) {
        filteredResults = [];
        renderPage(1);
        return;
      }
 
-     // ✅ بررسی اینکه رشته شامل عدد و احتمالا / باشد (مثل 1/1365 یا ۱۳/۱۴۰۲)
-     if (/^[\d\/]+$/.test(query)) {
-       const q = query.replace(/\s+/g, '').trim(); // حذف فاصله اضافی
+     // اگر شامل فقط ارقام و جداکننده‌ها (مثل 1/1365 یا ۱-۱۳۶۵) باشه -> جستجوی دقیق
+     if (isNumericPattern(raw)) {
+       const q = normalizeNumberQuery(raw);
        filteredResults = data.filter(d => {
-         const combined = [
-           d.title,
-          ...(d.keywords || [])
-         ].map(x => persianToEnglishNumbers(x.toString().replace(/\s+/g, '')));
-
-         // تطبیق دقیق روی شماره کامل، نه بخشی از آن
-         return combined.some(x => x === q);
-       });
+         let combined = (d.title || "") + " ";
+         if (Array.isArray(d.keywords)) combined += d.keywords.join(" ");
+         let norm = normalizeForSearch(combined).replace(/\s+/g,'').replace(/[-\.]+/g,'/');
+         // split by non-alnum to find tokens then exact match to q or q without slash
+         const tokens = (norm.match(/[\d\/]+/g) || []);
+         return tokens.some(t => t === q || t === q.replace(/\//g,''));
+       }).map(d => ({ item: d }));
      } else {
-       // ✅ حالت معمولی Fuse.js
-       filteredResults = fuse.search(query);
+       // غیر از جستجوی عددی، از Fuse استفاده کن (مثل گذشته) — فقط وقتی query بیش از 1 کاراکتره
+       filteredResults = (query.length>1 && fuse) ? fuse.search(query).map(r => r.item ? r : r) : [];
+       // NOTE: fuse.search با includeScore ممکنه آبجکت برگردونه؛ renderPage با r.item||r سازگاره
      }
-
      currentPage = 1;
      renderPage(currentPage);
-   }
+    }
 
-    function clearSearch(event){ 
-      searchBox.value=""; 
+    function clearSearch(event){
+      searchBox.value="";
       const catSelect = document.getElementById("categorySelect");
       catSelect.value = "";
       hideDetail();
-      filteredResults=[]; 
-      renderPage(1); 
+      filteredResults=[];
+      renderPage(1);
       const adBanners = document.getElementById('ad-banners');
       if(adBanners) {
         adBanners.classList.remove('hidden');
-        // اضافه کردن انیمیشن ورود نرم
         adBanners.classList.add('animate-fadeIn');
       }
-
-       // جلوگیری از اینکه رویداد click روی document، بنرها رو دوباره مخفی کنه
       if(event) event.stopPropagation();
     }
 
     document.getElementById("categorySelect").addEventListener("change", e => {
       const cat = e.target.value;
-      hideDetail(); 
+      hideDetail();
       detailDiv.innerHTML = "";
-      resultsDiv.innerHTML = ""; 
+      resultsDiv.innerHTML = "";
       paginationDiv.innerHTML = "";
-      paginationDiv.style.display = "flex"; // دوباره شماره صفحات
+      paginationDiv.style.display = "flex";
       filteredResults = (cat === "") ? [] : data.filter(d => d.category === cat).map(d => ({item: d}));
       currentPage = 1;
       resultsDiv.style.display = (filteredResults.length > 0) ? "grid" : "none";
       renderPage(currentPage);
     });
 
-    searchBox.addEventListener("input", doSearch);
+    // debounce قبل از ثبت event listener (جایگزین مستقیم)
+    searchBox.addEventListener("input", debounce(doSearch, 180));
 
     const backBtn = document.getElementById("back-btn");
     backBtn.onclick = () => {
       hideDetail();
       resultsDiv.style.display = "grid";
-      paginationDiv.style.display = "flex"; // شماره صفحات نمایش داده شود
+      paginationDiv.style.display = "flex";
       renderPage(currentPage);
       window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
-    // نمایش دوباره بنرها هنگام کلیک روی جارو
     const broom = document.querySelector('.search-clear');
     if (broom) {
       broom.addEventListener('click', () => {
         const adBanners = document.getElementById('ad-banners');
-        adBanners.classList.remove('hidden');
+        if (adBanners) adBanners.classList.remove('hidden');
       });
     }
 
-    // پنهان شدن بنرها وقتی کاربر روی صفحه یا خود بنر کلیک کند
     document.addEventListener('click', (e) => {
       const adBanners = document.getElementById('ad-banners');
+      if (!adBanners) return;
       if (!adBanners.contains(e.target) && !e.target.classList.contains('search-clear')) {
         adBanners.classList.add('hidden');
       }
@@ -689,25 +793,27 @@
     });
 
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js').then(reg => {
-        reg.onupdatefound = () => {
-          const newWorker = reg.installing;
-          newWorker.onstatechange = () => {
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              const bar = document.createElement('div');
-              bar.textContent = 'نسخه‌ی جدید آماده است؛ برای به‌روزرسانی اینجا بزنید';
-              Object.assign(bar.style, {
-                position: 'fixed', bottom: '0', left: '0', right: '0',
-                background: '#007BFF', color: '#fff', textAlign: 'center',
-                padding: '10px', fontFamily: 'inherit', cursor: 'pointer', zIndex: 9999
-              });
-              bar.onclick = () => location.reload();
-              document.body.appendChild(bar);
-            }
+      navigator.serviceWorker.register('sw.js')
+        .then(reg => {
+          reg.onupdatefound = () => {
+            const newWorker = reg.installing;
+            newWorker.onstatechange = () => {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                const bar = document.createElement('div');
+                bar.textContent = 'نسخه‌ی جدید آماده است؛ برای به‌روزرسانی اینجا بزنید';
+                Object.assign(bar.style, {
+                  position: 'fixed', bottom: '0', left: '0', right: '0',
+                  background: '#007BFF', color: '#fff', textAlign: 'center',
+                  padding: '10px', fontFamily: 'inherit', cursor: 'pointer', zIndex: 9999
+                });
+                bar.onclick = () => location.reload();
+                document.body.appendChild(bar);
+              }
+            };
           };
-        };
-      });
+        })
+        .catch(err => console.warn('sw register failed', err));
     }
-  </script>
+</script>
 </body>
 </html>
