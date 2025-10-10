@@ -475,16 +475,7 @@
       <div><img src="images/vibe.jpg" loading="lazy" alt="بنر 3" class="w-full h-full object-cover"></div>
     </a>
   </div>
-
-  <button id="backToTop" title="بازگشت به بالا" style="background: linear-gradient(145deg, #5c4bd6, #3c33a8);
-             color:#fff;
-             border:none;
-             border-radius:50%;
-             width:48px;
-             height:48px;
-             cursor:pointer;
-             font-weight:bold;
-             box-shadow: 4px 4px 8px rgba(0,0,0,0.3), -4px -4px 8px rgba(255,255,255,0.1);">↑</button>
+  
   <script>
     let data = [], fuse, filteredResults = [], showAll = false, currentPage = 1;
     const perPage = 12, fileCache = new Map();
@@ -665,10 +656,6 @@
     });
 
     searchBox.addEventListener("input", doSearch);
-
-    const backToTop=document.getElementById("backToTop");
-    window.addEventListener("scroll",()=>{ backToTop.style.display=(window.scrollY>200)?"block":"none"; });
-    backToTop.onclick=()=>window.scrollTo({top:0,behavior:"smooth"});
 
     const backBtn = document.getElementById("back-btn");
     backBtn.onclick = () => {
