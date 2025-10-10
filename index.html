@@ -490,8 +490,18 @@
     const perPage = 12, fileCache = new Map();
     let categories = new Set();
 
-    fetch("data.json").then(res => res.json()).then(json => { 
-      data = json; 
+    // ⏳ تعیین زمان اعتبار کش (به میلی‌ثانیه) — مثلاً 24 ساعت
+    const CACHE_DURATION = 24 * 60 * 60 * 1000;
+
+    // 🟢 مرحله ۱: بررسی کش
+    const cachedData = localStorage.getItem("data");
+    const cachedTime = localStorage.getItem("data_time");
+    const now = Date.now();
+
+    if (cachedData && cachedTime && (now - cachedTime) < CACHE_DURATION) {
+      // ✅ اگر کش معتبره → مستقیماً همون رو استفاده کن
+      const json = JSON.parse(cachedData);
+      data = json;
       fuse = new Fuse(data, { keys:["title","keywords"], threshold:0.3 });
       json.forEach(item => categories.add(item.category));
       const catSelect = document.getElementById("categorySelect");
@@ -501,7 +511,25 @@
         opt.textContent = cat;
         catSelect.appendChild(opt);
       });
-    });
+
+    } else {
+      // 🟡 اگر کش نبود یا منقضی شده بود → fetch کن و کش رو بروز کن
+      fetch("data.json").then(res => res.json()).then(json => { 
+        data = json; 
+        fuse = new Fuse(data, { keys:["title","keywords"], threshold:0.3 });
+        json.forEach(item => categories.add(item.category));
+        const catSelect = document.getElementById("categorySelect");
+        categories.forEach(cat => {
+          const opt = document.createElement("option");
+          opt.value = cat;
+          opt.textContent = cat;
+          catSelect.appendChild(opt);
+        });
+        // 📝 ذخیره داده و زمان در کش
+        localStorage.setItem("data", JSON.stringify(json));
+        localStorage.setItem("data_time", Date.now());
+      });
+    }
 
     const searchBox = document.getElementById("search-box");
     const resultsDiv = document.getElementById("results");
