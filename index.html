@@ -477,7 +477,7 @@
   </div>
   
 <script>
-    let data = [], fuse, filteredResults = [], showAll = false, currentPage = 1;
+    let data = [], , filteredResults = [], showAll = false, currentPage = 1;
     const perPage = 12, fileCache = new Map();
     let categories = new Set();
 
@@ -553,14 +553,17 @@
           it._searchText = normalizeForSearch((it.title || '') + ' ' + (Array.isArray(it.keywords)? it.keywords.join(' '): ''));
         });
         // پیکربندی Fuse با گزینه‌های بهتر
+        // ✅ مرحله ۱: مقداردهی Fuse.js (در همون جایی که fuse ساخته میشه)
         fuse = new Fuse(data, {
-          keys: [{name:'_searchText', weight:0.9}, {name:'title', weight:0.7}, {name:'keywords', weight:0.3}],
-          threshold: 0.25,
-          distance: 100,
-          includeScore: true,
-          useExtendedSearch: true,
-          ignoreLocation: true
-        });
+         keys: ['title', 'keywords'],
+         includeScore: true,          // برای کنترل دقت تطبیق
+         threshold: 0.1,              // عدد کمتر = دقت بیشتر
+         distance: 50,                // حساسیت به فاصله‌ی حروف
+         minMatchCharLength: 3,       // حداقل طول تطبیق
+         ignoreLocation: true,        // جستجو در کل عبارت، نه فقط اول
+         useExtendedSearch: true      // فعال‌سازی حالت جستجوی دقیق‌تر
+       });
+
         data.forEach(item => categories.add(item.category));
         categories.forEach(cat => {
           const opt = document.createElement("option");
@@ -579,12 +582,13 @@
             it._searchText = normalizeForSearch((it.title || '') + ' ' + (Array.isArray(it.keywords)? it.keywords.join(' '): ''));
           });
           fuse = new Fuse(data, {
-            keys: [{name:'_searchText', weight:0.9}, {name:'title', weight:0.7}, {name:'keywords', weight:0.3}],
-            threshold: 0.25,
-            distance: 100,
-            includeScore: true,
-            useExtendedSearch: true,
-            ignoreLocation: true
+            keys: ['title', 'keywords'],
+            includeScore: true,          // برای کنترل دقت تطبیق
+            threshold: 0.1,              // عدد کمتر = دقت بیشتر
+            distance: 50,                // حساسیت به فاصله‌ی حروف
+            minMatchCharLength: 3,       // حداقل طول تطبیق
+            ignoreLocation: true,        // جستجو در کل عبارت، نه فقط اول
+            useExtendedSearch: true      // فعال‌سازی حالت جستجوی دقیق‌تر
           });
           data.forEach(item => categories.add(item.category));
           categories.forEach(cat => {
@@ -698,39 +702,49 @@
 
     function hideDetail(){ detailDiv.style.display="none"; controls.style.display="none"; }
 
+     // ✅ مرحله ۲: تابع جستجو (بدون تغییر ساختار کلی)
     function doSearch(){
-     const raw = searchBox.value.trim();
-     const query = persianToEnglishNumbers(raw); // تبدیل اعداد فارسی به انگلیسی
+      const raw = searchBox.value.trim();
+      const query = persianToEnglishNumbers(raw); // تبدیل اعداد فارسی به انگلیسی
 
-     if(!fuse || !data.length) { filteredResults = []; renderPage(1); return; }
+      if(!fuse || !data.length) { 
+        filteredResults = []; 
+        renderPage(1); 
+        return; 
+      }
 
-     // ✅ اگر کاربر چیزی تایپ نکرد
-     if(query.length === 0) {
-       filteredResults = [];
-       renderPage(1);
-       return;
-     }
+      // ✅ اگر ورودی خالی بود
+      if(query.length === 0) {
+        filteredResults = [];
+        renderPage(1);
+        return;
+      }
 
-     // ✅ بررسی اینکه رشته شامل عدد و احتمالا / باشد (مثل 1/1365 یا ۱۳/۱۴۰۲)
-     if (/^[\d\/]+$/.test(query)) {
-       const q = query.replace(/\s+/g, '').trim(); // حذف فاصله اضافی
-       filteredResults = data.filter(d => {
-         const combined = [
-           d.title,
-           ...(d.keywords || [])
-         ].map(x => persianToEnglishNumbers(x.toString().replace(/\s+/g, '')));
+      // ✅ بررسی اینکه رشته شامل عدد یا "/" باشد (مثل 1/1365 یا ۱۳/۱۴۰۲)
+      if (/^[\d\/]+$/.test(query)) {
+        const q = query.replace(/\s+/g, '').trim(); // حذف فاصله‌های اضافی
+        filteredResults = data.filter(d => {
+          const combined = [
+            d.title,
+            ...(d.keywords || [])
+          ].map(x => persianToEnglishNumbers(x.toString().replace(/\s+/g, '')));
+          // تطبیق دقیق برای شماره‌ها
+          return combined.some(x => x === q);
+        });
+      } 
+      else {
+        // ✅ حالت معمولی Fuse.js برای جستجوی متنی
+        const results = fuse.search(query);
 
-         // تطبیق دقیق روی شماره کامل، نه بخشی از آن
-         return combined.some(x => x === q);
-       });
-     } else {
-       // ✅ حالت معمولی Fuse.js
-       filteredResults = fuse.search(query);
-     }
+        // فقط مواردی که امتیاز دقیق دارند نمایش داده شوند
+        filteredResults = results
+          .filter(r => r.score <= 0.3)   // نتایج دقیق‌تر از حد مشخص
+          .map(r => r.item);
+      }
 
-     currentPage = 1;
-     renderPage(currentPage);
-   }
+      currentPage = 1;
+      renderPage(currentPage);
+    }
 
 
     function clearSearch(event){
