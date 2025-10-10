@@ -594,37 +594,35 @@
 
     function doSearch(){
      const raw = searchBox.value.trim();
-     const query = persianToEnglishNumbers(raw); // تبدیل اعداد فارسی به انگلیسی
+     const query = persianToEnglishNumbers(raw); // تو تابعت هست
 
+     // اگر Fuse هنوز آماده نبود یا داده‌ها خالیست
      if(!fuse || !data.length) { filteredResults = []; renderPage(1); return; }
 
-      // ✅ اگر کاربر چیزی تایپ نکرد
-     if(query.length === 0) {
-       filteredResults = [];
-       renderPage(1);
-       return;
-     }
-
-     // ✅ بررسی اینکه رشته شامل عدد و احتمالا / باشد (مثل 1/1365 یا ۱۳/۱۴۰۲)
-     if (/^[\d\/]+$/.test(query)) {
-       const q = query.replace(/\s+/g, '').trim(); // حذف فاصله اضافی
+     // اگر پرس‌وجو فقط شامل ارقام (انگلیسی) باشد -> جستجوی عددی دقیق
+     if(/^\d+$/.test(query) && query.length > 0){
+       const q = query;
        filteredResults = data.filter(d => {
-         const combined = [
-           d.title,
-          ...(d.keywords || [])
-         ].map(x => persianToEnglishNumbers(x.toString().replace(/\s+/g, '')));
+         // یک رشتهٔ مرکب از عنوان + کلیدواژه‌ها می‌سازیم
+         let combined = (d.title || "") + " ";
+         if (Array.isArray(d.keywords)) combined += d.keywords.join(" ");
 
-         // تطبیق دقیق روی شماره کامل، نه بخشی از آن
-         return combined.some(x => x === q);
-       });
+         // تبدیل اعداد فارسی به انگلیسی (در صورت وجود)
+         combined = persianToEnglishNumbers(combined);
+
+         // استخراج توالی‌های عددی (مثل 1215 یا 1215/3 -> جدا می‌شوند)
+         const nums = combined.match(/\d+/g) || [];
+
+         // ✅ شرط: فقط توالی‌های عددی که دقیقاً برابر با q هستند را قبول کن
+         return nums.some(n => n === q);
+       }).map(d => ({ item: d })); // شکل خروجی مشابه fuse.search
      } else {
-       // ✅ حالت معمولی Fuse.js
-       filteredResults = fuse.search(query);
-     }
-
-     currentPage = 1;
-     renderPage(currentPage);
-   }
+    // غیر از جستجوی عددی، از Fuse استفاده کن (مثل گذشته)
+    filteredResults = (query.length>1 && fuse) ? fuse.search(query) : [];
+  }
+  currentPage = 1;
+  renderPage(currentPage);
+}
 
     function clearSearch(event){ 
       searchBox.value=""; 
