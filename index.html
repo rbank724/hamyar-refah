@@ -212,6 +212,43 @@
        line-height: 1.8;
      }
 
+    #loading {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .loading-bar {
+      width: 200px;              /* عرض نوار */
+      height: 8px;               /* ارتفاع نوار */
+      background-color: #e0e0e0; /* رنگ زمینه */
+      border-radius: 20px;       /* گوشه‌های گرد */
+      overflow: hidden;
+      position: relative;
+    }
+
+    .loading-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #6a0dad, #9b4dca); /* گرادیانت مدرن */
+      border-radius: 20px;
+      animation: loadingAnimation 2s ease-in-out infinite;
+    }
+
+    @keyframes loadingAnimation {
+      0% {
+        width: 0%;
+      }
+      50% {
+        width: 100%;
+      }
+      100% {
+        width: 0%;
+      }
+    }
+
+
   </style>
 </head>
 <body class="flex flex-col items-center m-0 p-4">
@@ -298,7 +335,11 @@
 
   <div id="results" class="mt-4 w-full max-w-3xl gap-4"></div>
   <div id="pagination" class="mt-4 flex gap-2 flex-wrap justify-center"></div>
-  <div id="loading" class="hidden mt-4 text-gray-600 text-sm sm:text-base">در حال بارگذاری...</div>
+  <div id="loading" class="hidden mt-4 text-gray-600 text-sm sm:text-base">
+    <div class="loading-bar">
+      <div class="loading-fill"></div>
+    </div>
+  </div>
 
   <!-- دکمه‌ها -->
   <div id="detail-controls" class="flex gap-2 mb-4 hidden">
@@ -574,7 +615,7 @@
     }
 
     function showDetail(item, html){
-      loading.style.display = "none";
+      loading.style.display = "flex";
       detailDiv.innerHTML = html;
       detailDiv.style.display = "block";
       paginationDiv.style.display = "none";
