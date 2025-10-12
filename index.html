@@ -742,12 +742,18 @@
       document.getElementById('ad-banners').classList.add('hidden'); // پنهان کردن بنرها
       controls.style.display = "flex"; // نمایش کنترل‌ها
       loading.classList.remove('hidden'); // نمایش لودینگ
+
+      // 🔹 بررسی کش
+      if (fileCache.has(file)) {
+        showDetail({ title, file }, fileCache.get(file));
+        return;
+      }
+
       fetch(file)
         .then(res => res.text())
         .then(html => {
-          detailDiv.innerHTML = html;
-          detailDiv.classList.remove('hidden');
-          detailDiv.scrollIntoView({ behavior: "smooth" }); // اسکرول نرم به بخش جزئیات
+          fileCache.set(file, html); // ذخیره در کش
+          showDetail({ title, file }, html); // استفاده از همان تابع اصلی
         })
         .finally(() => loading.classList.add('hidden')); // پنهان کردن لودینگ
     }
