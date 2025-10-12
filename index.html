@@ -465,7 +465,9 @@
 
   <!-- بنرهای تبلیغاتی 2:1 -->
   <div id="ad-banners" class="hidden w-full max-w-3xl mt-6 flex flex-col gap-4 animate-fadeIn">
-    <a href="https://www.refah-bank.ir/cardrefahi" target="_blank" class="ad-banner bg-white rounded-xl shadow-md overflow-hidden cursor-pointer transition-transform duration-300 hover:scale-105">
+    <a href="javascript:void(0)" 
+       onclick="showBannerDetail('tarh-html/کارت رفاهی.html', 'کارت رفاهی بانک رفاه')" 
+       class="ad-banner bg-white rounded-xl shadow-md overflow-hidden cursor-pointer transition-transform duration-300 hover:scale-105">
       <div><img src="images/refahicard.jpg" loading="lazy" alt="بنر 1" class="w-full h-full object-cover"></div>
     </a>
     <a href="https://www.refah-bank.ir/fararefah" target="_blank" class="ad-banner bg-white rounded-xl shadow-md overflow-hidden cursor-pointer transition-transform duration-300 hover:scale-105">
@@ -718,6 +720,20 @@
         adBanners.classList.add('hidden');
       }
     });
+
+    function showBannerDetail(file, title) {
+      document.getElementById('ad-banners').classList.add('hidden'); // پنهان کردن بنرها
+      controls.style.display = "flex"; // نمایش کنترل‌ها
+      loading.classList.remove('hidden'); // نمایش لودینگ
+      fetch(file)
+        .then(res => res.text())
+        .then(html => {
+          detailDiv.innerHTML = html;
+          detailDiv.classList.remove('hidden');
+          detailDiv.scrollIntoView({ behavior: "smooth" }); // اسکرول نرم به بخش جزئیات
+        })
+        .finally(() => loading.classList.add('hidden')); // پنهان کردن لودینگ
+    }
 
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').then(reg => {
