@@ -514,7 +514,7 @@
       data = json;
       fuse = new Fuse(data, {
        keys: ["title", "keywords"],
-       threshold: 0.2,        // جستجوی دقیق‌تر (کمتر از 0.3)
+       threshold: 0.1,        // جستجوی دقیق‌تر (کمتر از 0.3)
        distance: 50,          // محدود به نزدیکی حروف در متن
        ignoreLocation: true,  // بی‌تأثیر کردن مکان تطابق
        minMatchCharLength: 2  // حداقل طول برای تطابق
@@ -534,7 +534,7 @@
         data = json; 
         fuse = new Fuse(data, {
          keys: ["title", "keywords"],
-         threshold: 0.2,        // جستجوی دقیق‌تر (کمتر از 0.3)
+         threshold: 0.1,        // جستجوی دقیق‌تر (کمتر از 0.3)
          distance: 50,          // محدود به نزدیکی حروف در متن
          ignoreLocation: true,  // بی‌تأثیر کردن مکان تطابق
          minMatchCharLength: 2  // حداقل طول برای تطابق
