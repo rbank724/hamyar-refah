@@ -10,35 +10,35 @@
 
   @font-face {
    font-family: 'Vazirmatn';
-   src: url('fonts/Vazirmatn-Light.woff2') format('woff2'),
+   src: url('fonts/Vazirmatn-Light.woff2') format('woff2');
    font-weight: 300;
    font-style: normal;
   }
 
   @font-face {
    font-family: 'Vazirmatn';
-   src: url('fonts/Vazirmatn-Regular.woff2') format('woff2'),
+   src: url('fonts/Vazirmatn-Regular.woff2') format('woff2');
    font-weight: 400;
    font-style: normal;
   }
 
   @font-face {
    font-family: 'Vazirmatn';
-   src: url('fonts/Vazirmatn-Medium.woff2') format('woff2'),
+   src: url('fonts/Vazirmatn-Medium.woff2') format('woff2');
    font-weight: 500;
    font-style: normal;
   }
 
   @font-face {
    font-family: 'Vazirmatn';
-   src: url('fonts/Vazirmatn-SemiBold.woff2') format('woff2'),
+   src: url('fonts/Vazirmatn-SemiBold.woff2') format('woff2');
    font-weight: 600;
    font-style: normal;
   }
 
   @font-face {
    font-family: 'Vazirmatn';
-   src: url('fonts/Vazirmatn-Bold.woff2') format('woff2'),
+   src: url('fonts/Vazirmatn-Bold.woff2') format('woff2');
    font-weight: 700;
    font-style: normal;
  }
@@ -60,6 +60,21 @@
       background: linear-gradient(135deg, rgba(17,3,171,0.8), rgba(184,6,133,0.8));
       backdrop-filter: blur(5px);
     }
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-in-up {
+      animation: fadeInUp 0.5s ease forwards;
+    }
+
     .result-item:hover { transform: translateY(-3px) scale(1.02); box-shadow:0 10px 15px rgba(0,0,0,0.2); }
     @keyframes fadeInUp { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
     .fade-in-up { animation: fadeInUp 0.6s ease forwards; }
@@ -497,7 +512,7 @@
       data = json;
       fuse = new Fuse(data, {
        keys: ["title", "keywords"],
-       threshold: 0.1,        // جستجوی دقیق‌تر (کمتر از 0.3)
+       threshold: 0.2,        // جستجوی دقیق‌تر (کمتر از 0.3)
        distance: 50,          // محدود به نزدیکی حروف در متن
        ignoreLocation: true,  // بی‌تأثیر کردن مکان تطابق
        minMatchCharLength: 2  // حداقل طول برای تطابق
@@ -517,7 +532,7 @@
         data = json; 
         fuse = new Fuse(data, {
          keys: ["title", "keywords"],
-         threshold: 0.1,        // جستجوی دقیق‌تر (کمتر از 0.3)
+         threshold: 0.2,        // جستجوی دقیق‌تر (کمتر از 0.3)
          distance: 50,          // محدود به نزدیکی حروف در متن
          ignoreLocation: true,  // بی‌تأثیر کردن مکان تطابق
          minMatchCharLength: 2  // حداقل طول برای تطابق
@@ -575,7 +590,7 @@
       pageItems.forEach(r=>{
         const item = r.item||r;
         const div = document.createElement("div");
-        div.className="result-item text-white shadow-md text-sm sm:text-base";
+        div.className = "result-item text-white shadow-md text-sm sm:text-base fade-in-up";
         div.innerHTML=`<strong>${item.title}</strong>`;
         div.onclick = () => {
           resultsDiv.style.display="none"; loading.style.display="block";
