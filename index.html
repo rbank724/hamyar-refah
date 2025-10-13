@@ -499,38 +499,7 @@
     let data = [], fuse, filteredResults = [], showAll = false, currentPage = 1;
     const perPage = 12, fileCache = new Map();
     let categories = new Set();
-
-    // ⏳ تعیین زمان اعتبار کش (به میلی‌ثانیه) — مثلاً 24 ساعت
-    const CACHE_DURATION = 3 * 60 * 1000;
-
-    // 🟢 مرحله ۱: بررسی کش
-    const cachedData = localStorage.getItem("data");
-    const cachedTime = localStorage.getItem("data_time");
-    const now = Date.now();
-
-    if (cachedData && cachedTime && (now - cachedTime) < CACHE_DURATION) {
-      // ✅ اگر کش معتبره → مستقیماً همون رو استفاده کن
-      const json = JSON.parse(cachedData);
-      data = json;
-      fuse = new Fuse(data, {
-       keys: ["title", "keywords"],
-       threshold: 0.1,        // جستجوی دقیق‌تر (کمتر از 0.3)
-       distance: 50,          // محدود به نزدیکی حروف در متن
-       ignoreLocation: true,  // بی‌تأثیر کردن مکان تطابق
-       minMatchCharLength: 2  // حداقل طول برای تطابق
-     });
-      json.forEach(item => categories.add(item.category));
-      const catSelect = document.getElementById("categorySelect");
-      categories.forEach(cat => {
-        const opt = document.createElement("option");
-        opt.value = cat;
-        opt.textContent = cat;
-        catSelect.appendChild(opt);
-      });
-
-    } else {
-      // 🟡 اگر کش نبود یا منقضی شده بود → fetch کن و کش رو بروز کن
-      fetch("data.json").then(res => res.json()).then(json => { 
+    fetch("data.json").then(res => res.json()).then(json => { 
         data = json; 
         fuse = new Fuse(data, {
          keys: ["title", "keywords"],
@@ -539,36 +508,17 @@
          ignoreLocation: true,  // بی‌تأثیر کردن مکان تطابق
          minMatchCharLength: 2  // حداقل طول برای تطابق
        });
-        json.forEach(item => categories.add(item.category));
-        const catSelect = document.getElementById("categorySelect");
-        categories.forEach(cat => {
+       json.forEach(item => categories.add(item.category));
+       const catSelect = document.getElementById("categorySelect");
+       categories.forEach(cat => {
           const opt = document.createElement("option");
           opt.value = cat;
           opt.textContent = cat;
           catSelect.appendChild(opt);
         });
-        // 🔹 محدودیت حجم کش (برحسب کاراکتر یا بایت تقریبی)
-        const MAX_CACHE_SIZE = 0.5 * 1024; // حدود 0.5 مگابایت
 
-        function safeSetItem(key, value) {
-          try {
-            // اگر حجم از حد مجاز بیشتر شد → کش پاک شود
-            const size = new Blob([value]).size;
-            if (size > MAX_CACHE_SIZE) {
-              console.warn("⚠️ حجم داده بیش از حد مجاز است، کش پاک شد.");
-              localStorage.clear(); // پاکسازی کامل برای جلوگیری از کرش
-              return;
-            }
-            localStorage.setItem(key, value);
-          } catch (err) {
-            console.warn("❌ خطا در ذخیره در localStorage، احتمالاً فضای کش پر شده:", err);
-            localStorage.clear(); // باز هم پاکسازی برای اطمینان
-          }
-        }
-
-        // 📝 ذخیره داده و زمان در کش
-        safeSetItem("data", JSON.stringify(json));
-        safeSetItem("data_time", Date.now().toString());
+         localStorage.removeItem("data");
+         localStorage.removeItem("data_time");
       });
     }
 
