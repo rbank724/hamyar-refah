@@ -227,6 +227,19 @@
        line-height: 1.8;
      }
 
+    /* ✅ افکت ورود و خروج زیرنویس */
+    #subtitle-text {
+      white-space: nowrap;
+      transform: translateY(100%);
+    }
+    .slide-in {
+      transform: translateY(0%);
+    }
+    .slide-out {
+      transform: translateY(-100%);
+      transition: transform 0.6s ease;
+    }
+
   </style>
 </head>
 <body class="flex flex-col items-center m-0 p-4">
@@ -744,6 +757,63 @@
         };
       });
     }
+   // ✅ جملات زیرنویس + ویدیوها
+   const subtitles = [
+     { text: "✅ آموزش انتخاب طرح مناسب تسهیلاتی", video: "videos/video1.mp4" },
+     { text: "💳 آشنایی با کارت رفاهی بانک رفاه", video: "videos/video2.mp4" },
+     { text: "📌 راهنمای ثبت درخواست غیرحضوری", video: "videos/video3.mp4" },
+   ];
+
+   const subtitleBar = document.getElementById("subtitle-bar");
+   const subtitleText = document.getElementById("subtitle-text");
+   const videoModal = document.getElementById("videoModal");
+   const videoSource = document.getElementById("videoSource");
+   const modalVideo = document.getElementById("modalVideo");
+   const closeVideoModal = document.getElementById("closeVideoModal");
+
+   let subtitleIndex = 0;
+   let subtitleInterval;
+
+   // ✅ تابع شروع چرخش زیرنویس
+   function startSubtitleRotation() {
+     subtitleText.textContent = subtitles[subtitleIndex].text;
+     subtitleText.classList.add("slide-in");
+
+     subtitleInterval = setInterval(() => {
+       subtitleText.classList.remove("slide-in");
+       subtitleText.classList.add("slide-out");
+
+       setTimeout(() => {
+         subtitleIndex = (subtitleIndex + 1) % subtitles.length;
+         subtitleText.textContent = subtitles[subtitleIndex].text;
+         subtitleText.classList.remove("slide-out");
+         subtitleText.classList.add("slide-in");
+       }, 600);
+     }, 4000);
+   }
+
+   // ✅ باز کردن مودال ویدیو
+   subtitleBar.addEventListener("click", () => {
+     videoSource.src = subtitles[subtitleIndex].video;
+     modalVideo.load();
+     videoModal.classList.remove("hidden");
+   });
+
+   // ✅ بستن مودال
+   closeVideoModal.addEventListener("click", () => {
+     videoModal.classList.add("hidden");
+     modalVideo.pause();
+   });
+
+   // ✅ فقط وقتی بنرها نمایش داده میشن نوار زیرنویس رو نشون بده
+   window.addEventListener("DOMContentLoaded", () => {
+     const banners = document.getElementById("ad-banners");
+     if (!banners.classList.contains("hidden")) {
+       subtitleBar.classList.remove("hidden");
+       startSubtitleRotation();
+     }
+   });
+
   </script>
 </body>
 </html>
