@@ -175,10 +175,10 @@
     #detail-content * { color:inherit; }
     #detail-controls { display:flex; gap:8px; margin-bottom:6px; justify-start; }
 
-    <!-- ✅ نوار زیرنویس چرخشی -->
     <div id="subtitle-bar" class="w-full max-w-3xl mt-4 rounded-full shadow-md overflow-hidden relative h-12 flex items-center justify-center cursor-pointer mx-auto bg-gradient-to-r from-[#1103ab] to-[#b80685]">
-      <div id="subtitle-text" class="text-center text-white text-sm sm:text-base px-4"></div>
+      <div id="subtitle-text" class="text-center text-white text-sm sm:text-base px-4">در حال بارگذاری...</div>
     </div>
+
 
     /* انیمیشن ورود بنرها */
     @keyframes fadeIn { from {opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
@@ -232,22 +232,19 @@
      }
 
     #subtitle-text {
-     white-space: nowrap;
-     transform: translateX(100%);
-     opacity: 0;
-     transition: transform 0.8s ease, opacity 0.8s ease;
-   }
+      display: inline-block;
+      white-space: nowrap;
+      transform: translateX(100%); /* شروع از سمت راست */
+      transition: transform 0.8s linear;
+    }
 
-.slide-in {
-  transform: translateX(0%);
-  opacity: 1;
-}
+    .subtitle-enter {
+      transform: translateX(100%);
+    }
 
-.slide-out {
-  transform: translateX(-100%);
-  opacity: 0;
-}
-
+    .subtitle-move {
+      transform: translateX(-100%);
+    }
 
   </style>
 </head>
@@ -749,50 +746,33 @@
         };
       });
     }
-  const subtitles = [
-     { text: "✅ آموزش انتخاب طرح مناسب تسهیلاتی", video: "videos/video1.mp4" },
-     { text: "💳 آشنایی با کارت رفاهی بانک رفاه", video: "videos/video2.mp4" },
-     { text: "📌 راهنمای ثبت درخواست غیرحضوری", video: "videos/video3.mp4" },
-   ];
+    const subtitles = [
+      "✅ آموزش انتخاب طرح مناسب تسهیلاتی",
+      "💳 آشنایی با کارت رفاهی بانک رفاه",
+      "📌 راهنمای ثبت درخواست غیرحضوری"
+    ];
 
-   const subtitleText = document.getElementById("subtitle-text");
-   const subtitleBar = document.getElementById("subtitle-bar");
-   const videoModal = document.getElementById("videoModal");
-   const videoSource = document.getElementById("videoSource");
-   const modalVideo = document.getElementById("modalVideo");
-   const closeVideoModal = document.getElementById("closeVideoModal");
+    const subtitleText = document.getElementById("subtitle-text");
+    let idx = 0;
 
-   let subtitleIndex = 0;
+    function showNextSubtitle() {
+      subtitleText.style.transition = "none"; // بدون انیمیشن ابتدا
+      subtitleText.style.transform = "translateX(100%)"; // از راست
+      subtitleText.textContent = subtitles[idx];
 
-   function startSubtitleRotation() {
-     subtitleText.textContent = subtitles[subtitleIndex].text;
-     subtitleText.classList.add("slide-in");
+      // اجازه بده مرورگر آماده شود
+      requestAnimationFrame(() => {
+        subtitleText.style.transition = "transform 5s linear"; // انیمیشن حرکت
+        subtitleText.style.transform = "translateX(-100%)"; // حرکت به چپ
+      });
 
-     setInterval(() => {
-       subtitleText.classList.remove("slide-in");
-       subtitleText.classList.add("slide-out");
+      idx = (idx + 1) % subtitles.length;
 
-       setTimeout(() => {
-         subtitleIndex = (subtitleIndex + 1) % subtitles.length;
-         subtitleText.textContent = subtitles[subtitleIndex].text;
-         subtitleText.classList.remove("slide-out");
-         subtitleText.classList.add("slide-in");
-       }, 800);
-     }, 4000);
-   }
+      setTimeout(showNextSubtitle, 5000); // بعد از 5 ثانیه بعدی
+    }
 
-   subtitleBar.addEventListener("click", () => {
-     videoSource.src = subtitles[subtitleIndex].video;
-     modalVideo.load();
-     videoModal.classList.remove("hidden");
-   });
-
-   closeVideoModal.addEventListener("click", () => {
-     videoModal.classList.add("hidden");
-     modalVideo.pause();
-   });
-
-   document.addEventListener("DOMContentLoaded", startSubtitleRotation)
+    document.addEventListener("DOMContentLoaded", showNextSubtitle);
 </script>
+
 </body>
 </html>
