@@ -228,17 +228,23 @@
      }
 
     /* ✅ افکت ورود و خروج زیرنویس */
-    #subtitle-text {
-      white-space: nowrap;
-      transform: translateY(100%);
-    }
-    .slide-in {
-      transform: translateY(0%);
-    }
-    .slide-out {
-      transform: translateY(-100%);
-      transition: transform 0.6s ease;
-    }
+   #subtitle-text {
+     white-space: nowrap;
+     transform: translateX(100%);
+     opacity: 0;
+     transition: transform 0.8s ease, opacity 0.8s ease;
+   }
+
+   .slide-in {
+     transform: translateX(0%);
+     opacity: 1;
+   }
+
+   .slide-out {
+     transform: translateX(-100%);
+     opacity: 0;
+   }
+
 
   </style>
 </head>
@@ -780,15 +786,17 @@
      subtitleText.classList.add("slide-in");
 
      subtitleInterval = setInterval(() => {
+    // خروج از سمت چپ
        subtitleText.classList.remove("slide-in");
        subtitleText.classList.add("slide-out");
 
        setTimeout(() => {
+      // جمله بعدی وارد از سمت راست
          subtitleIndex = (subtitleIndex + 1) % subtitles.length;
          subtitleText.textContent = subtitles[subtitleIndex].text;
          subtitleText.classList.remove("slide-out");
          subtitleText.classList.add("slide-in");
-       }, 600);
+       }, 800);
      }, 4000);
    }
 
@@ -805,7 +813,7 @@
      modalVideo.pause();
    });
 
-   // ✅ فقط وقتی بنرها نمایش داده میشن نوار زیرنویس رو نشون بده
+   // ✅ نمایش نوار زیرنویس فقط وقتی بنرها نمایش داده می‌شن
    window.addEventListener("DOMContentLoaded", () => {
      const banners = document.getElementById("ad-banners");
      if (!banners.classList.contains("hidden")) {
@@ -813,6 +821,7 @@
        startSubtitleRotation();
      }
    });
+
 
   </script>
 </body>
