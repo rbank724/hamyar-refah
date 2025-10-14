@@ -170,11 +170,15 @@
       #results { grid-template-columns: repeat(4, 1fr); }
     }
 
-    #backToTop { display:none; position:fixed; bottom:20px; left:20px; z-index:9999; background:#4f46e5; color:#fff; border:none; border-radius:50%; width:44px; height:44px; font-size:22px; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,0.3); }
 
     #detail, #detail * { text-align: justify !important; }
     #detail-content * { color:inherit; }
     #detail-controls { display:flex; gap:8px; margin-bottom:6px; justify-start; }
+
+    <!-- ✅ نوار زیرنویس چرخشی -->
+    <div id="subtitle-bar" class="w-full max-w-3xl mt-4 rounded-full shadow-md overflow-hidden relative h-12 flex items-center justify-center cursor-pointer mx-auto bg-gradient-to-r from-[#1103ab] to-[#b80685]">
+      <div id="subtitle-text" class="text-center text-white text-sm sm:text-base px-4"></div>
+    </div>
 
     /* انیمیشن ورود بنرها */
     @keyframes fadeIn { from {opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
@@ -227,23 +231,22 @@
        line-height: 1.8;
      }
 
-    /* ✅ افکت ورود و خروج زیرنویس */
-   #subtitle-text {
+    #subtitle-text {
      white-space: nowrap;
      transform: translateX(100%);
      opacity: 0;
      transition: transform 0.8s ease, opacity 0.8s ease;
    }
 
-   .slide-in {
-     transform: translateX(0%);
-     opacity: 1;
-   }
+.slide-in {
+  transform: translateX(0%);
+  opacity: 1;
+}
 
-   .slide-out {
-     transform: translateX(-100%);
-     opacity: 0;
-   }
+.slide-out {
+  transform: translateX(-100%);
+  opacity: 0;
+}
 
 
   </style>
@@ -498,23 +501,6 @@
 
 
   <div id="detail" class="mt-8 w-full max-w-3xl p-5 rounded-xl bg-white shadow-md hidden leading-8 text-sm sm:text-base"></div>
-  <!-- ✅ نوار زیرنویس چرخشی -->
-  <div id="subtitle-bar" class="hidden w-full max-w-3xl mt-4 rounded-full shadow-md overflow-hidden relative h-12 flex items-center justify-center cursor-pointer mx-auto bg-gradient-to-r from-[#1103ab] to-[#b80685]">
-    <div id="subtitle-text" class="text-center text-white text-sm sm:text-base px-4 transition-transform duration-700 ease-in-out"></div>
-  </div>
-
-  <!-- ✅ مودال پخش ویدیو -->
-  <div id="videoModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center hidden z-50">
-    <div class="bg-white rounded-xl overflow-hidden shadow-xl w-full max-w-2xl relative">
-      <button id="closeVideoModal" class="absolute top-2 left-2 bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-700">
-        &times;
-      </button>
-      <video id="modalVideo" class="w-full" controls>
-        <source id="videoSource" src="" type="video/mp4">
-        مرورگر شما از ویدیو پشتیبانی نمی‌کند.
-     </video>
-    </div>
-  </div>
 
   <!-- بنرهای تبلیغاتی 2:1 -->
   <div id="ad-banners" class="hidden w-full max-w-3xl mt-6 flex flex-col gap-4 animate-fadeIn">
@@ -763,35 +749,30 @@
         };
       });
     }
-   // ✅ جملات زیرنویس + ویدیوها
-   const subtitles = [
+  const subtitles = [
      { text: "✅ آموزش انتخاب طرح مناسب تسهیلاتی", video: "videos/video1.mp4" },
      { text: "💳 آشنایی با کارت رفاهی بانک رفاه", video: "videos/video2.mp4" },
      { text: "📌 راهنمای ثبت درخواست غیرحضوری", video: "videos/video3.mp4" },
    ];
 
-   const subtitleBar = document.getElementById("subtitle-bar");
    const subtitleText = document.getElementById("subtitle-text");
+   const subtitleBar = document.getElementById("subtitle-bar");
    const videoModal = document.getElementById("videoModal");
    const videoSource = document.getElementById("videoSource");
    const modalVideo = document.getElementById("modalVideo");
    const closeVideoModal = document.getElementById("closeVideoModal");
 
    let subtitleIndex = 0;
-   let subtitleInterval;
 
-   // ✅ تابع شروع چرخش زیرنویس
    function startSubtitleRotation() {
      subtitleText.textContent = subtitles[subtitleIndex].text;
      subtitleText.classList.add("slide-in");
 
-     subtitleInterval = setInterval(() => {
-    // خروج از سمت چپ
+     setInterval(() => {
        subtitleText.classList.remove("slide-in");
        subtitleText.classList.add("slide-out");
 
        setTimeout(() => {
-      // جمله بعدی وارد از سمت راست
          subtitleIndex = (subtitleIndex + 1) % subtitles.length;
          subtitleText.textContent = subtitles[subtitleIndex].text;
          subtitleText.classList.remove("slide-out");
@@ -800,29 +781,18 @@
      }, 4000);
    }
 
-   // ✅ باز کردن مودال ویدیو
    subtitleBar.addEventListener("click", () => {
      videoSource.src = subtitles[subtitleIndex].video;
      modalVideo.load();
      videoModal.classList.remove("hidden");
    });
 
-   // ✅ بستن مودال
    closeVideoModal.addEventListener("click", () => {
      videoModal.classList.add("hidden");
      modalVideo.pause();
    });
 
-   // ✅ نمایش نوار زیرنویس فقط وقتی بنرها نمایش داده می‌شن
-   window.addEventListener("DOMContentLoaded", () => {
-     const banners = document.getElementById("ad-banners");
-     if (!banners.classList.contains("hidden")) {
-       subtitleBar.classList.remove("hidden");
-       startSubtitleRotation();
-     }
-   });
-
-
-  </script>
+   document.addEventListener("DOMContentLoaded", startSubtitleRotation)
+</script>
 </body>
 </html>
