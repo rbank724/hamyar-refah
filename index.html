@@ -237,7 +237,7 @@
       display: inline-flex;
       gap: 3rem;
       min-width: max-content;
-      animation: slide 20s linear infinite; /* سرعت حرکت */
+      animation: slide 20s linear infinite;
     }
 
     /* هر سری متن */
@@ -252,10 +252,11 @@
       white-space: nowrap;
     }
 
-    /* انیمیشن چپ به راست */
     @keyframes slide {
-      0% { transform: translateX(100%); }   /* شروع خارج از راست */
-      100% { transform: translateX(-100%); } /* خروج از چپ */
+      0%   { transform: translateX(-100%); }  /* خارج از چپ */
+     100% { transform: translateX(100%); }   /* خارج از راست */
+    }
+
     }
 
     /* توقف روی هاور */
