@@ -846,39 +846,39 @@
   const modal = document.getElementById("video-modal");
   const closeBtn = document.getElementById("close-modal");
   const iframe = document.getElementById("aparat-video");
-  const adBanners = document.getElementById("ad-banners");           // بنرها
+
+  // این‌ها باید در HTML موجود باشند
+  const banners = document.querySelectorAll(".banner"); // بنرها
   const threeTextsContainer = document.getElementById("three-texts-container"); // متن روان
 
   spans.forEach((span, index) => {
     span.addEventListener("click", () => {
-      iframe.src = videos[index]; // ویدئو مربوطه
+      iframe.src = videos[index];
       modal.classList.add("show");
 
-      // هنگام باز شدن مودال، بنرها و متن روان مخفی شوند
-      if(adBanners) adBanners.classList.add("hidden");
+      // مخفی کردن بنرها و متن روان
+      banners.forEach(b => b.classList.add("hidden"));
       if(threeTextsContainer) threeTextsContainer.classList.add("hidden");
     });
   });
 
   function closeVideoModal() {
     modal.classList.remove("show");
-    iframe.src = ""; // توقف ویدئو هنگام بستن
+    iframe.src = ""; // توقف ویدئو
 
     // نمایش دوباره بنرها و متن روان
-    if(adBanners) adBanners.classList.remove("hidden");
+    banners.forEach(b => b.classList.remove("hidden"));
     if(threeTextsContainer) threeTextsContainer.classList.remove("hidden");
   }
 
   closeBtn.addEventListener("click", closeVideoModal);
 
-  // بستن با کلیک روی بک‌گراند
   modal.addEventListener("click", (e) => {
-    if (e.target === modal) {
+    if(e.target === modal) {
       closeVideoModal();
     }
   });
 </script>
-
 
 </body>
 </html>
