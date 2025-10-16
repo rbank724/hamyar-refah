@@ -236,7 +236,7 @@
       display: inline-flex;
       gap: 3rem;
       min-width: max-content;
-      animation: slide 30s linear infinite; 
+      animation: slide 10s linear infinite; 
     }
 
     .marquee-content {
@@ -254,8 +254,9 @@
     }
 
     @keyframes slide {
-      0%   { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
+      0% { transform: translateX(0); }
+      50% { transform: translateX(-50%); } /* وقتی 50٪ متن از صفحه خارج شد */
+      100% { transform: translateX(0); }
     }
 
     /* توقف کل حرکت وقتی موس روی کانتینر رفت */
@@ -424,7 +425,7 @@
   </div>
  
 
-  <div id="results" class="mt-1 w-full max-w-3xl gap-4"></div>
+  <div id="results" class="mt-3 w-full max-w-3xl gap-4"></div>
   <div id="pagination" class="mt-2 flex gap-2 flex-wrap justify-center"></div>
   <div id="loading" class="hidden mt-2 text-gray-600 text-sm sm:text-base">در حال بارگذاری...</div>
 
