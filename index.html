@@ -226,43 +226,42 @@
      }
 
     <style>
-       #three-texts-container {
-       overflow: hidden;
-       width: 100%;
-       white-space: nowrap;
-       cursor: pointer;
-     }
+      #three-texts-container {
+      overflow: hidden;
+      width: 100%;
+      white-space: nowrap;
+      cursor: pointer;
+    }
 
-     @keyframes slide {
-       100% { transform: translateX(-100); }   /* حرکت به راست */
-       0% { transform: translateX(100%); }  /* شروع خارج از دید چپ */   
-     }
+    #three-texts {
+      display: inline-flex;
+      gap: 3rem;
+      min-width: max-content;
+      animation: slide 20s linear infinite; /* سرعت حرکت */
+    }
 
-     /* کل مجموعه متن‌ها */
-     #three-texts {
-       display: inline-flex;
-       gap: 3rem;
-       animation: slide 15s linear infinite; /* سرعت قابل تنظیم */
-       min-width: max-content;
-     }
+    /* هر سری متن */
+    .marquee-content {
+      display: inline-flex;
+      gap: 3rem;
+      flex-shrink: 0;
+      min-width: max-content;
+    }
 
-     /* هر سری متن */
-     .marquee-content {
-       display: inline-flex;
-       gap: 3rem;
-       flex-shrink: 0;
-       min-width: max-content;
-     }
+    #three-texts span {
+      white-space: nowrap;
+    }
 
-     /* span ها در یک خط */
-     #three-texts span {
-       white-space: nowrap;
-     }
+    /* انیمیشن چپ به راست */
+    @keyframes slide {
+      0% { transform: translateX(100%); }   /* شروع خارج از راست */
+      100% { transform: translateX(-100%); } /* خروج از چپ */
+    }
 
-     /* توقف روی هاور */
-     #three-texts-container:hover #three-texts {
-       animation-play-state: paused;
-     }
+    /* توقف روی هاور */
+    #three-texts-container:hover #three-texts {
+      animation-play-state: paused;
+    }
 
     </style>
 
