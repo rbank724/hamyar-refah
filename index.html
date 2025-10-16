@@ -254,9 +254,9 @@
     }
 
     @keyframes slide {
-      0% { transform: translateX(0); }
-      50% { transform: translateX(-50%); } /* وقتی 50٪ متن از صفحه خارج شد */
-      100% { transform: translateX(0); }
+      0% { transform: translateX(-50%); }  /* متن شروع می‌کند نصفش خارج از صفحه */
+      50% { transform: translateX(0); }    /* وقتی نصف متن وارد صفحه شد */
+      100% { transform: translateX(-50%); }/* دوباره به حالت شروع */
     }
 
     /* توقف کل حرکت وقتی موس روی کانتینر رفت */
