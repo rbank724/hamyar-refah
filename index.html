@@ -791,16 +791,19 @@
 
     // پنهان شدن بنرها وقتی کاربر روی صفحه یا خود بنر کلیک کند
     document.addEventListener('click', (e) => {
-       if (banners && !banners.contains(e.target) && !e.target.classList.contains('search-clear')) {
-         // فقط اگر کلیک روی دکمه بستن یا داخل مودال نبوده باشد
-         if (!closeBtn.contains(e.target) && !modal.contains(e.target)) {
-           banners.classList.add('hidden');
-         }
-       }
-       if (banners && banners.contains(e.target)) {
-         banners.classList.add('hidden');
-       }
-     });
+      const adBanners = document.getElementById('ad-banners');
+      const closeBtn = document.getElementById('close-modal');
+
+      // اگر کلیک روی دکمه بستن مودال باشد، بنرها را مخفی نکن
+      if (closeBtn && closeBtn.contains(e.target)) return;
+
+      if (!adBanners.contains(e.target) && !e.target.classList.contains('search-clear')) {
+        adBanners.classList.add('hidden');
+      }
+      if (adBanners.contains(e.target)) {
+        adBanners.classList.add('hidden');
+      }
+    });
 
     function showBannerDetail(file, title) {
       document.getElementById('ad-banners').classList.add('hidden'); // پنهان کردن بنرها
