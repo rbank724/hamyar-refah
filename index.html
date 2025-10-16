@@ -253,13 +253,10 @@
       text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
     }
 
-    @keyframes slide {
-      0% {
-        transform: translateX(0);
-      }
-      100% {
-        transform: translateX(-50%);
-      }
+    @keyframes slide { 
+      0% { transform: translateX(-50%); } 
+      -50% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
     }
 
     /* توقف کل حرکت وقتی موس روی کانتینر رفت */
