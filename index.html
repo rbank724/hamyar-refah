@@ -233,32 +233,34 @@
        cursor: pointer;
      }
 
+     /* انیمیشن پیوسته از چپ به راست */
      @keyframes slide {
-       0% { transform: translateX(0); }
-       100% { transform: translateX(-50%); } /* نصف محتوا حرکت کند تا دومین سری ظاهر شود */
+       0% { transform: translateX(-50%); }  /* شروع خارج از دید چپ */
+       100% { transform: translateX(0); }   /* حرکت به راست */
      }
 
-     /* تنظیم جمله‌ها */
+     /* کل مجموعه متن‌ها */
      #three-texts {
-       display: inline-flex;        /* حتما inline-flex برای موبایل */
+       display: inline-flex;
        gap: 3rem;
-       animation: slide 20s linear infinite;
-       min-width: max-content;      /* جلوگیری از شکستن خط در موبایل */
+       animation: slide 15s linear infinite; /* سرعت قابل تنظیم */
+       min-width: max-content;
      }
 
-     /* محتوای مارکویی */
+     /* هر سری متن */
      .marquee-content {
-       display: inline-flex;        /* همه span ها در یک خط */
+       display: inline-flex;
        gap: 3rem;
        flex-shrink: 0;
-       min-width: max-content;      /* جلوگیری از شکست خط */
+       min-width: max-content;
      }
 
+     /* span ها در یک خط */
      #three-texts span {
        white-space: nowrap;
      }
 
-     /* توقف انیمیشن روی هاور */
+     /* توقف روی هاور */
      #three-texts-container:hover #three-texts {
        animation-play-state: paused;
      }
