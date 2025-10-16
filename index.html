@@ -225,48 +225,37 @@
        line-height: 1.8;
      }
 
-   <style>
-    #three-texts-container {
-      overflow: hidden;
-      width: 100%;
-      cursor: pointer;
-      background: transparent;
-    }
-
-    .marquee {
-      display: flex;
-      white-space: nowrap;
-      animation: marquee-right 20s linear infinite;
-    }
-
-    .marquee-content {
-      display: flex;
-      gap: 3rem;
-      flex-shrink: 0;
-    }
-
-    .marquee-content span {
-      white-space: nowrap;
-      font-size: 1rem;
-      font-weight: 500;
-      color: #333;
-    }
-
-    /* 🌀 انیمیشن از چپ به راست */
-    @keyframes marquee-right {
-      0% {
-        transform: translateX(-50%);
+    <style>
+      #three-texts-container {
+        overflow: hidden;
+        width: 100%;
+        cursor: pointer;
       }
-      100% {
-        transform: translateX(0);
-      }
-    }
 
-    /* 🖱️ توقف روی هاور */
-    #three-texts-container:hover .marquee {
-      animation-play-state: paused;
-    }
-  </style>
+      .marquee {
+        display: flex;
+        white-space: nowrap;
+        will-change: transform;
+      }
+
+      .marquee-content {
+        display: flex;
+        gap: 2rem;
+        flex-shrink: 0;
+      }
+
+      .marquee-content span {
+        font-size: 1rem;
+        font-weight: 500;
+        color: #333;
+        white-space: nowrap;
+      }
+
+      /* توقف روی هاور */
+      #three-texts-container:hover .marquee {
+        animation-play-state: paused;
+      }
+    </style>
 
     
   </style>
@@ -355,22 +344,19 @@
     <option value="">طرح های تسهیلاتی</option>
   </select>
 
- <!-- ✅ نوار متحرک پیوسته -->
-<div id="three-texts-container" class="mt-4 w-full overflow-hidden">
-  <div id="three-texts" class="marquee">
-    <div class="marquee-content">
-      <span>🟢 تسهیلات ویژه</span>
-      <span>💰 نرخ سود مناسب</span>
-      <span>📄 شرایط آسان</span>
-    </div>
-    <!-- ✨ یک نسخه کپی از جملات برای حرکت روان -->
-    <div class="marquee-content">
-      <span>🟢 تسهیلات ویژه</span>
-      <span>💰 نرخ سود مناسب</span>
-      <span>📄 شرایط آسان</span>
-    </div>
-  </div>
-</div>
+ <!-- ✅ نوار متحرک بدون پرش، ریسپانسیو و از چپ به راست -->
+ <div id="three-texts-container" class="mt-4 w-full overflow-hidden">
+   <div id="three-texts" class="marquee">
+     <div class="marquee-content" id="marquee-content">
+       <span>🟢 تسهیلات ویژه</span>
+       <span>💰 نرخ سود مناسب</span>
+       <span>📄 شرایط آسان</span>
+     </div>
+     <!-- نسخه دوم برای حرکت روان -->
+     <div class="marquee-content" id="marquee-clone"></div>
+   </div>
+ </div>
+
 
   <div id="results" class="mt-4 w-full max-w-3xl gap-4"></div>
   <div id="pagination" class="mt-4 flex gap-2 flex-wrap justify-center"></div>
@@ -787,5 +773,40 @@
       });
     }
   </script>
+  <script>
+     const marquee = document.querySelector('.marquee');
+     const content = document.getElementById('marquee-content');
+     const clone = document.getElementById('marquee-clone');
+
+     // ✨ کلون کردن محتوا برای تکرار بی‌نقص
+     clone.innerHTML = content.innerHTML;
+
+    function setMarqueeAnimation() {
+       // عرض کل محتوای اصلی
+       const contentWidth = content.offsetWidth;
+
+       // سرعت حرکت (پیکسل در ثانیه)
+       const speed = 100; 
+       const duration = (contentWidth * 2) / speed;
+
+       // تنظیم انیمیشن داینامیک
+       marquee.style.animation = `marqueeAnim ${duration}s linear infinite`;
+     }
+
+     // تعریف انیمیشن داینامیک
+     const style = document.createElement('style');
+     style.innerHTML = `
+       @keyframes marqueeAnim {
+         0% { transform: translateX(-${content.offsetWidth}px); }
+         100% { transform: translateX(0); }
+       }
+     `;
+     document.head.appendChild(style);
+
+     // تنظیم اولیه و هنگام تغییر سایز (ریسپانسیو 📱)
+     setMarqueeAnimation();
+     window.addEventListener('resize', setMarqueeAnimation);
+   </script>
+
 </body>
 </html>
