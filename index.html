@@ -226,45 +226,45 @@
      }
 
     <style>
-     #three-texts-container {
-     overflow: hidden;
-     width: 100%;
-     white-space: nowrap;
-     cursor: pointer;
-   }
+       #three-texts-container {
+       overflow: hidden;
+       width: 100%;
+       white-space: nowrap;
+       cursor: pointer;
+     }
 
-   /* 🌀 انیمیشن بی‌نهایت از چپ به راست */
-   @keyframes slide {
-     0% { transform: translateX(-50%); } /* شروع از چپ */
-     100% { transform: translateX(0); }  /* به سمت راست حرکت کند */
-   }
+     /* انیمیشن بی‌نهایت از راست به چپ */
+     @keyframes slide {
+       0% { transform: translateX(-50%); }
+       100% { transform: translateX(0); }
+     }
 
-   /* ✨ تنظیم جمله‌ها */
-   #three-texts {
-     display: inline-flex;        
-     gap: 3rem;
-     animation: slide 20s linear infinite;  /* سرعت قابل تغییر است */
-     min-width: max-content;      
-   }
+     /* تنظیم جمله‌ها */
+     #three-texts {
+       display: inline-flex;        /* حتما inline-flex برای موبایل */
+       gap: 3rem;
+       animation: slide 20s linear infinite;
+       min-width: max-content;      /* جلوگیری از شکستن خط در موبایل */
+     }
 
-   /* محتوای مارکویی */
-   .marquee-content {
-     display: inline-flex;        
-     gap: 3rem;
-     flex-shrink: 0;
-     min-width: max-content;      
-   }
+     /* محتوای مارکویی */
+     .marquee-content {
+       display: inline-flex;        /* همه span ها در یک خط */
+       gap: 3rem;
+       flex-shrink: 0;
+       min-width: max-content;      /* جلوگیری از شکست خط */
+     }
 
-   #three-texts span {
-     white-space: nowrap;
-   }
+     #three-texts span {
+       white-space: nowrap;
+     }
 
-   /* توقف انیمیشن روی هاور */
-   #three-texts-container:hover #three-texts {
-     animation-play-state: paused;
-   }
+     /* توقف انیمیشن روی هاور */
+     #three-texts-container:hover #three-texts {
+       animation-play-state: paused;
+     }
 
-  </style>
+    </style>
 
 
   </style>
