@@ -786,5 +786,89 @@
       });
     }
   </script>
+  <!-- ✅ مودال ویدئو آپارات -->
+<div id="video-modal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 hidden">
+  <div class="bg-white rounded-xl shadow-lg max-w-3xl w-full relative">
+    <!-- دکمه بستن -->
+    <button id="close-modal" class="absolute top-2 right-2 text-gray-700 hover:text-gray-900 text-2xl font-bold">&times;</button>
+    <!-- محتوای ویدئو -->
+    <div class="aspect-w-16 aspect-h-9">
+      <iframe id="aparat-video" src="" frameborder="0" allowfullscreen class="w-full h-full rounded-xl"></iframe>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* افکت باز شدن مودال */
+  #video-modal.show {
+    display: flex;
+    animation: fadeIn 0.3s ease forwards;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  /* marquee متن روان */
+  .marquee-content span {
+    cursor: pointer;
+  }
+
+  /* نسبت 16:9 برای iframe */
+  .aspect-w-16 {
+    position: relative;
+    width: 100%;
+  }
+
+  .aspect-w-16::before {
+    content: "";
+    display: block;
+    padding-top: 56.25%;
+  }
+
+  .aspect-w-16 > iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+</style>
+
+<script>
+  // لینک ویدئوهای آپارات
+  const videos = [
+    "https://www.aparat.com/video/video/embed/videohash/VIDEO_ID1/vt/frame",
+    "https://www.aparat.com/video/video/embed/videohash/VIDEO_ID2/vt/frame",
+    "https://www.aparat.com/video/video/embed/videohash/VIDEO_ID3/vt/frame"
+  ];
+
+  const spans = document.querySelectorAll("#three-texts span");
+  const modal = document.getElementById("video-modal");
+  const closeBtn = document.getElementById("close-modal");
+  const iframe = document.getElementById("aparat-video");
+
+  spans.forEach((span, index) => {
+    span.addEventListener("click", () => {
+      iframe.src = videos[index]; // ویدئو مربوطه
+      modal.classList.add("show");
+    });
+  });
+
+  closeBtn.addEventListener("click", () => {
+    modal.classList.remove("show");
+    iframe.src = ""; // توقف ویدئو هنگام بستن
+  });
+
+  // بستن با کلیک روی بک‌گراند
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      modal.classList.remove("show");
+      iframe.src = "";
+    }
+  });
+</script>
+
 </body>
 </html>
