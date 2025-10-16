@@ -226,6 +226,7 @@
      }
 
     <style>
+     /* کانتینر اصلی */
      #three-texts-container {
        overflow: hidden;
        width: 100%;
@@ -233,14 +234,16 @@
        background: transparent;
      }
 
+  /* والد جمله‌ها */
      .marquee {
        display: flex;
        white-space: nowrap;
-       animation: marquee-right 20s linear infinite;
+       animation: marquee 20s linear infinite;
      }
 
+  /* محتوای جمله‌ها */
      .marquee-content {
-      display: flex;
+       display: flex;
        gap: 3rem;
        flex-shrink: 0;
      }
@@ -252,21 +255,22 @@
        color: #333;
      }
 
-     /* 🌀 انیمیشن از چپ به راست */
-     @keyframes marquee-right {
+  /* انیمیشن حرکت پیوسته */
+     @keyframes marquee {
        0% {
-         transform: translateX(-50%);
+         transform: translateX(0);
        }
        100% {
-         transform: translateX(0);
+         transform: translateX(-50%);
        }
      }
 
-     /* 🖱️ توقف روی هاور */
+  /* توقف روی هاور 🖱️ */
      #three-texts-container:hover .marquee {
        animation-play-state: paused;
      }
    </style>
+
 
 
   </style>
