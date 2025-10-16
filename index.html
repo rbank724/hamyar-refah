@@ -882,12 +882,14 @@
     }
   });
 
-  // جلوگیری از پنهان شدن بنرها وقتی مودال باز است
   document.addEventListener('click', (e) => {
-    if (modal.classList.contains('show')) return; // مودال باز است، کاری نکن
     const adBanners = document.getElementById('ad-banners');
-    if (!adBanners.contains(e.target) && !e.target.classList.contains('search-clear')) {
-      adBanners.classList.add('hidden');
+    // اگر روی جارو یا بنر کلیک شد کاری نکن
+    if (e.target.classList.contains('search-clear') || adBanners.contains(e.target)) return;
+
+    // فقط وقتی مودال **باز نیست** بنرها مخفی شوند
+    if (!modal.classList.contains('show')) {
+        adBanners.classList.add('hidden');
     }
   });
 </script>
