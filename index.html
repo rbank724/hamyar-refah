@@ -254,8 +254,12 @@
     }
 
     @keyframes slide {
-     0% { transform: translateX(-50%); }  /* شروع از نیمه اول متن */
-     100% { transform: translateX(0); }   /* متن کاملاً وارد صفحه شد */
+      0% {
+        transform: translateX(0);
+      }
+      100% {
+        transform: translateX(-50%);
+      }
     }
 
     /* توقف کل حرکت وقتی موس روی کانتینر رفت */
