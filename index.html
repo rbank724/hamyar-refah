@@ -748,9 +748,16 @@
       controls.style.display = "flex"; // نمایش کنترل‌ها
       loading.classList.remove('hidden'); // نمایش لودینگ
 
+      // 🔹 بررسی کش
+      if (fileCache.has(file)) {
+        showDetail({ title, file }, fileCache.get(file));
+        return;
+      }
+
       fetch(file)
         .then(res => res.text())
         .then(html => {
+          fileCache.set(file, html); // ذخیره در کش
           showDetail({ title, file }, html); // استفاده از همان تابع اصلی
         })
         .finally(() => loading.classList.add('hidden')); // پنهان کردن لودینگ
@@ -832,7 +839,7 @@
   const videos = [
     "https://www.aparat.com/video/video/embed/videohash/ichem9v/vt/frame",
     "https://www.aparat.com/video/video/embed/videohash/yslzudo/vt/frame",
-    "https://www.aparat.com/video/video/embed/videohash/osh1e81/vt/frame"و
+    "https://www.aparat.com/video/video/embed/videohash/osh1e81/vt/frame",
     "https://www.aparat.com/video/video/embed/videohash/ichem9v/vt/frame",
     "https://www.aparat.com/video/video/embed/videohash/yslzudo/vt/frame",
     "https://www.aparat.com/video/video/embed/videohash/osh1e81/vt/frame"
