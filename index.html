@@ -225,6 +225,29 @@
        line-height: 1.8;
      }
 
+   <style>
+     /* ✨ انیمیشن حرکت متن از راست به چپ */
+     @keyframes slide {
+       0% {
+         transform: translateX(100%);
+       }
+       100% {
+         transform: translateX(-100%);
+       }
+     }
+
+     /* 🚀 اعمال انیمیشن روی جمله‌ها */
+     .animate-slide {
+       display: inline-flex;
+       animation: slide 15s linear infinite;
+     }
+
+     #three-texts span {
+       padding: 0 1rem;
+       white-space: nowrap;
+     }
+   </style>
+
   </style>
 </head>
 <body class="flex flex-col items-center m-0 p-4">
@@ -311,10 +334,12 @@
     <option value="">طرح های تسهیلاتی</option>
   </select>
 
-  <div id="three-texts" class="mt-4 flex flex-wrap justify-center gap-6 text-base font-medium text-gray-800">
+  <div id="three-texts-container" class="mt-4 w-full overflow-hidden">
+   <div id="three-texts" class="whitespace-nowrap flex gap-12 text-base font-medium text-gray-800 animate-slide"> 
     <span>🟢 بانک رفاه کارگران </span>
     <span>💰 بانک رفاه کارگران</span>
     <span>📄 بانک رفاه کارگران </span>
+   </div>
   </div>
 
   <div id="results" class="mt-4 w-full max-w-3xl gap-4"></div>
