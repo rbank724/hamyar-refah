@@ -1,167 +1,757 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>همیار رفاه</title>
-<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
-<script src="https://cdn.tailwindcss.com"></script>
-<style>
-@font-face {
- font-family: 'Vazirmatn';
- src: url('fonts/Vazirmatn-Light.woff2') format('woff2');
- font-weight: 300; font-style: normal;
-}
-@font-face {
- font-family: 'Vazirmatn';
- src: url('fonts/Vazirmatn-Regular.woff2') format('woff2');
- font-weight: 400; font-style: normal;
-}
-@font-face {
- font-family: 'Vazirmatn';
- src: url('fonts/Vazirmatn-Medium.woff2') format('woff2');
- font-weight: 500; font-style: normal;
-}
-@font-face {
- font-family: 'Vazirmatn';
- src: url('fonts/Vazirmatn-SemiBold.woff2') format('woff2');
- font-weight: 600; font-style: normal;
-}
-@font-face {
- font-family: 'Vazirmatn';
- src: url('fonts/Vazirmatn-Bold.woff2') format('woff2');
- font-weight: 700; font-style: normal;
-}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>همیار رفاه</title>
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
 
-body { font-family: "Vazirmatn", sans-serif; background-color: #f9f9f9; }
-h1, .search-input, .show-all-btn { color: #1f2937; }
-.result-item {
-  border-radius: 50%;
-  aspect-ratio: 1/1;
-  width: 100px; height: 100px;
-  display: flex; align-items: center; justify-content: center;
-  text-align: center; color: #fff;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-  background: linear-gradient(135deg, rgba(17,3,171,0.8), rgba(184,6,133,0.8));
-  backdrop-filter: blur(5px);
-}
-@keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-.fade-in-up { animation: fadeInUp 0.6s ease forwards; }
-.result-item:hover { transform: translateY(-3px) scale(1.02); box-shadow:0 10px 15px rgba(0,0,0,0.2); }
+  @font-face {
+   font-family: 'Vazirmatn';
+   src: url('fonts/Vazirmatn-Light.woff2') format('woff2');
+   font-weight: 300;
+   font-style: normal;
+  }
 
-.pagination-btn {
-  min-width: 40px; height: 40px; border-radius: 50%; font-weight: bold;
-  transition: all 0.3s ease; cursor: pointer; font-size: 1rem;
-  display: flex; align-items: center; justify-content: center;
-  border: none; outline: none;
-}
-.pagination-active {
-  background: linear-gradient(135deg, #4f46e5, #7c3aed);
-  color: white; box-shadow: 0 4px 10px rgba(79, 70, 229, 0.4); transform: translateY(-2px);
-}
-.pagination-inactive {
-  background: #e5e7eb; color: #374151; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
-}
-.pagination-btn:hover { transform: translateY(-2px) scale(1.05); box-shadow: 0 6px 12px rgba(0,0,0,0.2); }
-.pagination-btn:active { transform: scale(0.95); }
+  @font-face {
+   font-family: 'Vazirmatn';
+   src: url('fonts/Vazirmatn-Regular.woff2') format('woff2');
+   font-weight: 400;
+   font-style: normal;
+  }
 
-.search-wrapper { position: relative; width: 100%; max-width: 28rem; margin-bottom: 0.5rem; }
-.search-clear { position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.2rem; color: #9ca3af; }
-.search-input{ padding-left: 2rem; font-size: 16px; }
-.show-all-btn { width:100%; max-width:28rem; margin-top:0.5rem; background:linear-gradient(to right, #090157, #6e027a); color:white; font-weight:bold; padding:0.75rem 1rem; border-radius:9999px; text-align:center; cursor:pointer; transition: all 0.3s ease; }
-.show-all-btn:hover { transform: translateY(-2px) scale(1.02); box-shadow:0 10px 15px rgba(0,0,0,0.2); }
+  @font-face {
+   font-family: 'Vazirmatn';
+   src: url('fonts/Vazirmatn-Medium.woff2') format('woff2');
+   font-weight: 500;
+   font-style: normal;
+  }
 
-#categorySelect {
-  color: #FFD700; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-  background-color: #090157; text-align: center; text-align-last: center; direction: rtl;
-  -webkit-appearance: none; -moz-appearance: none; appearance: none;
-  font-size: clamp(0.9rem, 2.5vw, 1.2rem);
-  border-radius: 12px;
-  box-shadow: 6px 6px 12px rgba(0,0,0,0.5), -6px -6px 12px rgba(255,255,255,0.1);
-  transition: all 0.3s ease;
-}
-#categorySelect:hover {
-  box-shadow: inset 4px 4px 8px rgba(0,0,0,0.5), inset -4px -4px 8px rgba(255,255,255,0.1);
-  transform: translateY(-2px); cursor: pointer;
-}
+  @font-face {
+   font-family: 'Vazirmatn';
+   src: url('fonts/Vazirmatn-SemiBold.woff2') format('woff2');
+   font-weight: 600;
+   font-style: normal;
+  }
 
-#results { display: grid; gap: 1rem; width: max-content; margin-left: auto; margin-right: auto; justify-content: center; justify-items: center; align-items: center; grid-template-columns: repeat(3, 1fr); }
-@media (min-width: 768px) { #results { grid-template-columns: repeat(4, 1fr); } }
-#detail, #detail * { text-align: justify !important; }
-#detail-content * { color:inherit; }
-#detail-controls { display:flex; gap:8px; margin-bottom:6px; justify-start; }
+  @font-face {
+   font-family: 'Vazirmatn';
+   src: url('fonts/Vazirmatn-Bold.woff2') format('woff2');
+   font-weight: 700;
+   font-style: normal;
+ }
+    
+    body { font-family: "Vazirmatn", sans-serif; background-color: #f9f9f9; }
+    h1, .search-input, .show-all-btn { color: #1f2937; }
 
-@keyframes fadeIn { from {opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
-.animate-fadeIn { animation: fadeIn 0.8s ease forwards; }
+   .result-item {
+      border-radius: 50%;
+      aspect-ratio: 1/1;
+      width: 100px;
+      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #fff;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+      background: linear-gradient(135deg, rgba(17,3,171,0.8), rgba(184,6,133,0.8));
+      backdrop-filter: blur(5px);
+    }
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
-.ad-banner > div { aspect-ratio: 3/1; }
+    .fade-in-up {
+      animation: fadeInUp 0.5s ease forwards;
+    }
 
-#detail h2 { font-family: 'Vazirmatn', sans-serif; text-align: center !important; color: #800080 !important; font-weight: bold !important; margin: 0.5em 0; direction: rtl; text-shadow: 1px 1px 2px rgba(0,0,0,0.2) !important; font-size: 20px !important; }
-#detail p { font-family: 'Vazirmatn', sans-serif; color: #000; }
-#detail p strong { font-family: 'Vazirmatn', sans-serif; color: #0420c2; text-shadow: 1px 1px 2px rgba(0,0,0,0.2); }
-#detail ul { font-family: 'Vazirmatn', sans-serif; list-style-type: disc; padding-right: 1.5rem; margin: 1rem 0; }
-#detail ol { font-family: 'Vazirmatn', sans-serif; list-style-type: decimal; padding-right: 1.5rem; margin: 1rem 0; }
-#detail li { font-family: 'Vazirmatn', sans-serif; margin-bottom: 0.5rem; line-height: 1.5; }
+    .result-item:hover { transform: translateY(-3px) scale(1.02); box-shadow:0 10px 15px rgba(0,0,0,0.2); }
+    @keyframes fadeInUp { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
+    .fade-in-up { animation: fadeInUp 0.6s ease forwards; }
 
-/* --- نوار متحرک اصلاح شده بدون تغییر ساختار --- */
-#three-texts-container { overflow: hidden; width: 100%; position: relative; height: 50px; }
-.marquee { display: flex; white-space: nowrap; position: absolute; top: 0; left: 0; }
-#marquee-content, #marquee-clone { display: inline-block; padding-right: 2rem; }
-</style>
-</head>
-<body>
+    /* --- شماره صفحات مدرن و سه‌بعدی --- */
+    .pagination-btn {
+      min-width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      outline: none;
+    }
 
-<div id="three-texts-container">
-  <div class="marquee" id="marquee">
-    <div id="marquee-content">
-      <span>متن اول</span>
-      <span style="margin-right: 3rem;">متن دوم</span>
-      <span style="margin-right: 3rem;">متن سوم</span>
+    .pagination-active {
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      color: white;
+      box-shadow: 0 4px 10px rgba(79, 70, 229, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .pagination-inactive {
+      background: #e5e7eb;
+      color: #374151;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .pagination-btn:hover {
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+    }
+
+    .pagination-btn:active {
+      transform: scale(0.95);
+    }
+
+
+    .search-wrapper { position: relative; width: 100%; max-width: 28rem; margin-bottom: 0.5rem; }
+    .search-clear { position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 1.2rem; color: #9ca3af; }
+    .search-input{
+      padding-left: 2rem;
+      font-size: 16px; /* حداقل 16px برای جلوگیری از زوم */
+    }
+
+    .show-all-btn { width:100%; max-width:28rem; margin-top:0.5rem; background:linear-gradient(to right, #090157, #6e027a); color:white; font-weight:bold; padding:0.75rem 1rem; border-radius:9999px; text-align:center; cursor:pointer; transition: all 0.3s ease; }
+    .show-all-btn:hover { transform: translateY(-2px) scale(1.02); box-shadow:0 10px 15px rgba(0,0,0,0.2); }
+
+    #categorySelect {
+      color: #FFD700;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+      background-color: #090157;
+      text-align: center;
+      text-align-last: center;
+      direction: rtl;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      font-size: clamp(0.9rem, 2.5vw, 1.2rem); 
+
+      /* نئومورفیسم سه‌بعدی */
+      border-radius: 12px;
+      box-shadow: 6px 6px 12px rgba(0,0,0,0.5),
+                  -6px -6px 12px rgba(255,255,255,0.1);
+      transition: all 0.3s ease;
+    }
+
+    #categorySelect:hover {
+      box-shadow: inset 4px 4px 8px rgba(0,0,0,0.5),
+                  inset -4px -4px 8px rgba(255,255,255,0.1);
+      transform: translateY(-2px);
+      cursor: pointer;
+    }
+
+    #results {
+      display: grid;
+      gap: 1rem;
+      width: max-content;
+      margin-left: auto;
+      margin-right: auto;
+      justify-content: center;
+      justify-items: center;
+      align-items: center;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    @media (min-width: 768px) {
+      #results { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    #detail, #detail * { text-align: justify !important; }
+    #detail-content * { color:inherit; }
+    #detail-controls { display:flex; gap:8px; margin-bottom:6px; justify-start; }
+
+    /* انیمیشن ورود بنرها */
+    @keyframes fadeIn { from {opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
+    .animate-fadeIn { animation: fadeIn 0.8s ease forwards; }
+
+    <!-- متن روان متحرک بین دکمه‌ها و بنرها -->
+    <div class="marquee-container w-full max-w-3xl overflow-hidden relative my-4">
+      <div class="marquee-text whitespace-nowrap text-white font-bold text-lg sm:text-xl px-4">
+        🎉 جستجوگر طرح‌های تسهیلاتی بانک رفاه کارگران | جدیدترین و کامل‌ترین طرح‌ها همین‌جا! 🎉
+      </div>
     </div>
-    <div id="marquee-clone"></div>
+
+    .marquee-container {
+      height: 40px;
+    }
+
+    .marquee-text {
+      display: inline-block;
+      animation: marquee 15s linear infinite;
+    }
+
+    /* حرکت از چپ به راست */
+    @keyframes marquee {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    /* واکنش‌گرایی متن */
+    @media (max-width: 768px) {
+      .marquee-text { font-size: 1rem; }
+    }
+
+    /* بنرها نسبت 2:1 */
+    .ad-banner > div { aspect-ratio: 3/1; }
+     /* 🔹 متن‌های معمولی مشکی شوند */
+
+/* تیترها */
+     #detail h2 {
+        font-family: 'Vazirmatn', sans-serif;
+        text-align: center !important;   /* وسط‌چین */
+        color: #800080 !important;       /* رنگ بنفش */
+        font-weight: bold !important;     /* ضخیم */
+        margin: 0.5em 0;        /* فاصله بالا و پایین */
+        direction: rtl;       /* راست‌چین */
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.2) !important;
+        font-size: 20px !important;      /* اندازه فونت بزرگ‌تر */
+    }
+
+     #detail p {
+       font-family: 'Vazirmatn', sans-serif;
+       color: #000; /* مشکی */
+     }
+    
+     #detail p strong {
+       font-family: 'Vazirmatn', sans-serif;
+       color: #0420c2; 
+       text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+     }
+     /* ✅ بازگردانی استایل لیست‌ها در جزئیات طرح‌ها */
+     #detail ul {
+       font-family: 'Vazirmatn', sans-serif;
+       list-style-type: disc;      /* یولت دایره‌ای کلاسیک */
+       padding-right: 1.5rem;      /* فاصله مناسب از راست برای دیده شدن یولت */
+       margin: 1rem 0;
+     }
+
+     #detail ol {
+       font-family: 'Vazirmatn', sans-serif;
+       list-style-type: decimal;   /* برای لیست‌های شماره‌دار */
+       padding-right: 1.5rem;
+       margin: 1rem 0;
+     }
+
+     #detail li {
+       font-family: 'Vazirmatn', sans-serif;
+       margin-bottom: 0.5rem;      /* فاصله بین آیتم‌ها */
+       line-height: 1.8;
+     }
+
+  </style>
+</head>
+<body class="flex flex-col items-center m-0 p-4">
+
+<div class="title">همیار رفاه</div>
+
+<style>
+/* فونت مدرن و وزن مناسب */
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap');
+
+.title {
+    font-family: 'Vazirmatn'; /* فونت مدرن */
+    font-size: 2rem; /* اندازه بزرگ برای تیتر */
+    font-weight: 900;
+    background: linear-gradient(135deg, #1103ab, #b80685); /* گرادیانت مدرن */
+    -webkit-background-clip: text; /* فقط متن گرادیانت داشته باشد */
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+    margin: 1px 0;
+    position: relative;
+
+    
+    /* سایه ظریف */
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+    
+    /* افکت ورود */
+    opacity: 0;
+    transform: translateY(-20px);
+    animation: fadeInUp 1s forwards;
+}
+
+/* انیمیشن */
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* افکت هاور */
+.title:hover {
+    background: linear-gradient(135deg, #b80685, #1103ab);
+    -webkit-background-clip: text; /* اضافه کردن این خط */
+    -webkit-text-fill-color: transparent; /* اضافه کردن این خط */
+    text-shadow: 3px 3px 8px rgba(0,0,0,0.3);
+    cursor: default;
+}
+</style>
+  <div class="subtitle text-center mx-auto max-w-3xl overflow-wrap-break-word" 
+     style="margin-top: 15px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">
+  جستجوگر طرح های تسهیلاتی بانک رفاه کارگران
+  </div>
+
+  <div class="search-wrapper">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+
+<span class="search-clear" onclick="clearSearch(event)">
+  <span class="material-icons-outlined">autorenew</span>
+</span>
+
+<style>
+.search-clear {
+  display: inline-flex;            /* برای تنظیم وسط‌چین عمودی */
+  align-items: center;             /* وسط‌چین عمودی */
+  justify-content: center;         /* وسط‌چین افقی */
+  width: 32px;                     /* اندازه باکس (اختیاری) */
+  height: 32px;                    /* ارتفاع باکس */
+  cursor: pointer;
+  color: #6a0dad;
+  font-size: 30px;
+}
+
+.search-clear:hover .material-icons-outlined {
+  transform: rotate(180deg);
+  transition: transform 0.8s ease;
+  color: #b80685;
+}
+</style>
+    <input id="search-box" type="text" placeholder="جستجو کنید (نام طرح، کلیدواژه یا شماره اطلاعیه و بخشنامه)" 
+      class="search-input w-full px-4 py-3 text-sm text-lg border border-gray-300 rounded-full outline-none shadow-md"/>
+  </div>
+
+  <select id="categorySelect" class="show-all-btn">
+    <option value="">طرح های تسهیلاتی</option>
+  </select>
+
+  <div id="results" class="mt-4 w-full max-w-3xl gap-4"></div>
+  <div id="pagination" class="mt-4 flex gap-2 flex-wrap justify-center"></div>
+  <div id="loading" class="hidden mt-4 text-gray-600 text-sm sm:text-base">در حال بارگذاری...</div>
+
+  <!-- دکمه‌ها -->
+  <div id="detail-controls" class="flex gap-2 mb-4 hidden">
+   <button id="home-btn" 
+     title="بازگشت به صفحه اصلی" 
+     onclick="clearSearch(event)"
+     style="background: linear-gradient(145deg, #5c4bd6, #3c33a8);
+          color:#fff;
+          border:none;
+          border-radius:50%;
+          width:45px;
+          height:45px;
+          cursor:pointer;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          box-shadow:4px 4px 8px rgba(0,0,0,0.3),
+                     -4px -4px 8px rgba(255,255,255,0.1);">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+        </svg>
+</button>
+
+<!-- ✅ دکمه درباره -->
+<button id="about-btn" title="درباره"
+     style="background: linear-gradient(145deg, #5c4bd6, #3c33a8);
+            color:#fff;
+            border:none;
+            border-radius:50%;
+            width:45px;
+            height:45px;
+            cursor:pointer;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            box-shadow: 4px 4px 8px rgba(0,0,0,0.3), -4px -4px 8px rgba(255,255,255,0.1);">
+     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 24 24">
+       <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 15h-1v-6h2v6h-1zm0-8a1 1 0 110-2 1 1 0 010 2z"/>
+     </svg>
+</button>
+
+<button id="calc-btn" title="ماشین حساب"
+      style="background: linear-gradient(145deg, #5c4bd6, #3c33a8);
+             color:#fff;
+             border:none;
+             border-radius:50%;
+             width:45px;
+             height:45px;
+             cursor:pointer;
+             display:flex;
+             align-items:center;
+             justify-content:center;
+             box-shadow: 4px 4px 8px rgba(0,0,0,0.3), -4px -4px 8px rgba(255,255,255,0.1);">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M5 2h14a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 2v16h14V4H5zm2 2h10v3H7V6zm0 5h2v2H7v-2zm3 0h2v2h-2v-2zm3 0h2v2h-2v-2zM7 14h2v2H7v-2zm3 0h2v2h-2v-2zm3 0h2v2h-2v-2zM7 17h2v2H7v-2zm3 0h2v2h-2v-2zm3 0h2v2h-2v-2z"/>
+      </svg>
+</button>
+<script>
+ document.getElementById('calc-btn').addEventListener('click', function() {
+  window.open('https://www.refah-bank.ir/vam-to', '_blank');
+ });
+</script>
+
+<button id="share-btn" title="اشتراک‌گذاری" 
+     style="background: linear-gradient(145deg, #5c4bd6, #3c33a8);
+            color:#fff;
+            border:none;
+            border-radius:50%;
+            width:45px;
+            height:45px;
+            cursor:pointer;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            box-shadow: 4px 4px 8px rgba(0,0,0,0.3), -4px -4px 8px rgba(255,255,255,0.1);">
+     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"></path>
+      <polyline points="16 6 12 2 8 6"></polyline>
+      <line x1="12" y1="2" x2="12" y2="15"></line>
+     </svg>
+</button>
+
+<button id="font-plus" title="بزرگتر" style="background: linear-gradient(145deg, #5c4bd6, #3c33a8);
+             color:#fff;
+             border:none;
+             border-radius:50%;
+             width:45px;
+             height:45px;
+             cursor:pointer;
+             font-weight:bold;
+             box-shadow: 4px 4px 8px rgba(0,0,0,0.3), -4px -4px 8px rgba(255,255,255,0.1);">A+</button>
+<button id="font-minus" title="کوچکتر" style="background: linear-gradient(145deg, #5c4bd6, #3c33a8);
+             color:#fff;
+             border:none;
+             border-radius:50%;
+             width:45px;
+             height:45px;
+             cursor:pointer;
+             font-weight:bold;
+             box-shadow: 4px 4px 8px rgba(0,0,0,0.3), -4px -4px 8px rgba(255,255,255,0.1);">A-</button>
+<button id="back-btn" title="بازگشت" 
+     style="background: linear-gradient(145deg, #5c4bd6, #3c33a8);
+            color:#fff;
+            border:none;
+            border-radius:50%;
+            width:45px;
+            height:45px;
+            cursor:pointer;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            box-shadow: 4px 4px 8px rgba(0,0,0,0.3), -4px -4px 8px rgba(255,255,255,0.1);">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+       <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+</button>
+
+<!-- ✅ مودال درباره با افکت -->
+<div id="aboutModal" style="display:none; position:fixed; z-index:2000; left:0; top:0; width:100%; height:100%; background-color:rgba(0,0,0,0.4); backdrop-filter:blur(3px); opacity:0; transition:opacity 0.3s ease;">
+  <div style="background:#fff; margin:10% auto; padding:20px 25px; border-radius:12px; max-width:500px; direction:rtl; line-height:1.8; text-align:justify; box-shadow:0 5px 15px rgba(0,0,0,0.3);">
+    <span onclick="closeAbout()" style="color:#999; float:left; font-size:28px; font-weight:bold; cursor:pointer;">&times;</span>
+    <p style="text-align:center; margin-bottom:15px;">
+      <strong style="color:#570278;">درباره سامانه همیار رفاه</strong>
+    </p>
+    <p>وب‌سایت همیار رفاه با هدف اطلاع رسانی خدمات و طرح‌های متنوع تسهیلاتی بانک رفاه کارگران، طراحی و راه‌اندازی شده است.</p>
+    <p>این سامانه بستری ساده، شفاف و کاربردی را فراهم می‌نماید تا مشتریان محترم بتوانند با آگاهی کامل از تسهیلات و طرح‌های اعتباری، بهترین گزینه را متناسب با نیاز خود انتخاب کنند.</p>
+    <p>بانک رفاه کارگران به عنوان قدیمی‌ترین بانک اجتماعی کشور، خود را متعهد به حمایت از اقتصاد خانوارها و توانمندسازی بنگاه‌های اقتصادی از طریق دسترسی آسان‌تر به منابع مالی و خدمات بانکی می‌داند.</p>
+    <p style="text-align: center;">
+     <a href="tel:0218525" style="color:#570278; text-decoration:none; display:inline-flex; align-items:center; gap:6px; font-weight:bold; margin-left:20px;">
+        ۰۲۱۸۵۲۵ 📞
+     </a>
+     <a href="https://www.refah-bank.ir" target="_blank" style="color:#570278; text-decoration:none; font-weight:bold; display:inline-flex; align-items:center; gap:6px;">
+       www.refah-bank.ir 🌐
+     </a>
+    </p>
+    <hr>
+    <p style="text-align:center; color:#1b0db8; font-size:0.7rem;"><strong>طراحی و پیاده‌سازی:</strong><br>مدیریت شعب استان بوشهر</p>
   </div>
 </div>
 
-<div class="search-wrapper">
-  <input type="text" class="search-input" placeholder="جستجو...">
-  <span class="search-clear">&times;</span>
-</div>
-
-<select id="categorySelect">
-  <option value="all">همه دسته‌بندی‌ها</option>
-  <option value="cat1">دسته ۱</option>
-  <option value="cat2">دسته ۲</option>
-</select>
-
-<div id="results"></div>
-<div id="detail"></div>
-
 <script>
-const marquee = document.querySelector('.marquee');
-const content = document.getElementById('marquee-content');
-const clone = document.getElementById('marquee-clone');
+  const aboutModal = document.getElementById('aboutModal');
 
-clone.innerHTML = content.innerHTML;
+  document.getElementById('about-btn').addEventListener('click', function() {
+    aboutModal.style.display = 'block';
+    setTimeout(() => { aboutModal.style.opacity = '1'; }, 10);
+  });
 
-function setMarqueeAnimation() {
-  const contentWidth = content.offsetWidth;
-  const speed = 60; 
-  const duration = (contentWidth * 2) / speed;
-  marquee.style.animation = `marqueeAnim ${duration}s linear infinite`;
-}
+  function closeAbout() {
+    aboutModal.style.opacity = '0';
+    setTimeout(() => { aboutModal.style.display = 'none'; }, 300);
+  }
 
-const style = document.createElement('style');
-style.innerHTML = `
-@keyframes marqueeAnim { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-`;
-document.head.appendChild(style);
-
-setMarqueeAnimation();
-window.addEventListener('resize', setMarqueeAnimation);
-
-document.getElementById('three-texts-container').addEventListener('mouseenter', () => { marquee.style.animationPlayState = 'paused'; });
-document.getElementById('three-texts-container').addEventListener('mouseleave', () => { marquee.style.animationPlayState = 'running'; });
+  window.onclick = function(event) {
+    if (event.target === aboutModal) {
+      closeAbout();
+    }
+  };
 </script>
+  </div>
 
+
+  <div id="detail" class="mt-8 w-full max-w-3xl p-5 rounded-xl bg-white shadow-md hidden leading-8 text-sm sm:text-base"></div>
+
+  <!-- بنرهای تبلیغاتی 2:1 -->
+  <div id="ad-banners" class="hidden w-full max-w-3xl mt-6 flex flex-col gap-4 animate-fadeIn">
+    <a href="javascript:void(0)" 
+       onclick="showBannerDetail('tarh-html/کارت رفاهی.html', 'کارت رفاهی بانک رفاه')" 
+       class="ad-banner bg-white rounded-xl shadow-md overflow-hidden cursor-pointer transition-transform duration-300 hover:scale-105">
+      <div><img src="images/refahicard.jpg" loading="lazy" alt="بنر 1" class="w-full h-full object-cover"></div>
+    </a>
+    <a href="https://www.refah-bank.ir/fararefah" target="_blank" class="ad-banner bg-white rounded-xl shadow-md overflow-hidden cursor-pointer transition-transform duration-300 hover:scale-105">
+      <div><img src="images/fararefah.jpg" loading="lazy" alt="بنر 2" class="w-full h-full object-cover"></div>
+    </a>
+    <a href="https://www.vibe.ir" target="_blank" class="ad-banner bg-white rounded-xl shadow-md overflow-hidden cursor-pointer transition-transform duration-300 hover:scale-105">
+      <div><img src="images/vibe.jpg" loading="lazy" alt="بنر 3" class="w-full h-full object-cover"></div>
+    </a>
+  </div>
+  
+  <script>
+    let data = [], fuse, filteredResults = [], showAll = false, currentPage = 1;
+    const perPage = 12, fileCache = new Map();
+    let categories = new Set();
+    fetch("data.json").then(res => res.json()).then(json => { 
+        data = json; 
+        fuse = new Fuse(data, {
+         keys: ["title", "keywords"],
+         threshold: 0.1,        // جستجوی دقیق‌تر (کمتر از 0.3)
+         distance: 50,          // محدود به نزدیکی حروف در متن
+         ignoreLocation: true,  // بی‌تأثیر کردن مکان تطابق
+         minMatchCharLength: 2  // حداقل طول برای تطابق
+       });
+       json.forEach(item => categories.add(item.category));
+       const catSelect = document.getElementById("categorySelect");
+       categories.forEach(cat => {
+          const opt = document.createElement("option");
+          opt.value = cat;
+          opt.textContent = cat;
+          catSelect.appendChild(opt);
+        });
+
+         localStorage.removeItem("data");
+         localStorage.removeItem("data_time");
+      });
+    
+    const searchBox = document.getElementById("search-box");
+    const resultsDiv = document.getElementById("results");
+    const detailDiv = document.getElementById("detail");
+    const loading = document.getElementById("loading");
+    const paginationDiv = document.getElementById("pagination");
+    const controls = document.getElementById("detail-controls");
+
+    window.addEventListener("DOMContentLoaded", () => { 
+      controls.style.display = "none"; 
+      document.getElementById('ad-banners').classList.remove('hidden'); // نمایش بنرها در لود اولیه
+    });
+
+    function renderPage(page){
+      resultsDiv.innerHTML = ""; paginationDiv.innerHTML = ""; hideDetail();
+      if(filteredResults.length===0){ resultsDiv.style.display="none"; return; } else { resultsDiv.style.display="grid"; }
+      const start = (page-1)*perPage;
+      const pageItems = filteredResults.slice(start,start+perPage);
+      pageItems.forEach(r=>{
+        const item = r.item||r;
+        const div = document.createElement("div");
+        div.className = "result-item text-white shadow-md text-sm sm:text-base fade-in-up";
+        div.innerHTML=`<strong>${item.title}</strong>`;
+        div.onclick = () => {
+          resultsDiv.style.display="none"; loading.style.display="block";
+          if(fileCache.has(item.file)){ showDetail(item, fileCache.get(item.file)); }
+          else { fetch(item.file).then(res=>res.text()).then(html=>{ fileCache.set(item.file,html); showDetail(item,html); }); }
+        };
+        resultsDiv.appendChild(div);
+      });
+
+      const totalPages = Math.ceil(filteredResults.length/perPage);
+      if(totalPages>1){
+        for(let i=1;i<=totalPages;i++){
+          const btn = document.createElement("button");
+          btn.textContent=i;
+          btn.className="pagination-btn "+(i===page?"pagination-active":"pagination-inactive");
+          btn.onclick=()=>{currentPage=i; renderPage(i);}
+          paginationDiv.appendChild(btn);
+        }
+      }
+    }
+
+    function showDetail(item, html){
+      loading.style.display = "none";
+      detailDiv.innerHTML = html;
+      detailDiv.style.display = "block";
+      paginationDiv.style.display = "none";
+      detailDiv.scrollIntoView({behavior:"smooth"});
+      controls.style.display = "flex";
+      controls.style.marginTop = "20px"; // فاصله از بالای کادر
+      const share = document.getElementById("share-btn");
+      share.onclick = () => {
+        const contentText = detailDiv.innerText;
+        const textToShare = item.title + "\n\n" + contentText;
+        if(navigator.share){ navigator.share({ title:item.title, text:textToShare }); }
+        else { navigator.clipboard.writeText(textToShare).then(()=>{ alert("متن طرح و عنوان آن کپی شد."); }); }
+      };
+      const plus = document.getElementById("font-plus");
+      const minus = document.getElementById("font-minus");
+      let fontSize = 16;
+      plus.onclick = () => { fontSize +=2; detailDiv.style.fontSize = fontSize+"px"; detailDiv.style.lineHeight="1.8"; };
+      minus.onclick = () => { if(fontSize>10){ fontSize-=2; detailDiv.style.fontSize=fontSize+"px"; detailDiv.style.lineHeight="1.8"; } };
+    }
+
+    function hideDetail(){ detailDiv.style.display="none"; controls.style.display="none"; }
+
+    function persianToEnglishNumbers(str) {
+      return str.replace(/[۰-۹]/g, d => '0123456789'[d.charCodeAt(0) - 1776]);
+    }
+
+    function doSearch(){
+     const raw = searchBox.value.trim();
+     const query = persianToEnglishNumbers(raw); // تبدیل اعداد فارسی به انگلیسی
+
+     if(!fuse || !data.length) { filteredResults = []; renderPage(1); return; }
+
+      // ✅ اگر کاربر چیزی تایپ نکرد
+     if(query.length === 0) {
+       filteredResults = [];
+       renderPage(1);
+       return;
+     }
+
+     // ✅ بررسی اینکه رشته شامل عدد و احتمالا / باشد (مثل 1/1365 یا ۱۳/۱۴۰۲)
+     if (/^[\d\/]+$/.test(query)) {
+       const q = query.replace(/\s+/g, '').trim(); // حذف فاصله اضافی
+       filteredResults = data.filter(d => {
+         const combined = [
+           d.title,
+          ...(d.keywords || [])
+         ].map(x => persianToEnglishNumbers(x.toString().replace(/\s+/g, '')));
+
+         // تطبیق دقیق روی شماره کامل، نه بخشی از آن
+         return combined.some(x => x === q);
+       });
+     } else {
+       // ✅ حالت معمولی Fuse.js
+       filteredResults = fuse.search(query);
+     }
+
+     currentPage = 1;
+     renderPage(currentPage);
+   }
+
+    function clearSearch(event){ 
+      searchBox.value=""; 
+      const catSelect = document.getElementById("categorySelect");
+      catSelect.value = "";
+      hideDetail();
+      filteredResults=[]; 
+      renderPage(1); 
+      const adBanners = document.getElementById('ad-banners');
+      if(adBanners) {
+        adBanners.classList.remove('hidden');
+        // اضافه کردن انیمیشن ورود نرم
+        adBanners.classList.add('animate-fadeIn');
+      }
+
+       // جلوگیری از اینکه رویداد click روی document، بنرها رو دوباره مخفی کنه
+      if(event) event.stopPropagation();
+    }
+
+    document.getElementById("categorySelect").addEventListener("change", e => {
+      const cat = e.target.value;
+      hideDetail(); 
+      detailDiv.innerHTML = "";
+      resultsDiv.innerHTML = ""; 
+      paginationDiv.innerHTML = "";
+      paginationDiv.style.display = "flex"; // دوباره شماره صفحات
+      filteredResults = (cat === "") ? [] : data.filter(d => d.category === cat).map(d => ({item: d}));
+      currentPage = 1;
+      resultsDiv.style.display = (filteredResults.length > 0) ? "grid" : "none";
+      renderPage(currentPage);
+    });
+
+    searchBox.addEventListener("input", doSearch);
+
+    const backBtn = document.getElementById("back-btn");
+    backBtn.onclick = () => {
+      hideDetail();
+      resultsDiv.style.display = "grid";
+      paginationDiv.style.display = "flex"; // شماره صفحات نمایش داده شود
+      renderPage(currentPage);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    // نمایش دوباره بنرها هنگام کلیک روی جارو
+    const broom = document.querySelector('.search-clear');
+    if (broom) {
+      broom.addEventListener('click', () => {
+        const adBanners = document.getElementById('ad-banners');
+        adBanners.classList.remove('hidden');
+      });
+    }
+
+    // پنهان شدن بنرها وقتی کاربر روی صفحه یا خود بنر کلیک کند
+    document.addEventListener('click', (e) => {
+      const adBanners = document.getElementById('ad-banners');
+      if (!adBanners.contains(e.target) && !e.target.classList.contains('search-clear')) {
+        adBanners.classList.add('hidden');
+      }
+      if (adBanners.contains(e.target)) {
+        adBanners.classList.add('hidden');
+      }
+    });
+
+    function showBannerDetail(file, title) {
+      document.getElementById('ad-banners').classList.add('hidden'); // پنهان کردن بنرها
+      controls.style.display = "flex"; // نمایش کنترل‌ها
+      loading.classList.remove('hidden'); // نمایش لودینگ
+
+      // 🔹 بررسی کش
+      if (fileCache.has(file)) {
+        showDetail({ title, file }, fileCache.get(file));
+        return;
+      }
+
+      fetch(file)
+        .then(res => res.text())
+        .then(html => {
+          fileCache.set(file, html); // ذخیره در کش
+          showDetail({ title, file }, html); // استفاده از همان تابع اصلی
+        })
+        .finally(() => loading.classList.add('hidden')); // پنهان کردن لودینگ
+    }
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').then(reg => {
+        reg.onupdatefound = () => {
+          const newWorker = reg.installing;
+          newWorker.onstatechange = () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              const bar = document.createElement('div');
+              bar.textContent = 'نسخه‌ی جدید آماده است؛ برای به‌روزرسانی اینجا بزنید';
+              Object.assign(bar.style, {
+                position: 'fixed', bottom: '0', left: '0', right: '0',
+                background: '#007BFF', color: '#fff', textAlign: 'center',
+                padding: '10px', fontFamily: 'inherit', cursor: 'pointer', zIndex: 9999
+              });
+              bar.onclick = () => location.reload();
+              document.body.appendChild(bar);
+            }
+          };
+        };
+      });
+    }
+  </script>
 </body>
 </html>
