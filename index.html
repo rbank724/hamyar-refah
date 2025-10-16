@@ -226,39 +226,43 @@
      }
 
     <style>
-     /* 🔸 استایل کانتینر */
-     #three-texts-container {
-       overflow: hidden;
-       width: 100%;
-       white-space: nowrap;
-       cursor: pointer; /* دست اشاره‌ای هنگام هاور */
-     }
+      /* 🔸 استایل کانتینر */
+      #three-texts-container {
+      overflow: hidden;
+      width: 100%;
+      white-space: nowrap;
+      cursor: pointer;
+    }
 
-     /* 🌀 انیمیشن بی‌نهایت از راست به چپ */
-     @keyframes slide {
-       0% {
-         transform: translateX(0);
-       }
-       100% {
-         transform: translateX(-50%);
-       }
-     }
+    /* 🌀 انیمیشن بی‌نهایت از راست به چپ */
+    @keyframes slide {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
 
-     /* ✨ تنظیم جمله‌ها */
-     #three-texts {
-       display: inline-flex;
-       gap: 3rem; /* فاصله بین جمله‌ها */
-       animation: slide 20s linear infinite; /* سرعت حرکت */
-     }
+    /* ✨ تنظیم جمله‌ها */
+    #three-texts {
+      display: flex;           /* ← inline-flex به flex تغییر دادیم */
+      gap: 3rem;
+      animation: slide 20s linear infinite;
+    }
 
-     #three-texts span {
-       white-space: nowrap;
-     }
+    /* محتوای مارکویی */
+    .marquee-content {
+      display: flex;           /* همه span ها در یک خط */
+      gap: 3rem;
+      flex-shrink: 0;          /* جلوگیری از شکست خط */
+    }
 
-     /* 🖱️ توقف انیمیشن روی هاور */
-     #three-texts-container:hover #three-texts {
-       animation-play-state: paused;
-     }
+    #three-texts span {
+      white-space: nowrap;
+    }
+
+    /* 🖱️ توقف انیمیشن روی هاور */
+    #three-texts-container:hover #three-texts {
+      animation-play-state: paused;
+    }
+
    </style>
 
 
