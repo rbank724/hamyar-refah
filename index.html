@@ -732,6 +732,11 @@
       });
     }
 
+    // <<< حذف شد: listener سراسری که با هر کلیک بنرها را پنهان می‌کرد
+    // قبلاً اینجا یک document.addEventListener('click', ...) بود که بنرها را در هر کلیک/لمس مخفی می‌کرد.
+    // آن بلوک به‌طور کامل حذف شده تا لمس‌های ناخواسته بنرها را مخفی نکند.
+    // >>> (باقی کد دست نخورده باقی می‌ماند)
+
     function showBannerDetail(file, title) {
       document.getElementById('ad-banners').classList.add('hidden'); // پنهان کردن بنرها
       controls.style.display = "flex"; // نمایش کنترل‌ها
