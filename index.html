@@ -873,6 +873,19 @@
     }
   });
 </script>
+  <!-- اینجا انتهای بدنه‌ی صفحه است -->
+  <script>
+    const categorySelect = document.getElementById('categorySelect');
+    const banners = document.getElementById('ad-banners');
+    const threeTextsContainer = document.getElementById('three-texts-container');
+
+    categorySelect.addEventListener('click', () => {
+      if (banners) banners.style.display = 'none';
+      if (threeTextsContainer) threeTextsContainer.style.display = 'none';
+    });
+  </script>
+</body>
+</html>
 
 </body>
 </html>
