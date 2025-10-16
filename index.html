@@ -237,6 +237,7 @@
       display: inline-flex;
       gap: 3rem;
       min-width: max-content;
+      animation: slide 20s linear infinite;
     }
 
     /* هر سری متن */
@@ -252,8 +253,8 @@
     }
 
     @keyframes slide {
-      0%   { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
+      0%   { transform: translateX(-100%); }  /* خارج از چپ */
+     100% { transform: translateX(100%); }   /* خارج از راست */
     }
 
     }
@@ -784,28 +785,6 @@
         };
       });
     }
-   <script>
-     // --- متن روان پیوسته ---
-     const texts = document.getElementById('three-texts');
-
-     function startMarquee() {
-       // طول مدت حرکت یک دور به ثانیه
-       const duration = 10; // می‌توانی این را تغییر دهی
-       texts.style.animation = `slide ${duration}s linear forwards`;
-    
-       texts.addEventListener('animationend', () => {
-         // فاصله زمانی بین دورها (میلی‌ثانیه)
-         const delay = 2000;
-         setTimeout(startMarquee, delay);
-       }, { once: true });
-     }
-
-     // حذف انیمیشن پیش‌فرض CSS
-     texts.style.animation = 'none';
-
-     window.addEventListener('DOMContentLoaded', startMarquee);
-   </script>
-
   </script>
 </body>
 </html>
