@@ -225,50 +225,48 @@
        line-height: 1.8;
      }
 
-  <style>
-  /* کانتینر اصلی */
-  #three-texts-container {
-    overflow: hidden;
-    width: 100%;
-    cursor: pointer;
-    background: transparent;
-  }
-
-  /* والد جمله‌ها */
-  .marquee {
-    display: flex;
-    white-space: nowrap;
-    animation: marquee 20s linear infinite;
-  }
-
-  /* محتوای جمله‌ها */
-  .marquee-content {
-    display: flex;
-    gap: 3rem;
-    flex-shrink: 0;
-  }
-
-  .marquee-content span {
-    white-space: nowrap;
-    font-size: 1rem;
-    font-weight: 500;
-    color: #333;
-  }
-
-  @keyframes marquee-right {
-    0% {
-      transform: translateX(-50%);
+   <style>
+    #three-texts-container {
+      overflow: hidden;
+      width: 100%;
+      cursor: pointer;
+      background: transparent;
     }
-    100% {
-      transform: translateX(0);
-    }
-  }
-  /* توقف روی هاور 🖱️ */
-  #three-texts-container:hover .marquee {
-    animation-play-state: paused;
-  }
-</style>
 
+    .marquee {
+      display: flex;
+      white-space: nowrap;
+      animation: marquee-right 20s linear infinite;
+    }
+
+    .marquee-content {
+      display: flex;
+      gap: 3rem;
+      flex-shrink: 0;
+    }
+
+    .marquee-content span {
+      white-space: nowrap;
+      font-size: 1rem;
+      font-weight: 500;
+      color: #333;
+    }
+
+    /* 🌀 انیمیشن از چپ به راست */
+    @keyframes marquee-right {
+      0% {
+        transform: translateX(-50%);
+      }
+      100% {
+        transform: translateX(0);
+      }
+    }
+
+    /* 🖱️ توقف روی هاور */
+    #three-texts-container:hover .marquee {
+      animation-play-state: paused;
+    }
+  </style>
 
     
   </style>
