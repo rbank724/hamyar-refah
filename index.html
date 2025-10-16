@@ -784,38 +784,17 @@
       });
     }
   </script>
- <!-- ✅ مودال پخش ویدئو آپارات -->
-<div id="videoModal" class="hidden fixed inset-0 z-[3000] bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center">
-  <div class="bg-white rounded-lg shadow-lg w-full max-w-2xl relative overflow-hidden">
+  <!-- ✅ مودال ویدئو آپارات -->
+<div id="video-modal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 hidden">
+  <div class="bg-white rounded-xl shadow-lg max-w-3xl w-full relative">
     <!-- دکمه بستن -->
-    <button onclick="closeVideoModal()" 
-      class="absolute top-2 left-2 text-gray-600 hover:text-red-500 text-3xl leading-none">
-      &times;
-    </button>
-    <!-- ویدئو -->
-    <div class="aspect-video w-full">
-      <iframe id="videoFrame" class="w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
+    <button id="close-modal" class="absolute top-2 right-2 text-gray-700 hover:text-gray-900 text-2xl font-bold">&times;</button>
+    <!-- محتوای ویدئو -->
+    <div class="aspect-w-16 aspect-h-9">
+      <iframe id="aparat-video" src="" frameborder="0" allowfullscreen class="w-full h-full rounded-xl"></iframe>
     </div>
   </div>
 </div>
-<script>
-  function openVideoModal(aparatUrl) {
-    document.getElementById('videoFrame').src = aparatUrl;
-    const modal = document.getElementById('videoModal');
-    modal.classList.remove('hidden');
-  }
-
-  function closeVideoModal() {
-    const modal = document.getElementById('videoModal');
-    modal.classList.add('hidden');
-    document.getElementById('videoFrame').src = '';
-  }
-
-  // بستن مودال با کلیک بیرون
-  document.getElementById('videoModal').addEventListener('click', function(e) {
-    if (e.target === this) closeVideoModal();
-  });
-</script>
 
 <style>
   /* افکت باز شدن مودال */
