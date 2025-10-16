@@ -355,7 +355,7 @@
   <div id="three-texts-container" class="mt-4 w-full overflow-hidden">
     <div id="three-texts" class="marquee">
       <div class="marquee-content">
-        <span>کیف پول ریال دیجیتال</span>
+        <span>🟢 تسهیلات ویژه</span>
         <span>💰 نرخ سود مناسب</span>
         <span>📄 شرایط آسان</span>
       </div>
@@ -784,7 +784,7 @@
       });
     }
   </script>
-  <!-- مودال ویدئو آپارات -->
+  <!-- ✅ مودال ویدئو آپارات -->
 <div id="video-modal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 hidden">
   <div class="bg-white rounded-xl shadow-lg max-w-3xl w-full relative">
     <!-- دکمه بستن -->
@@ -837,7 +837,7 @@
 <script>
   // لینک ویدئوهای آپارات
   const videos = [
-    "https://www.aparat.com/video/video/embed/videohash/ichem9v/vt/frame",
+    "https://www.aparat.com/video/video/embed/videohash/VIDEO_ID1/vt/frame",
     "https://www.aparat.com/video/video/embed/videohash/VIDEO_ID2/vt/frame",
     "https://www.aparat.com/video/video/embed/videohash/VIDEO_ID3/vt/frame"
   ];
@@ -846,50 +846,24 @@
   const modal = document.getElementById("video-modal");
   const closeBtn = document.getElementById("close-modal");
   const iframe = document.getElementById("aparat-video");
-  const threeTextsContainer = document.getElementById("three-texts-container");
-  const banners = document.querySelectorAll(".ad-banner");
 
   spans.forEach((span, index) => {
     span.addEventListener("click", () => {
-      iframe.src = videos[index];
+      iframe.src = videos[index]; // ویدئو مربوطه
       modal.classList.add("show");
-
-      // مخفی کردن بنرها و متن روان
-      banners.forEach(b => b.classList.add("hidden"));
-      if (threeTextsContainer) threeTextsContainer.classList.add("hidden");
     });
   });
 
-  function closeVideoModal() {
+  closeBtn.addEventListener("click", () => {
     modal.classList.remove("show");
-    iframe.src = ""; // توقف ویدئو
+    iframe.src = ""; // توقف ویدئو هنگام بستن
+  });
 
-    // نمایش دوباره متن روان
-    if (threeTextsContainer) threeTextsContainer.classList.remove("hidden");
-
-    // نمایش دوباره بنرها با انیمیشن
-    banners.forEach(b => {
-      b.classList.remove("hidden");
-      b.classList.add("animate-fadeIn");
-    });
-  }
-
-  closeBtn.addEventListener("click", closeVideoModal);
-
+  // بستن با کلیک روی بک‌گراند
   modal.addEventListener("click", (e) => {
     if (e.target === modal) {
-      closeVideoModal();
-    }
-  });
-
-  document.addEventListener('click', (e) => {
-    const adBanners = document.getElementById('ad-banners');
-    // اگر روی جارو یا بنر کلیک شد کاری نکن
-    if (e.target.classList.contains('search-clear') || adBanners.contains(e.target)) return;
-
-    // فقط وقتی مودال **باز نیست** بنرها مخفی شوند
-    if (!modal.classList.contains('show')) {
-        adBanners.classList.add('hidden');
+      modal.classList.remove("show");
+      iframe.src = "";
     }
   });
 </script>
