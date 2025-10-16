@@ -356,14 +356,14 @@
     <div id="three-texts" class="marquee">
       <div class="marquee-content">
         <span>کیف پول ریال دیجیتال</span>
-        <span>💰 نرخ سود مناسب</span>
-        <span>📄 شرایط آسان</span>
+        <span>با فاکتورینگ مطالباتت رو همین حالا نقد کن</span>
+        <span>از مرزهای ریال تا افق های ارز با طرح ارزیار</span>
       </div>
       <!-- ✨ نسخه دوم برای حرکت روان -->
       <div class="marquee-content">
-        <span>🟢 تسهیلات ویژه</span>
-        <span>💰 نرخ سود مناسب</span>
-        <span>📄 شرایط آسان</span>
+        <span>کیف پول ریال دیجیتال</span>
+        <span>با فاکتورینگ مطالباتت رو همین حالا نقد کن</span>
+        <span>از مرزهای ریال تا افق های ارز با طرح ارزیار</span>
       </div>
     </div>
   </div>
@@ -735,6 +735,9 @@
     // پنهان شدن بنرها وقتی کاربر روی صفحه یا خود بنر کلیک کند
     document.addEventListener('click', (e) => {
       const adBanners = document.getElementById('ad-banners');
+      if (!adBanners.contains(e.target) && !e.target.classList.contains('search-clear')) {
+        adBanners.classList.add('hidden');
+      }
       if (adBanners.contains(e.target)) {
         adBanners.classList.add('hidden');
       }
@@ -745,16 +748,9 @@
       controls.style.display = "flex"; // نمایش کنترل‌ها
       loading.classList.remove('hidden'); // نمایش لودینگ
 
-      // 🔹 بررسی کش
-      if (fileCache.has(file)) {
-        showDetail({ title, file }, fileCache.get(file));
-        return;
-      }
-
       fetch(file)
         .then(res => res.text())
         .then(html => {
-          fileCache.set(file, html); // ذخیره در کش
           showDetail({ title, file }, html); // استفاده از همان تابع اصلی
         })
         .finally(() => loading.classList.add('hidden')); // پنهان کردن لودینگ
@@ -835,8 +831,11 @@
   // لینک ویدئوهای آپارات
   const videos = [
     "https://www.aparat.com/video/video/embed/videohash/ichem9v/vt/frame",
-    "https://www.aparat.com/video/video/embed/videohash/VIDEO_ID2/vt/frame",
-    "https://www.aparat.com/video/video/embed/videohash/VIDEO_ID3/vt/frame"
+    "https://www.aparat.com/video/video/embed/videohash/yslzudo/vt/frame",
+    "https://www.aparat.com/video/video/embed/videohash/osh1e81/vt/frame"و
+    "https://www.aparat.com/video/video/embed/videohash/ichem9v/vt/frame",
+    "https://www.aparat.com/video/video/embed/videohash/yslzudo/vt/frame",
+    "https://www.aparat.com/video/video/embed/videohash/osh1e81/vt/frame"
   ];
 
   const spans = document.querySelectorAll("#three-texts span");
