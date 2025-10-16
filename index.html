@@ -237,7 +237,6 @@
       display: inline-flex;
       gap: 3rem;
       min-width: max-content;
-      animation: slide 20s linear infinite;
     }
 
     /* هر سری متن */
@@ -246,6 +245,11 @@
       gap: 3rem;
       flex-shrink: 0;
       min-width: max-content;
+      animation: slide 20s linear infinite;
+    }
+
+    .marquee-content:hover {
+       animation-play-state: paused;
     }
 
     #three-texts span {
