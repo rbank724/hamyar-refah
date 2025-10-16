@@ -253,8 +253,9 @@
     }
 
     @keyframes slide {
-      0%   { transform: translateX(-100%); }  /* خارج از چپ */
-     100% { transform: translateX(100%); }   /* خارج از راست */
+      0%   { transform: translateX(-100%); }
+      90%  { transform: translateX(100%); } /* حرکت تا 90% از زمان */
+      100% { transform: translateX(100%); }
     }
 
     }
