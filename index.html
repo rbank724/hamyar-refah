@@ -791,20 +791,16 @@
 
     // پنهان شدن بنرها وقتی کاربر روی صفحه یا خود بنر کلیک کند
     document.addEventListener('click', (e) => {
-      const adBanners = document.getElementById('ad-banners');
-      const closeBtn = document.getElementById('close-modal');
-
-      // اگر کلیک روی دکمه بستن مودال باشد، بنرها را مخفی نکن
-      if (closeBtn && closeBtn.contains(e.target)) return;
-
-      if (!adBanners.contains(e.target) && !e.target.classList.contains('search-clear')) {
-        adBanners.classList.add('hidden');
-      }
-      if (adBanners.contains(e.target)) {
-        adBanners.classList.add('hidden');
-      }
-    });
-
+       if (banners && !banners.contains(e.target) && !e.target.classList.contains('search-clear')) {
+         // فقط اگر کلیک روی دکمه بستن یا داخل مودال نبوده باشد
+         if (!closeBtn.contains(e.target) && !modal.contains(e.target)) {
+           banners.classList.add('hidden');
+         }
+       }
+       if (banners && banners.contains(e.target)) {
+         banners.classList.add('hidden');
+       }
+     });
 
     function showBannerDetail(file, title) {
       document.getElementById('ad-banners').classList.add('hidden'); // پنهان کردن بنرها
@@ -862,18 +858,25 @@
 document.addEventListener("DOMContentLoaded", () => {
   const modal = document.getElementById("video-modal");
   const closeBtn = document.getElementById("close-modal");
-  const controls = document.getElementById("controls"); // مطمئن شوید که این المان وجود دارد
-  const banners = document.getElementById('ad-banners'); // مطمئن شوید که این المان وجود دارد
+  const controls = document.getElementById("controls");
+  const banners = document.getElementById('ad-banners');
 
+  // بسته شدن مودال با دکمه بستن
   closeBtn.addEventListener("click", () => {
-    // مخفی کردن مودال
     modal.classList.add("hidden");
-
-    // ⚡ کد مورد نظر شما هنگام بستن مودال
     if (controls) controls.style.display = "none";
     if (banners) banners.classList.remove("hidden");
   });
-});
+
+  // بسته شدن مودال با کلیک بیرون از ویدئو
+  modal.addEventListener("click", (e) => {
+    const modalContent = modal.querySelector("div"); // div داخلی که ویدئو را نگه می‌دارد
+    if (!modalContent.contains(e.target)) {
+      modal.classList.add("hidden");
+      if (controls) controls.style.display = "none";
+      if (banners) banners.classList.remove("hidden");
+    }
+  });
 </script>
 
 <style>
