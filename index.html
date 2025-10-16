@@ -866,6 +866,27 @@
       iframe.src = "";
     }
   });
+  function toggleMarquee() {
+    const banners = document.querySelectorAll('#ad-banners .ad-banner');
+    const marquee = document.getElementById('three-texts-container');
+
+    // شمارش بنرهایی که visible هستند
+    const visibleBanners = Array.from(banners).filter(b => b.offsetParent !== null).length;
+
+    if (visibleBanners === 3) {
+      marquee.style.display = 'block';
+    } else {
+      marquee.style.display = 'none';
+    }
+  }
+
+  // فراخوانی اولیه
+  toggleMarquee();
+
+  // اگر بنرها در آینده تغییر کردند، دوباره چک کن
+  const observer = new MutationObserver(toggleMarquee);
+  observer.observe(document.getElementById('ad-banners'), { attributes: true, childList: false, subtree: true });
+
 </script>
 
 </body>
