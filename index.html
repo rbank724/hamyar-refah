@@ -178,33 +178,6 @@
     @keyframes fadeIn { from {opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
     .animate-fadeIn { animation: fadeIn 0.8s ease forwards; }
 
-    <!-- متن روان متحرک بین دکمه‌ها و بنرها -->
-    <div class="marquee-container w-full max-w-3xl overflow-hidden relative my-4">
-      <div class="marquee-text whitespace-nowrap text-white font-bold text-lg sm:text-xl px-4">
-        🎉 جستجوگر طرح‌های تسهیلاتی بانک رفاه کارگران | جدیدترین و کامل‌ترین طرح‌ها همین‌جا! 🎉
-      </div>
-    </div>
-
-    .marquee-container {
-      height: 40px;
-    }
-
-    .marquee-text {
-      display: inline-block;
-      animation: marquee 15s linear infinite;
-    }
-
-    /* حرکت از چپ به راست */
-    @keyframes marquee {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
-    }
-
-    /* واکنش‌گرایی متن */
-    @media (max-width: 768px) {
-      .marquee-text { font-size: 1rem; }
-    }
-
     /* بنرها نسبت 2:1 */
     .ad-banner > div { aspect-ratio: 3/1; }
      /* 🔹 متن‌های معمولی مشکی شوند */
