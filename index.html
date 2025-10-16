@@ -225,6 +225,50 @@
        line-height: 1.8;
      }
 
+    <style>
+     #three-texts-container {
+       overflow: hidden;
+       width: 100%;
+       cursor: pointer;
+       background: transparent;
+     }
+
+     .marquee {
+       display: flex;
+       white-space: nowrap;
+       animation: marquee-right 20s linear infinite;
+     }
+
+     .marquee-content {
+      display: flex;
+       gap: 3rem;
+       flex-shrink: 0;
+     }
+
+     .marquee-content span {
+       white-space: nowrap;
+       font-size: 1rem;
+       font-weight: 500;
+       color: #333;
+     }
+
+     /* 🌀 انیمیشن از چپ به راست */
+     @keyframes marquee-right {
+       0% {
+         transform: translateX(-50%);
+       }
+       100% {
+         transform: translateX(0);
+       }
+     }
+
+     /* 🖱️ توقف روی هاور */
+     #three-texts-container:hover .marquee {
+       animation-play-state: paused;
+     }
+   </style>
+
+
   </style>
 </head>
 <body class="flex flex-col items-center m-0 p-4">
@@ -310,6 +354,24 @@
   <select id="categorySelect" class="show-all-btn">
     <option value="">طرح های تسهیلاتی</option>
   </select>
+
+  <!-- ✅ نوار متحرک پیوسته از چپ به راست -->
+  <div id="three-texts-container" class="mt-4 w-full overflow-hidden">
+    <div id="three-texts" class="marquee">
+      <div class="marquee-content">
+        <span>🟢 تسهیلات ویژه</span>
+        <span>💰 نرخ سود مناسب</span>
+        <span>📄 شرایط آسان</span>
+      </div>
+      <!-- ✨ نسخه دوم برای حرکت روان -->
+      <div class="marquee-content">
+        <span>🟢 تسهیلات ویژه</span>
+        <span>💰 نرخ سود مناسب</span>
+        <span>📄 شرایط آسان</span>
+      </div>
+    </div>
+  </div>
+ 
 
   <div id="results" class="mt-4 w-full max-w-3xl gap-4"></div>
   <div id="pagination" class="mt-4 flex gap-2 flex-wrap justify-center"></div>
