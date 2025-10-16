@@ -237,19 +237,15 @@
       display: inline-flex;
       gap: 3rem;
       min-width: max-content;
+      animation: slide 20s linear infinite; 
     }
 
-    /* هر سری متن */
     .marquee-content {
       display: inline-flex;
       gap: 3rem;
       flex-shrink: 0;
       min-width: max-content;
-      animation: slide 20s linear infinite;
-    }
-
-    .marquee-content:hover {
-       animation-play-state: paused;
+      /* انیمیشن دیگر اینجا نباشد */
     }
 
     #three-texts span {
@@ -257,14 +253,15 @@
     }
 
     @keyframes slide {
-      0%   { transform: translateX(-100%); }  /* خارج از چپ */
-     100% { transform: translateX(100%); }   /* خارج از راست */
+      0%   { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
     }
 
-   #three-texts-container:hover #three-texts {
-       animation-play-state: paused;
-   }
-   
+    /* توقف کل حرکت وقتی موس روی کانتینر رفت */
+    #three-texts-container:hover #three-texts {
+      animation-play-state: paused;
+    }
+
     </style>
 
 
