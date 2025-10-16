@@ -878,6 +878,15 @@
       closeVideoModal();
     }
   });
+  const adBanners = document.getElementById('ad-banners');
+      if(adBanners) {
+        adBanners.classList.remove('hidden');
+        // اضافه کردن انیمیشن ورود نرم
+        adBanners.classList.add('animate-fadeIn');
+      }
+
+       // جلوگیری از اینکه رویداد click روی document، بنرها رو دوباره مخفی کنه
+      if(event) event.stopPropagation()
 </script>
 
 </body>
