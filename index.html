@@ -852,6 +852,21 @@
     </div>
   </div>
 </div>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const modal = document.getElementById("video-modal");
+  const closeBtn = document.getElementById("close-modal");
+  const controls = document.getElementById("controls"); // مطمئن شوید که این المان وجود دارد
+
+  closeBtn.addEventListener("click", () => {
+    modal.classList.add("hidden"); // مخفی کردن مودال
+    // کد شما در زمان بستن مودال
+    if(controls) controls.style.display = "none";
+    const banners = document.getElementById('ad-banners');
+    if(banners) banners.classList.remove('hidden'); // نمایش بنرها
+  });
+});
+</script>
 
 <style>
   /* افکت باز شدن مودال */
