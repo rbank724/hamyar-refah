@@ -710,6 +710,9 @@
       currentPage = 1;
       resultsDiv.style.display = (filteredResults.length > 0) ? "grid" : "none";
       renderPage(currentPage);
+      document.getElementById('categorySelect').addEventListener('click', () => {
+            document.getElementById('ad-banners').classList.add('hidden');
+      });
     });
 
     searchBox.addEventListener("input", doSearch);
@@ -732,26 +735,14 @@
       });
     }
 
-    // <<< حذف شد: listener سراسری که با هر کلیک بنرها را پنهان می‌کرد
-    // قبلاً اینجا یک document.addEventListener('click', ...) بود که بنرها را در هر کلیک/لمس مخفی می‌کرد.
-    // آن بلوک به‌طور کامل حذف شده تا لمس‌های ناخواسته بنرها را مخفی نکند.
-    // >>> (باقی کد دست نخورده باقی می‌ماند)
 
     function showBannerDetail(file, title) {
-      document.getElementById('ad-banners').classList.add('hidden'); // پنهان کردن بنرها
       controls.style.display = "flex"; // نمایش کنترل‌ها
       loading.classList.remove('hidden'); // نمایش لودینگ
-
-      // 🔹 بررسی کش
-      if (fileCache.has(file)) {
-        showDetail({ title, file }, fileCache.get(file));
-        return;
-      }
 
       fetch(file)
         .then(res => res.text())
         .then(html => {
-          fileCache.set(file, html); // ذخیره در کش
           showDetail({ title, file }, html); // استفاده از همان تابع اصلی
         })
         .finally(() => loading.classList.add('hidden')); // پنهان کردن لودینگ
@@ -873,16 +864,5 @@
     }
   });
 </script>
-  <!-- اینجا انتهای بدنه‌ی صفحه است -->
-  <script>
-    const categorySelect = document.getElementById('categorySelect');
-    const banners = document.getElementById('ad-banners');
-    const threeTextsContainer = document.getElementById('three-texts-container');
-
-    categorySelect.addEventListener('click', () => {
-      if (banners) banners.style.display = 'none';
-      if (threeTextsContainer) threeTextsContainer.style.display = 'none';
-    });
-  </script>
 </body>
 </html>
