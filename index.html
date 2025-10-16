@@ -225,29 +225,43 @@
        line-height: 1.8;
      }
 
-   <style>
-     /* ✨ انیمیشن حرکت متن از راست به چپ */
-     @keyframes slide {
-       0% {
-         transform: translateX(100%);
-       }
-       100% {
-         transform: translateX(-100%);
-       }
-     }
+  <style>
+   /* 🔸 استایل کانتینر */
+   #three-texts-container {
+     overflow: hidden;
+     width: 100%;
+     white-space: nowrap;
+     cursor: pointer; /* دست اشاره‌ای هنگام هاور */
+   }
 
-     /* 🚀 اعمال انیمیشن روی جمله‌ها */
-     .animate-slide {
-       display: inline-flex;
-       animation: slide 15s linear infinite;
+   /* 🌀 انیمیشن بی‌نهایت از راست به چپ */
+   @keyframes slide {
+     0% {
+       transform: translateX(0);
      }
-
-     #three-texts span {
-       padding: 0 1rem;
-       white-space: nowrap;
+     100% {
+       transform: translateX(-50%);
      }
-   </style>
+   }
 
+   /* ✨ تنظیم جمله‌ها */
+   #three-texts {
+     display: inline-flex;
+     gap: 3rem; /* فاصله بین جمله‌ها */
+     animation: slide 20s linear infinite; /* سرعت حرکت */
+   }
+
+   #three-texts span {
+     white-space: nowrap;
+   }
+
+   /* 🖱️ توقف انیمیشن روی هاور */
+   #three-texts-container:hover #three-texts {
+     animation-play-state: paused;
+   }
+ </style>
+
+    
   </style>
 </head>
 <body class="flex flex-col items-center m-0 p-4">
@@ -334,13 +348,20 @@
     <option value="">طرح های تسهیلاتی</option>
   </select>
 
-  <div id="three-texts-container" class="mt-4 w-full overflow-hidden">
-   <div id="three-texts" class="whitespace-nowrap flex gap-12 text-base font-medium text-gray-800 animate-slide"> 
-    <span>🟢 بانک رفاه کارگران </span>
-    <span>💰 بانک رفاه کارگران</span>
-    <span>📄 بانک رفاه کارگران </span>
-   </div>
+  <!-- ✅ نوار متحرک جمله‌ها با توقف روی هاور -->
+<div id="three-texts-container" class="mt-4 w-full overflow-hidden">
+  <div id="three-texts" class="flex gap-12 text-base font-medium text-gray-800 animate-slide">
+    <span>🟢 تسهیلات ویژه</span>
+    <span>💰 نرخ سود مناسب</span>
+    <span>📄 شرایط آسان</span>
+
+    <!-- ✨ تکرار جمله‌ها برای حرکت بی‌نهایت -->
+    <span>🟢 تسهیلات ویژه</span>
+    <span>💰 نرخ سود مناسب</span>
+    <span>📄 شرایط آسان</span>
   </div>
+</div>
+
 
   <div id="results" class="mt-4 w-full max-w-3xl gap-4"></div>
   <div id="pagination" class="mt-4 flex gap-2 flex-wrap justify-center"></div>
@@ -510,7 +531,7 @@
   <div id="detail" class="mt-8 w-full max-w-3xl p-5 rounded-xl bg-white shadow-md hidden leading-8 text-sm sm:text-base"></div>
 
   <!-- بنرهای تبلیغاتی 2:1 -->
-  <div id="ad-banners" class="hidden w-full max-w-3xl mt-6 flex flex-col gap-2 animate-fadeIn">
+  <div id="ad-banners" class="hidden w-full max-w-3xl mt-6 flex flex-col gap-4 animate-fadeIn">
     <a href="javascript:void(0)" 
        onclick="showBannerDetail('tarh-html/کارت رفاهی.html', 'کارت رفاهی بانک رفاه')" 
        class="ad-banner bg-white rounded-xl shadow-md overflow-hidden cursor-pointer transition-transform duration-300 hover:scale-105">
