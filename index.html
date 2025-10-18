@@ -854,17 +854,39 @@
               const bar = document.createElement('div');
               bar.textContent = 'نسخه‌ی جدید آماده است؛ برای به‌روزرسانی اینجا بزنید';
               Object.assign(bar.style, {
-                position: 'fixed', bottom: '0', left: '0', right: '0',
-                background: '#007BFF', color: '#fff', textAlign: 'center',
-                padding: '10px', fontFamily: 'inherit', cursor: 'pointer', zIndex: 9999
+                position: 'fixed',
+                bottom: '0',
+                left: '0',
+                right: '0',
+                background: '#007BFF',
+                color: '#fff',
+                textAlign: 'center',
+                padding: '10px',
+                fontFamily: 'inherit',
+                cursor: 'pointer',
+                zIndex: 9999
               });
-              bar.onclick = () => location.reload();
+
+              // ✨ افکت ساده برای دیده شدن بهتر نوار
+              bar.style.transition = 'transform 0.4s ease';
+              bar.style.transform = 'translateY(100%)';
+              requestAnimationFrame(() => bar.style.transform = 'translateY(0)');
+
+              // 🌀 بستن نوار پس از کلیک و ریفرش
+              bar.onclick = () => {
+                bar.style.transform = 'translateY(100%)';
+                setTimeout(() => location.reload(), 300);
+              };
+
               document.body.appendChild(bar);
             }
           };
         };
+      }).catch(err => {
+        console.error('ثبت Service Worker با خطا مواجه شد:', err);
       });
     }
+
   </script>
   <!-- ✅ مودال ویدئو آپارات -->
 <div id="video-modal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 hidden">
