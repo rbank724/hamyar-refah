@@ -1,22 +1,26 @@
 // sw.js
-const CACHE_NAME = 'tarh-cache-v2';
+const CACHE_NAME = 'tarh-cache-v3';
 const CORE_ASSETS = [
-  '/',               // صفحه اصلی
-  '/index.html',     // فایل اصلی
-  '/data.json',      // دیتای طرح‌ها
+  '/',                    // صفحه اصلی
+  '/index.html',          // فایل اصلی
+  '/data.json',           // دیتای طرح‌ها
+  '/manifest.json',       // مانیفست
+  '/icons/icon-192.png',  // آیکن 192
+  '/icons/icon-512.png',  // آیکن 512
+  '/icons/apple-touch-icon.png', // آیکن iOS
   'https://cdn.jsdelivr.net/npm/vazirmatn@33.003/index.css',
   'https://cdn.jsdelivr.net/npm/fuse.js@6.6.2'
 ];
 
-// نصب اولیه: منابع اصلی را کش کن
+// 📦 نصب اولیه: کش کردن فایل‌های اصلی
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(CORE_ASSETS))
   );
-  self.skipWaiting(); // فعال‌سازی سریع
+  self.skipWaiting();
 });
 
-// پاک کردن کش‌های قدیمی هنگام فعال‌سازی
+// 🧹 حذف کش‌های قدیمی هنگام فعال‌سازی
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys =>
@@ -26,11 +30,10 @@ self.addEventListener('activate', event => {
   self.clients.claim();
 });
 
-// استراتژی شبکه-اول با کش پشتیبان برای data.json و HTMLهای طرح
+// 🌐 استراتژی شبکه‌اول برای فایل‌های JSON و HTML
 self.addEventListener('fetch', event => {
   const req = event.request;
 
-  // برای فایل‌های داده و htmlهای طرح، همیشه سعی کن از شبکه تازه بگیری
   if (req.url.endsWith('.json') || req.url.endsWith('.html')) {
     event.respondWith(
       fetch(req)
@@ -43,7 +46,7 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // برای سایر منابع: کش-اول
+  // 🪣 سایر درخواست‌ها: کش-اول
   event.respondWith(
     caches.match(req).then(cached => {
       if (cached) return cached;
@@ -55,7 +58,7 @@ self.addEventListener('fetch', event => {
   );
 });
 
-// پیام ساده در حالت آفلاین
+// 📴 نمایش پیام ساده در حالت آفلاین
 function offlinePage() {
   return new Response('<h3 style="padding:1rem;font-family:sans-serif">آفلاین هستید و این صفحه کش نشده است.</h3>', {
     headers: { 'Content-Type': 'text/html; charset=utf-8' }
