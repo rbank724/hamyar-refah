@@ -483,11 +483,11 @@
     </div>
      <!-- خط فوق مدرن و سینمایی -->
    <div class="modern-cinema-line-blue"></div>
-   <!-- لینک "مشاهده آخرین بروزرسانی" (مقداری پنهان به صورت پیش‌فرض) -->
+   <!-- لینک "مشاهده آخرین بروزرسانی" (پنهان به صورت پیش‌فرض) -->
    <div id="update-link-container" style="display:none; text-align:center; margin-top:10px;">
-     <a id="update-link" href="tarh-html/آخرین-بروزرسانی.html" target="_blank" rel="noopener noreferrer" aria-label="مشاهده آخرین بروزرسانی">
-       مشاهده آخرین بروزرسانی
-     </a>
+      <a id="update-link" href="tarh-html/آخرین-بروزرسانی.html" aria-label="مشاهده آخرین بروزرسانی">
+        مشاهده آخرین بروزرسانی
+      </a>
    </div>
 
   </div>
@@ -1058,35 +1058,46 @@ document.addEventListener("DOMContentLoaded", () => {
   const updateContainer = document.getElementById('update-link-container');
   const updateLink = document.getElementById('update-link');
 
-  if(!updateContainer || !updateLink || !adBanners) {
-    // یکی از عناصر وجود ندارد؛ کاری انجام نده
-    return;
+  // تابعی که محتوای HTML را داخل مودال showDetail نمایش می‌دهد
+  function openInModal(url) {
+    fetch(url)
+      .then(response => {
+        if (!response.ok) throw new Error("خطا در بارگذاری صفحه");
+        return response.text();
+      })
+      .then(html => {
+        // این تابع باید از قبل در کدت تعریف شده باشد
+        showDetail(html);
+      })
+      .catch(err => {
+        console.error(err);
+        showDetail('<div style="padding:20px;text-align:center;">❌ خطا در بارگذاری محتوا</div>');
+      });
   }
 
-  // تابعی که وضعیت نمایش لینک را تنظیم می‌کند:
+  // تابع نمایش/مخفی کردن لینک
   function updateLinkVisibility() {
-    // اگر بنرها موجود و نمایش (نه پنهان) باشند -> نمایش لینک
     const isHidden = adBanners.classList.contains('hidden');
     if (!isHidden) {
-      // بنرها نشان داده شده‌اند
+      // نمایش با انیمیشن
       updateContainer.style.display = 'block';
       updateContainer.style.opacity = '0';
-      // انیمیشن ساده ورود
       requestAnimationFrame(() => updateContainer.style.opacity = '1');
     } else {
-      // بنرها مخفی‌اند -> پنهان سازی لینک
+      // پنهان سازی نرم
       updateContainer.style.opacity = '0';
       setTimeout(() => { updateContainer.style.display = 'none'; }, 180);
     }
   }
 
-  // بررسی اولیه (در لود صفحه یا هر جا که بنرها ممکن است نمایان باشند)
-  document.addEventListener('DOMContentLoaded', updateLinkVisibility);
-  // بررسی بلافاصله (اگر اسکریپت بعد از DOM اجرا شده باشد)
-  updateLinkVisibility();
+  // ⛔️ جلوگیری از نمایش لحظه‌ای لینک هنگام بارگذاری
+  updateContainer.style.display = 'none';
+  updateContainer.style.opacity = '0';
 
-  // گوش دادن به کلیک‌ها/رویدادهایی که در کدت قبلاً بنر را نمایش/مخفی می‌کنند
-  // — برای سازگاری بهتر، از MutationObserver روی صفت 'class' عنصر بنر استفاده می‌کنیم:
+  // اجرا بعد از کامل شدن DOM
+  window.addEventListener('load', updateLinkVisibility);
+
+  // MutationObserver برای هماهنگی خودکار
   const mo = new MutationObserver(muts => {
     muts.forEach(m => {
       if (m.attributeName === 'class') updateLinkVisibility();
@@ -1094,17 +1105,15 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   mo.observe(adBanners, { attributes: true, attributeFilter: ['class'] });
 
-  // وقتی کاربر روی لینک کلیک کرد، صفحهٔ مورد نظر در تب جدید باز می‌شود.
-  // مقدار href از تگ گرفته می‌شود — اگر خواستی می‌توانی اینجا تابع fetch برای ثبت کلیک هم اضافه کنی.
+  // باز کردن فایل داخل مودال هنگام کلیک
   updateLink.addEventListener('click', (e) => {
-    // اینجا می‌خواهیم که رفتار پیش‌فرض حفظ شود (باز در تب جدید).
-    // اگر نیاز به باز کردن در یک فایل محلی و نمایش داخل مودال داشتی، می‌توانم تغییر بدهم.
+    e.preventDefault();
+    const url = updateLink.getAttribute('href');
+    openInModal(url);
   });
-
-  // همچنین به جاهایی که در کدت مستقیماً بنرها را نشان می‌دهی یا مخفی می‌کنی، 
-  // نیازی به صدا زدن updateLinkVisibility نیست چون MutationObserver کارش را خواهد کرد.
 })();
 </script>
+
 
 </body>
 </html>
